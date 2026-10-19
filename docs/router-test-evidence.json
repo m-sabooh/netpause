@@ -1,0 +1,67 @@
+{
+  "checkedAt": "2026-10-19",
+  "router": {
+    "model": "HG8245X6",
+    "firmware": "V5R022C10S520",
+    "customization": "TURKCELL2"
+  },
+  "baseline": [
+    "var ChildListArray = new Array(null);\r",
+    "\tTemplatesListArray = new Array(new TemplatesListExClass(\"InternetGatewayDevice.X_HW_Security.ParentalCtrl.Templates.1\",\"template\",\"0\",\"0\",\"\",\"\",\"0\",\"0\",\"\"),null);\r",
+    "\tTemplatesListArray = new Array(new TemplatesListClass(\"InternetGatewayDevice.X_HW_Security.ParentalCtrl.Templates.1\",\"template\",\"0\",\"0\",\"\",\"\",\"0\",\"0\",\"0\"),null);\r",
+    "var DurationListArray = new Array(null);\r"
+  ],
+  "test": {
+    "device": "OdysseyA16",
+    "date": "20261019",
+    "resumeLocal": "18:40",
+    "templateId": "2",
+    "bindingDomain": "InternetGatewayDevice.X_HW_Security.ParentalCtrl.MAC.1",
+    "fields": {
+      "DurationPolicy": "0",
+      "DurationRight": "0",
+      "StartTime": "18:40",
+      "EndTime": "23:59",
+      "RepeatDay": "1"
+    },
+    "before": {
+      "ipv4Ping": "pass",
+      "ipv4Http": "HTTP/1.1 301 Moved Permanently",
+      "routerHttp": "HTTP/1.1 200 OK",
+      "ipv6": "no Wi-Fi default route; network unreachable"
+    },
+    "during": {
+      "ipv4Ping": "100% loss",
+      "ipv4Http": "TCP timeout",
+      "routerHttp": "HTTP/1.1 200 OK",
+      "wifi": "wlan0 UP, same IPv4 address"
+    },
+    "automaticResume": {
+      "confirmed": true,
+      "checkedAt": "2026-10-19 18:41:49+03:00",
+      "ruleStillPresent": true,
+      "ipv4Ping": "2/2 replies",
+      "ipv4Http": "HTTP/1.1 301 Moved Permanently",
+      "routerHttp": "HTTP/1.1 200 OK",
+      "note": "No resume mutation sent before this check; exact boundary latency not measured"
+    },
+    "cleanup": {
+      "confirmed": true,
+      "baselineSettingsMatch": true,
+      "testBindingRemoved": true,
+      "testTemplateAndDurationRemoved": true
+    },
+    "manualResume": {
+      "confirmed": true,
+      "blockedPing": "1/1 lost",
+      "routerDuringPause": "HTTP/1.1 200 OK",
+      "afterDeletePing": "2/2 replies",
+      "afterDeleteHttp": "HTTP/1.1 301 Moved Permanently",
+      "beforeAllowedPeriod": "18:44"
+    }
+  },
+  "devices": {
+    "totalKnown": 26,
+    "online": 8
+  }
+}
