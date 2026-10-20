@@ -4,7 +4,18 @@ Verified against the actual router at `http://192.168.1.1/` on 19 October 2026. 
 
 ## Decision
 
-The router provides the building blocks for a native Kotlin app: authenticated device discovery, internet-only MAC filtering, and parental-control schedules applying to one device or all devices. The phone does not need internet access to control a router on its local Wi-Fi network.
+**Yes, a native Kotlin app is feasible on this router's current firmware.** Device discovery, a per-device internet pause while retaining Wi-Fi/local management access, automatic restoration, and manual restoration were verified. The all-device control exists in the firmware UI and request model, but its traffic behavior was not tested.
+
+| Requested capability | Verification |
+|---|---|
+| List connected devices | Verified by authenticated device-list reads |
+| Pause one device without disconnecting Wi-Fi | Verified on the authorized Android phone over IPv4 |
+| Resume automatically | Verified using a short router-side allowed-time schedule |
+| Resume manually | Verified by removing only the test phone's binding |
+| Pause all devices | UI and request format inspected; not activated |
+| Default 30-minute timer | Same schedule mechanism is applicable; a full 30-minute run and boundary cases remain untested |
+
+The phone does not need internet access to control a router on its local Wi-Fi network.
 
 The safest implementation uses **router-side parental-control schedules**. A phone-side countdown cannot guarantee restoration if the phone leaves home, loses power, or cannot run background work. This router has minute-resolution calendar schedules, not an observed `pauseForSeconds` API.
 
@@ -44,7 +55,13 @@ The phone ran Android 16. Network probes were bound to its Wi-Fi interface or Wi
 
 The test used a separate `NetpauseVerify` template with `StartDate=EndDate=20261019`, one allowed interval from `18:40` to `23:59`, and `RepeatDay=1` (Monday). Binding the phone outside that interval blocked its internet immediately. The existing template was not modified.
 
-Restoration and cleanup results will be appended after verification. Machine-readable evidence is in [router-test-evidence.json](router-test-evidence.json).
+**Automatic restoration passed.** After the 18:40 allowed period began, Wi-Fi IPv4 ping and HTTP worked again without a resume command. A subsequent authenticated read at 18:41:49 confirmed that the same binding remained installed. The exact second at which forwarding resumed was not measured.
+
+**Manual restoration passed.** The test period was moved to 18:44, briefly blocking the phone again. The router remained reachable. Deleting only the test MAC binding restored IPv4 ping and HTTP before the new allowed period.
+
+**Cleanup passed.** The test binding, template, and its period were removed. Readback of the parental-control bindings, templates, and periods exactly matched the pre-test snapshot. The existing unbound template remained intact. No household-wide pause was performed.
+
+Machine-readable evidence is in [router-test-evidence.json](router-test-evidence.json). These artifacts contain no actual device MAC, household public IP, session token, or password. The public probe address `1.1.1.1` and the all-device sentinel below are protocol/test constants, not household identifiers.
 
 ## Connection and authentication
 
@@ -167,7 +184,9 @@ y.DurationPolicy=0
 x.X_HW_Token=<fresh token>
 ```
 
-The test received HTTP **403** from this request even though the period was successfully created and took effect. The firmware UI uses the unusual `RequestFile=html/ipv6/not_find_file.asp` destination. This establishes that status codes alone are insufficient; it does not prove the exact internal cause of the 403. Read back state after ambiguous responses before retrying, or duplicate rules may result.
+The test received HTTP **403** from this request even though the period was successfully created and took effect. A later period update and template deletion returned **404**, also despite successful configuration changes. The firmware UI uses the unusual `RequestFile=html/ipv6/not_find_file.asp` destination for period writes. This establishes that status codes alone are insufficient; it does not prove the exact internal cause of each error. Read back state after ambiguous responses before retrying, or duplicate rules may result. An HTTP error is not automatically success either.
+
+The manual-resume test updated the period using `/html/bbsp/parentalctrl/set.cgi`, with `x` set to the full existing duration domain and `y` set to the template domain. Its body used the same period fields shown above. Readback confirmed the new allowed start before the blocked-state probe.
 
 **Bind one device:**
 
@@ -195,6 +214,18 @@ x.X_HW_Token=<fresh token>
 ```
 
 The selected object's full domain is a body key with an empty value. Read back after deletion. Delete only objects owned by the current pause. Preserve unrelated parental controls.
+
+**Remove the now-unbound test template:**
+
+```text
+POST /html/bbsp/parentalctrl/del.cgi
+  ?RequestFile=/html/bbsp/parentalctrl/parentalctrlstatus.asp
+
+InternetGatewayDevice.X_HW_Security.ParentalCtrl.Templates.<template-id>=
+x.X_HW_Token=<fresh token>
+```
+
+This removed its child duration as well. Confirm that no devices remain bound to the template before deleting it. The test's final readback matched the original bindings, templates, and periods.
 
 ## Turning a 30-minute countdown into a router schedule
 
