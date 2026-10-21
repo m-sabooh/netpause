@@ -6,7 +6,7 @@ Last updated: 2026-10-20. Initial product interview complete; the requirements b
 
 NetPause controls internet access for devices on the same network. The baseline agent guide lists device discovery, individual or all-device pause, and timed restoration as its main use cases.
 
-This repository contains documentation only. There is no application implementation, build setup, or test runner. The owner wants durable repository knowledge so work can continue across Codex sessions without repeating project discovery.
+This repository now includes a minimal Kotlin/Compose Android sample and Gradle build setup for environment verification. It displays a greeting, with English and Arabic resources and RTL support, and has an instrumented launch smoke test. It uses Android SDK 37.2, targets API 37, and supports API 24+. Router control, credentials, device lists, settings, and widgets remain unimplemented. See `../README.md` for setup and commands.
 
 ## Product decisions confirmed on 2026-10-20
 

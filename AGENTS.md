@@ -25,11 +25,18 @@ Version one supports one active pause at a time: either one device or all device
 
 ## Architecture
 
-The repository currently contains documentation only. No app, firmware, or backend implementation exists here. The confirmed product baseline is in `docs/project-context.md`. The app will use native Kotlin on Android to control the Huawei HG8245X6 locally and include a home-screen widget. Router-side schedules must handle timed restoration; the phone's countdown displays the deadline.
+The repository contains a minimal native Kotlin/Compose Android sample in `app/`, plus product and router research in `docs/`. The sample only displays a greeting in English or Arabic; router control and widgets are not implemented. It compiles with SDK 37.2, targets API 37, and supports API 24+. The confirmed product baseline is in `docs/project-context.md`. Router-side schedules must handle timed restoration; the phone's countdown will display the deadline.
 
 ## Commands
 
-There are no build, run, lint, or test commands yet. Add the actual commands when an implementation is introduced.
+Use a compatible JDK (17 minimum) and the Android SDK. See `README.md` for setup.
+
+- Build: `.\gradlew.bat :app:assembleDebug`
+- Lint: `.\gradlew.bat :app:lintDebug`
+- Phone smoke test: `.\gradlew.bat :app:connectedDebugAndroidTest`
+- Install and launch: `android run --apks=app/build/outputs/apk/debug/app-debug.apk`
+
+NDK and CMake are not needed for the sample. Do not install or update either without asking the owner.
 
 ## Maintaining project knowledge
 
