@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetPause - Variant 04: Bento Grid Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bento-bg: #0c0f17;
+      --card-bg: #141a29;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover: #1b2336;
+      --accent-coral: #ff5757;
+      --accent-coral-glow: rgba(255, 87, 87, 0.25);
+      --accent-emerald: #10b981;
+      --accent-indigo: #6366f1;
+      --accent-amber: #f59e0b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-tertiary: #64748b;
+      --radius: 22px;
+      --radius-sm: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
+      background: #06080d;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* Top Demo Bar */
+    .demo-bar {
+      width: 100%;
+      max-width: 440px;
+      background: #141a29;
+      padding: 10px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      border: 1px solid var(--card-border);
+    }
+    .demo-bar button {
+      background: #1f283d;
+      color: #fff;
+      border: 1px solid #334155;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Device Shell */
+    .device-shell {
+      width: 100%;
+      max-width: 412px;
+      height: 880px;
+      background: var(--bento-bg);
+      border-radius: 46px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 0 12px #121622;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      height: 46px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    /* Top Header */
+    .app-header {
+      padding: 8px 20px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .router-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent-emerald);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(16, 185, 129, 0.1);
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    /* Bento Grid Layout */
+    .bento-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .bento-container::-webkit-scrollbar { width: 0; }
+
+    /* Tile 1: Hero Active Pause (Span 2) */
+    .bento-card-hero {
+      background: linear-gradient(145deg, #2a141b, #191220);
+      border: 1px solid rgba(255, 87, 87, 0.3);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 0 10px 25px var(--accent-coral-glow);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .hero-pill {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-coral);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot-live {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-coral);
+      box-shadow: 0 0 8px var(--accent-coral);
+    }
+    .target-title {
+      font-size: 21px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+    .target-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .countdown-huge {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 40px;
+      font-weight: 700;
+      color: #fff;
+      margin: 12px 0 6px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .countdown-huge span {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-coral);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .btn-bento-resume {
+      width: 100%;
+      margin-top: 10px;
+      background: var(--accent-coral);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* 2-Column Bento Row */
+    .bento-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Tile 2: Master Pause All Tile */
+    .bento-card-compact {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 150px;
+    }
+    .card-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .compact-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 4px;
+    }
+    .chip-mini-row {
+      display: flex;
+      gap: 4px;
+      margin: 10px 0;
+    }
+    .chip-mini {
+      flex: 1;
+      text-align: center;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 6px 0;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .chip-mini.active {
+      background: var(--accent-indigo);
+      border-color: var(--accent-indigo);
+      color: #fff;
+    }
+    .btn-compact-act {
+      background: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    /* Tile 3: This Phone Tile */
+    .this-phone-tile {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 150px;
+    }
+    .phone-tag {
+      font-size: 10px;
+      color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.12);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      align-self: flex-start;
+    }
+    .phone-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 4px;
+    }
+    .phone-ip {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .btn-phone-pause {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn-phone-pause:hover {
+      background: var(--accent-coral);
+    }
+
+    /* Tile 4: Device Shelf (Span 2) */
+    .bento-shelf {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .shelf-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .shelf-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .device-tile-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .device-tile-row:last-child {
+      border-bottom: none;
+    }
+    .d-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .d-icon {
+      width: 36px;
+      height: 36px;
+      background: #1b2336;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .d-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .d-sub {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .btn-d-pause {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .device-tile-row.paused-row .btn-d-pause {
+      background: var(--accent-coral);
+      border-color: var(--accent-coral);
+    }
+
+    /* Bottom Nav Bar */
+    .bento-nav {
+      height: 64px;
+      background: #0f1422;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 16px;
+    }
+    .nav-btn {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+    }
+    .nav-btn.active {
+      color: var(--accent-indigo);
+    }
+
+    /* Replacement Modal */
+    .bento-modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .bento-modal-overlay.open { display: flex; }
+    .bento-dialog {
+      background: #141a29;
+      border: 1px solid var(--accent-coral);
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+    }
+    .dialog-h {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .dialog-p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+    .dialog-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-dlg-cancel {
+      flex: 1;
+      background: #1f283d;
+      border: none;
+      color: #fff;
+      padding: 11px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-dlg-switch {
+      flex: 1;
+      background: var(--accent-coral);
+      border: none;
+      color: #fff;
+      padding: 11px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* RTL */
+    html[dir="rtl"] {
+      font-family: 'Tajawal', 'Plus Jakarta Sans', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    <div><strong>Variant 04: Bento Grid</strong></div>
+    <div style="display:flex; gap:6px;">
+      <button onclick="togglePauseState()">State: <span id="bento-state">TV Paused</span></button>
+      <button onclick="toggleLang()">Lang: <span id="bento-lang">EN</span></button>
+      <button onclick="openModal()">Replace Sheet</button>
+    </div>
+  </div>
+
+  <div class="device-shell">
+    
+    <div class="status-bar">
+      <span>18:32</span>
+      <span>HG8245X6</span>
+      <span>100%</span>
+    </div>
+
+    <div class="app-header">
+      <div>
+        <div class="brand-title" data-i18n="title">NetPause Bento</div>
+      </div>
+      <div class="router-badge">
+        <span>●</span>
+        <span>192.168.1.1</span>
+      </div>
+    </div>
+
+    <div class="bento-container">
+
+      <!-- Bento Tile 1: Hero Active Pause (Span 2) -->
+      <div class="bento-card-hero" id="bento-hero">
+        <div class="hero-top-row">
+          <div class="hero-pill">
+            <span class="dot-live"></span>
+            <span data-i18n="tag_active_rule">Single Rule Enforced</span>
+          </div>
+          <span style="font-size:11px; color:#ff8585; font-weight:700;">Router #1</span>
+        </div>
+        <div class="target-title" id="hero-target-txt" data-i18n="target_name">Living Room TV</div>
+        <div class="target-desc" data-i18n="target_sub">Scheduled restoration at 18:50 (17 mins remaining)</div>
+
+        <div class="countdown-huge">
+          <span id="countdown-digits">17:48</span>
+          <span data-i18n="unit_left">left</span>
+        </div>
+
+        <button class="btn-bento-resume" onclick="handleResume()" data-i18n="btn_resume_access">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          <span>Resume Access Now</span>
+        </button>
+      </div>
+
+      <!-- Bento 2-Col Row: Tile 2 + Tile 3 -->
+      <div class="bento-row-2">
+        
+        <!-- Tile 2: Master Switch -->
+        <div class="bento-card-compact">
+          <div>
+            <div class="card-label" data-i18n="sec_all_devices">All Devices</div>
+            <div class="compact-title" data-i18n="global_pause">Household Pause</div>
+          </div>
+
+          <div class="chip-mini-row">
+            <div class="chip-mini" onclick="setDuration(this, 10)">10m</div>
+            <div class="chip-mini active" onclick="setDuration(this, 15)">15m</div>
+            <div class="chip-mini" onclick="setDuration(this, 20)">20m</div>
+          </div>
+
+          <button class="btn-compact-act" onclick="handleGlobalPause()" data-i18n="btn_pause_everyone">
+            Pause Everyone
+          </button>
+        </div>
+
+        <!-- Tile 3: This Phone -->
+        <div class="this-phone-tile">
+          <div>
+            <div class="phone-tag" data-i18n="tag_this_phone">This Phone</div>
+            <div class="phone-name">OdysseyA16</div>
+            <div class="phone-ip">192.168.1.104</div>
+          </div>
+          <button class="btn-phone-pause" onclick="promptDevice('OdysseyA16')" data-i18n="btn_pause_self">
+            Pause My Phone
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Bento Tile 4: Device Shelf (Span 2) -->
+      <div class="bento-shelf">
+        <div class="shelf-header">
+          <div class="shelf-title" data-i18n="sec_connected">Active Devices (6)</div>
+          <span style="font-size:11px; color:var(--text-tertiary);">Wi-Fi 5G & LAN</span>
+        </div>
+
+        <!-- TV (Paused) -->
+        <div class="device-tile-row paused-row">
+          <div class="d-left">
+            <div class="d-icon" style="background:rgba(255,87,87,0.15); color:var(--accent-coral);">📺</div>
+            <div>
+              <div class="d-title" data-i18n="dev_tv">Living Room TV</div>
+              <div class="d-sub" style="color:var(--accent-coral);" data-i18n="tv_paused_sub">Paused • 17m left</div>
+            </div>
+          </div>
+          <button class="btn-d-pause" onclick="handleResume()" data-i18n="btn_resume_sm">Resume</button>
+        </div>
+
+        <!-- iPad -->
+        <div class="device-tile-row">
+          <div class="d-left">
+            <div class="d-icon">📱</div>
+            <div>
+              <div class="d-title" data-i18n="dev_ipad">Kid's iPad Air</div>
+              <div class="d-sub">192.168.1.120 • 5GHz</div>
+            </div>
+          </div>
+          <button class="btn-d-pause" onclick="promptDevice('Kid\'s iPad Air')" data-i18n="btn_pause_sm">Pause</button>
+        </div>
+
+        <!-- ThinkPad -->
+        <div class="device-tile-row">
+          <div class="d-left">
+            <div class="d-icon">💻</div>
+            <div>
+              <div class="d-title">ThinkPad X1</div>
+              <div class="d-sub">192.168.1.108 • 5GHz</div>
+            </div>
+          </div>
+          <button class="btn-d-pause" onclick="promptDevice('ThinkPad X1')" data-i18n="btn_pause_sm">Pause</button>
+        </div>
+
+        <!-- PS5 -->
+        <div class="device-tile-row">
+          <div class="d-left">
+            <div class="d-icon">🎮</div>
+            <div>
+              <div class="d-title">PlayStation 5</div>
+              <div class="d-sub">192.168.1.115 • LAN1</div>
+            </div>
+          </div>
+          <button class="btn-d-pause" onclick="promptDevice('PlayStation 5')" data-i18n="btn_pause_sm">Pause</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bento-nav">
+      <div class="nav-btn active">
+        <span>◫</span>
+        <span data-i18n="nav_bento">Bento</span>
+      </div>
+      <div class="nav-btn">
+        <span>📱</span>
+        <span data-i18n="nav_devices">Devices</span>
+      </div>
+      <div class="nav-btn">
+        <span>⚙</span>
+        <span data-i18n="nav_settings">Settings</span>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="bento-modal-overlay" id="bento-modal" onclick="if(event.target===this)closeModal()">
+      <div class="bento-dialog">
+        <div class="dialog-h" data-i18n="modal_h">Replace Active Pause?</div>
+        <div class="dialog-p" data-i18n="modal_p">
+          The router permits one active pause rule. Activating <strong id="modal-new-dev">Kid's iPad Air</strong> will remove the rule on Living Room TV and restart the new schedule.
+        </div>
+        <div class="dialog-actions">
+          <button class="btn-dlg-cancel" onclick="closeModal()" data-i18n="btn_cancel">Cancel</button>
+          <button class="btn-dlg-switch" onclick="confirmReplace()" data-i18n="btn_switch">Switch Rule</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const bentoI18n = {
+      en: {
+        title: "NetPause Bento",
+        tag_active_rule: "Single Rule Enforced",
+        target_name: "Living Room TV",
+        target_sub: "Scheduled restoration at 18:50 (17 mins remaining)",
+        unit_left: "left",
+        btn_resume_access: "Resume Access Now",
+        sec_all_devices: "All Devices",
+        global_pause: "Household Pause",
+        btn_pause_everyone: "Pause Everyone",
+        tag_this_phone: "This Phone",
+        btn_pause_self: "Pause My Phone",
+        sec_connected: "Active Devices (6)",
+        dev_tv: "Living Room TV",
+        tv_paused_sub: "Paused • 17m left",
+        btn_resume_sm: "Resume",
+        dev_ipad: "Kid's iPad Air",
+        btn_pause_sm: "Pause",
+        nav_bento: "Bento",
+        nav_devices: "Devices",
+        nav_settings: "Settings",
+        modal_h: "Replace Active Pause?",
+        modal_p: "The router permits one active pause rule. Activating this device will remove the rule on Living Room TV and restart the new schedule.",
+        btn_cancel: "Cancel",
+        btn_switch: "Switch Rule"
+      },
+      ar: {
+        title: "نت بوز بينتو",
+        tag_active_rule: "قاعدة راوتر نشطة واحدة",
+        target_name: "تلفاز المعيشة",
+        target_sub: "الاستئناف المجدول الساعة 18:50 (متبقي 17 دقيقة)",
+        unit_left: "متبقية",
+        btn_resume_access: "استئناف الإنترنت الآن",
+        sec_all_devices: "جميع الأجهزة",
+        global_pause: "إيقاف المنزل",
+        btn_pause_everyone: "إيقاف الجميع",
+        tag_this_phone: "هذا الهاتف",
+        btn_pause_self: "إيقاف هاتفي",
+        sec_connected: "الأجهزة المتصلة (6)",
+        dev_tv: "تلفاز المعيشة",
+        tv_paused_sub: "متوقف • متبقي 17 دقيقة",
+        btn_resume_sm: "استئناف",
+        dev_ipad: "آيباد الأطفال",
+        btn_pause_sm: "إيقاف",
+        nav_bento: "الرئيسية",
+        nav_devices: "الأجهزة",
+        nav_settings: "الإعدادات",
+        modal_h: "استبدال الإيقاف النشط؟",
+        modal_p: "يسمح الراوتر بقاعدة إيقاف واحدة فقط. تفعيل هذا الجهاز سيلغي قاعدة تلفاز المعيشة ويبدأ المؤقت الجديد.",
+        btn_cancel: "إلغاء",
+        btn_switch: "تبديل الإيقاف"
+      }
+    };
+
+    let bentoLang = 'en';
+    let isPaused = true;
+    let bentoDuration = 15;
+
+    function toggleLang() {
+      bentoLang = bentoLang === 'en' ? 'ar' : 'en';
+      document.documentElement.dir = bentoLang === 'ar' ? 'rtl' : 'ltr';
+      document.getElementById('bento-lang').innerText = bentoLang.toUpperCase();
+      const map = bentoI18n[bentoLang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (map[k]) el.innerText = map[k];
+      });
+    }
+
+    function togglePauseState() {
+      isPaused = !isPaused;
+      const hero = document.getElementById('bento-hero');
+      const lbl = document.getElementById('bento-state');
+      if (isPaused) {
+        hero.style.display = 'block';
+        lbl.innerText = "TV Paused";
+      } else {
+        hero.style.display = 'none';
+        lbl.innerText = "Idle";
+      }
+    }
+
+    function setDuration(el, dur) {
+      document.querySelectorAll('.chip-mini').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      bentoDuration = dur;
+    }
+
+    function promptDevice(dev) {
+      if (isPaused) {
+        document.getElementById('modal-new-dev').innerText = dev;
+        openModal();
+      } else {
+        alert("Pausing " + dev);
+        isPaused = true;
+        togglePauseState();
+      }
+    }
+
+    function handleGlobalPause() {
+      if (isPaused) {
+        document.getElementById('modal-new-dev').innerText = bentoLang === 'ar' ? "كافة الأجهزة" : "All Devices";
+        openModal();
+      } else {
+        alert("All Devices Paused via FF:FF:FF:FF:FF:FF");
+        isPaused = true;
+        togglePauseState();
+      }
+    }
+
+    function handleResume() {
+      if (confirm(bentoLang === 'ar' ? "استئناف الإنترنت؟" : "Resume internet?")) {
+        isPaused = false;
+        togglePauseState();
+      }
+    }
+
+    function openModal() { document.getElementById('bento-modal').classList.add('open'); }
+    function closeModal() { document.getElementById('bento-modal').classList.remove('open'); }
+    function confirmReplace() {
+      closeModal();
+      alert("Replaced successfully!");
+      document.getElementById('hero-target-txt').innerText = document.getElementById('modal-new-dev').innerText;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetPause - Variant 07: Swiss Typographic Style</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Tajawal:wght@500;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --swiss-bg: #f2f2ef;
+      --swiss-card: #ffffff;
+      --swiss-black: #000000;
+      --swiss-vermilion: #ff2b00;
+      --swiss-gray: #707070;
+      --swiss-border: #000000;
+      --swiss-light-gray: #e0e0db;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Space Grotesk', 'Tajawal', sans-serif;
+      background: #141414;
+      color: var(--swiss-black);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* Top Controls */
+    .demo-bar {
+      width: 100%;
+      max-width: 440px;
+      background: #222;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #fff;
+      border: 1px solid #444;
+    }
+    .demo-bar button {
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      text-transform: uppercase;
+    }
+
+    /* Device Shell */
+    .device-shell {
+      width: 100%;
+      max-width: 412px;
+      height: 880px;
+      background: var(--swiss-bg);
+      border-radius: 0px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.7), 0 0 0 10px #000000;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border: 2px solid #000;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      height: 40px;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      border-bottom: 2px solid var(--swiss-border);
+      background: #fff;
+    }
+
+    /* Swiss Header */
+    .app-header {
+      padding: 18px 20px 14px;
+      border-bottom: 2px solid var(--swiss-border);
+      background: #fff;
+    }
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .brand-title {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    .edition-tag {
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--swiss-black);
+      color: #fff;
+      padding: 2px 8px;
+    }
+    .router-meta-line {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 6px;
+      color: var(--swiss-gray);
+    }
+
+    /* Content Area */
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .app-content::-webkit-scrollbar { width: 0; }
+
+    /* Hero Typographic Block */
+    .swiss-hero-block {
+      padding: 20px;
+      background: #fff;
+      border-bottom: 2px solid var(--swiss-border);
+    }
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--swiss-vermilion);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .hero-headline {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+    .hero-desc {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--swiss-gray);
+      margin-top: 4px;
+    }
+    .countdown-monumental {
+      font-size: 64px;
+      font-weight: 700;
+      letter-spacing: -3px;
+      line-height: 0.9;
+      margin: 16px 0 10px;
+      color: var(--swiss-black);
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .countdown-monumental span {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0;
+      color: var(--swiss-vermilion);
+      text-transform: uppercase;
+    }
+
+    .btn-swiss-vermilion {
+      width: 100%;
+      background: var(--swiss-vermilion);
+      color: #ffffff;
+      border: 2px solid var(--swiss-black);
+      padding: 14px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+      transition: background 0.1s;
+    }
+    .btn-swiss-vermilion:active {
+      background: #cc2200;
+    }
+
+    /* Master All-Devices Grid */
+    .swiss-grid-section {
+      padding: 18px 20px;
+      border-bottom: 2px solid var(--swiss-border);
+      background: var(--swiss-bg);
+    }
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .swiss-duration-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 2px solid var(--swiss-border);
+      background: #fff;
+      margin-bottom: 12px;
+    }
+    .swiss-grid-cell {
+      padding: 10px 0;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border-right: 1px solid var(--swiss-border);
+      text-transform: uppercase;
+    }
+    .swiss-grid-cell:last-child {
+      border-right: none;
+    }
+    .swiss-grid-cell.active {
+      background: var(--swiss-black);
+      color: #fff;
+    }
+
+    .btn-swiss-black {
+      width: 100%;
+      background: var(--swiss-black);
+      color: #fff;
+      border: none;
+      padding: 13px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+    }
+
+    /* Structured Devices Table */
+    .devices-table-wrap {
+      background: #fff;
+      flex: 1;
+      padding: 16px 20px 24px;
+    }
+    .table-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--swiss-gray);
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--swiss-border);
+      margin-bottom: 4px;
+    }
+    .device-table-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--swiss-light-gray);
+    }
+    .dev-col-main {
+      min-width: 0;
+      flex: 1;
+    }
+    .dev-name-txt {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .dev-spec-txt {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--swiss-gray);
+      margin-top: 2px;
+    }
+    .self-flag {
+      background: var(--swiss-black);
+      color: #fff;
+      font-size: 9px;
+      padding: 1px 4px;
+      margin-left: 6px;
+    }
+    .btn-table-action {
+      border: 1px solid var(--swiss-black);
+      background: #fff;
+      padding: 6px 14px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .device-table-row.paused-row .btn-table-action {
+      background: var(--swiss-vermilion);
+      color: #fff;
+      border-color: var(--swiss-vermilion);
+    }
+
+    /* Bottom Swiss Bar */
+    .swiss-nav-bar {
+      height: 54px;
+      border-top: 2px solid var(--swiss-border);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .nav-cell {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid var(--swiss-border);
+      cursor: pointer;
+    }
+    .nav-cell:last-child { border-right: none; }
+    .nav-cell.active {
+      background: var(--swiss-black);
+      color: #fff;
+    }
+
+    /* Replacement Modal */
+    .swiss-modal-mask {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .swiss-modal-mask.open { display: flex; }
+    .swiss-modal-box {
+      width: 100%;
+      background: #fff;
+      border: 3px solid var(--swiss-black);
+      padding: 24px;
+    }
+    .m-title {
+      font-size: 20px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .m-body {
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--swiss-gray);
+      margin-bottom: 18px;
+    }
+    .m-btn-row {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-m-clean {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid var(--swiss-black);
+      background: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .btn-m-clean.danger {
+      background: var(--swiss-vermilion);
+      color: #fff;
+    }
+
+    /* RTL */
+    html[dir="rtl"] {
+      font-family: 'Tajawal', 'Space Grotesk', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    <div><strong>Variant 07: Swiss Typographic</strong></div>
+    <div style="display:flex; gap:6px;">
+      <button onclick="toggleSwissState()">State: <span id="state-txt">TV Paused</span></button>
+      <button onclick="toggleLang()">Lang: <span id="lang-txt">EN</span></button>
+      <button onclick="openModal()">Replace Sheet</button>
+    </div>
+  </div>
+
+  <div class="device-shell">
+    
+    <div class="status-bar">
+      <span>18:32:00</span>
+      <span>HUAWEI HG8245X6</span>
+      <span>ONLINE</span>
+    </div>
+
+    <div class="app-header">
+      <div class="title-row">
+        <div class="brand-title" data-i18n="title">NETPAUSE</div>
+        <div class="edition-tag">V1.0</div>
+      </div>
+      <div class="router-meta-line" data-i18n="router_sub">ROUTER 192.168.1.1 // TURKCELL2 // API 37</div>
+    </div>
+
+    <div class="app-content">
+
+      <!-- Monumental Hero Block -->
+      <div class="swiss-hero-block" id="hero-block">
+        <div class="hero-eyebrow">
+          <span data-i18n="tag_active">RULE #01 ACTIVE</span>
+          <span>RESTORES: 18:50</span>
+        </div>
+        <div class="hero-headline" id="hero-target-txt" data-i18n="target_name">LIVING ROOM TV</div>
+        <div class="hero-desc" data-i18n="target_sub">Scheduled pause installed in parental control table.</div>
+
+        <div class="countdown-monumental">
+          <span id="digits-txt">17:48</span>
+          <span data-i18n="unit_rem">MINUTES LEFT</span>
+        </div>
+
+        <button class="btn-swiss-vermilion" onclick="handleResume()" data-i18n="btn_resume">
+          <span>■</span>
+          <span>RESUME ACCESS NOW</span>
+        </button>
+      </div>
+
+      <!-- Master Household Pause -->
+      <div class="swiss-grid-section">
+        <div class="section-eyebrow" data-i18n="sec_all">GLOBAL INTERCEPT // ALL DEVICES</div>
+
+        <div class="swiss-duration-grid">
+          <div class="swiss-grid-cell" onclick="setDur(this, 10)">10M</div>
+          <div class="swiss-grid-cell active" onclick="setDur(this, 15)">15M</div>
+          <div class="swiss-grid-cell" onclick="setDur(this, 20)">20M</div>
+          <div class="swiss-grid-cell" onclick="setDur(this, 'inf')" data-i18n="opt_inf">INF</div>
+        </div>
+
+        <button class="btn-swiss-black" onclick="handlePauseAll()" data-i18n="btn_pause_everyone">
+          PAUSE EVERYONE (15 MIN)
+        </button>
+      </div>
+
+      <!-- Inventory Table -->
+      <div class="devices-table-wrap">
+        <div class="table-head">
+          <span data-i18n="col_node">NODE // DEVICE</span>
+          <span data-i18n="col_action">ACTION</span>
+        </div>
+
+        <!-- TV Paused -->
+        <div class="device-table-row paused-row">
+          <div class="dev-col-main">
+            <div class="dev-name-txt" data-i18n="dev_tv">LIVING ROOM TV (SAMSUNG)</div>
+            <div class="dev-spec-txt">192.168.1.112 • 5GHZ • PAUSED (17M)</div>
+          </div>
+          <button class="btn-table-action" onclick="handleResume()" data-i18n="btn_resume_sm">RESUME</button>
+        </div>
+
+        <!-- This Phone -->
+        <div class="device-table-row">
+          <div class="dev-col-main">
+            <div class="dev-name-txt">
+              <span>ODYSSEYA16</span>
+              <span class="self-flag" data-i18n="flag_self">THIS CONTROLLER</span>
+            </div>
+            <div class="dev-spec-txt">192.168.1.104 • 5GHZ</div>
+          </div>
+          <button class="btn-table-action" onclick="promptDevice('ODYSSEYA16')" data-i18n="btn_pause">PAUSE</button>
+        </div>
+
+        <!-- iPad -->
+        <div class="device-table-row">
+          <div class="dev-col-main">
+            <div class="dev-name-txt" data-i18n="dev_ipad">KID'S IPAD AIR</div>
+            <div class="dev-spec-txt">192.168.1.120 • 5GHZ</div>
+          </div>
+          <button class="btn-table-action" onclick="promptDevice('KID\'S IPAD AIR')" data-i18n="btn_pause">PAUSE</button>
+        </div>
+
+        <!-- ThinkPad -->
+        <div class="device-table-row">
+          <div class="dev-col-main">
+            <div class="dev-name-txt">THINKPAD X1 CARBON</div>
+            <div class="dev-spec-txt">192.168.1.108 • 5GHZ</div>
+          </div>
+          <button class="btn-table-action" onclick="promptDevice('THINKPAD X1 CARBON')" data-i18n="btn_pause">PAUSE</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Swiss Nav -->
+    <div class="swiss-nav-bar">
+      <div class="nav-cell active" data-i18n="nav_cmd">CONTROL</div>
+      <div class="nav-cell" data-i18n="nav_devices">DEVICES</div>
+      <div class="nav-cell" data-i18n="nav_system">SYSTEM</div>
+    </div>
+
+    <!-- Replacement Dialogue -->
+    <div class="swiss-modal-mask" id="swiss-modal" onclick="if(event.target===this)closeModal()">
+      <div class="swiss-modal-box">
+        <div class="m-title" data-i18n="dlg_title">OVERWRITE ACTIVE RULE</div>
+        <div class="m-body" data-i18n="dlg_body">
+          Firmware constraint enforces 1 active rule. Binding <strong id="m-new-target">KID'S IPAD AIR</strong> will cancel the Living Room TV schedule and restore its internet access immediately.
+        </div>
+        <div class="m-btn-row">
+          <button class="btn-m-clean" onclick="closeModal()" data-i18n="btn_abort">ABORT</button>
+          <button class="btn-m-clean danger" onclick="confirmReplace()" data-i18n="btn_overwrite">OVERWRITE</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const swissI18n = {
+      en: {
+        title: "NETPAUSE",
+        router_sub: "ROUTER 192.168.1.1 // TURKCELL2 // API 37",
+        tag_active: "RULE #01 ACTIVE",
+        target_name: "LIVING ROOM TV",
+        target_sub: "Scheduled pause installed in parental control table.",
+        unit_rem: "MINUTES LEFT",
+        btn_resume: "RESUME ACCESS NOW",
+        sec_all: "GLOBAL INTERCEPT // ALL DEVICES",
+        opt_inf: "INF",
+        btn_pause_everyone: "PAUSE EVERYONE (15 MIN)",
+        col_node: "NODE // DEVICE",
+        col_action: "ACTION",
+        dev_tv: "LIVING ROOM TV (SAMSUNG)",
+        btn_resume_sm: "RESUME",
+        flag_self: "THIS CONTROLLER",
+        btn_pause: "PAUSE",
+        dev_ipad: "KID'S IPAD AIR",
+        nav_cmd: "CONTROL",
+        nav_devices: "DEVICES",
+        nav_system: "SYSTEM",
+        dlg_title: "OVERWRITE ACTIVE RULE",
+        dlg_body: "Firmware constraint enforces 1 active rule. Binding this device will cancel the Living Room TV schedule and restore its internet access immediately.",
+        btn_abort: "ABORT",
+        btn_overwrite: "OVERWRITE"
+      },
+      ar: {
+        title: "نت بوز",
+        router_sub: "الراوتر 192.168.1.1 // توركسيل2 // إصدار 37",
+        tag_active: "القاعدة الأولى نشطة",
+        target_name: "تلفاز المعيشة",
+        target_sub: "تم تثبيت الإيقاف المجدول في جدول الرقابة الأبوية.",
+        unit_rem: "دقيقة متبقية",
+        btn_resume: "استئناف الإنترنت الآن",
+        sec_all: "إيقاف شامل // كافة الأجهزة",
+        opt_inf: "دائم",
+        btn_pause_everyone: "إيقاف الجميع (15 دقيقة)",
+        col_node: "الجهاز المتصل",
+        col_action: "التحكم",
+        dev_tv: "تلفاز المعيشة (سامسونج)",
+        btn_resume_sm: "استئناف",
+        flag_self: "هذا الجهاز",
+        btn_pause: "إيقاف",
+        dev_ipad: "آيباد الأطفال",
+        nav_cmd: "التحكم",
+        nav_devices: "الأجهزة",
+        nav_system: "النظام",
+        dlg_title: "استبدال القاعدة النشطة",
+        dlg_body: "شروط الراوتر تسمح بقاعدة واحدة نشطة فقط. ربط هذا الجهاز سيلغي قاعدة تلفاز المعيشة ويعيد له الإنترنت فوراً.",
+        btn_abort: "إلغاء",
+        btn_overwrite: "استبدال القاعدة"
+      }
+    };
+
+    let swissLang = 'en';
+    let isPaused = true;
+    let selectedMins = 15;
+
+    function toggleLang() {
+      swissLang = swissLang === 'en' ? 'ar' : 'en';
+      document.documentElement.dir = swissLang === 'ar' ? 'rtl' : 'ltr';
+      document.getElementById('lang-txt').innerText = swissLang.toUpperCase();
+      const map = swissI18n[swissLang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (map[k]) el.innerText = map[k];
+      });
+    }
+
+    function toggleSwissState() {
+      isPaused = !isPaused;
+      const hero = document.getElementById('hero-block');
+      const stateTxt = document.getElementById('state-txt');
+      if (isPaused) {
+        hero.style.display = 'block';
+        stateTxt.innerText = "TV Paused";
+      } else {
+        hero.style.display = 'none';
+        stateTxt.innerText = "Idle";
+      }
+    }
+
+    function setDur(el, mins) {
+      document.querySelectorAll('.swiss-grid-cell').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      selectedMins = mins;
+      const str = mins === 'inf' ? (swissLang === 'ar' ? 'دائم' : 'FOREVER') : `${mins} MIN`;
+      document.querySelector('.btn-swiss-black').innerText = swissLang === 'ar' ? `إيقاف الجميع (${str})` : `PAUSE EVERYONE (${str})`;
+    }
+
+    function promptDevice(dev) {
+      if (isPaused) {
+        document.getElementById('m-new-target').innerText = dev;
+        openModal();
+      } else {
+        alert("Pausing " + dev);
+        isPaused = true;
+        toggleSwissState();
+      }
+    }
+
+    function handlePauseAll() {
+      if (isPaused) {
+        document.getElementById('m-new-target').innerText = swissLang === 'ar' ? "كافة الأجهزة" : "ALL DEVICES";
+        openModal();
+      } else {
+        alert("All devices paused via FF:FF:FF:FF:FF:FF");
+        isPaused = true;
+        toggleSwissState();
+      }
+    }
+
+    function handleResume() {
+      if (confirm(swissLang === 'ar' ? "استئناف الإنترنت؟" : "Resume internet access?")) {
+        isPaused = false;
+        toggleSwissState();
+      }
+    }
+
+    function openModal() { document.getElementById('swiss-modal').classList.add('open'); }
+    function closeModal() { document.getElementById('swiss-modal').classList.remove('open'); }
+    function confirmReplace() {
+      closeModal();
+      alert("Rule replaced!");
+      document.getElementById('hero-target-txt').innerText = document.getElementById('m-new-target').innerText;
+    }
+  </script>
+</body>
+</html>

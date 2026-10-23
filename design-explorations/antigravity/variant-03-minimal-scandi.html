@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetPause - Variant 03: Scandinavian Minimal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Tajawal:wght@400;500;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f9f9f8;
+      --card-bg: #ffffff;
+      --text-main: #18181b;
+      --text-muted: #71717a;
+      --text-subtle: #a1a1aa;
+      --border: #e4e4e7;
+      --border-subtle: #f4f4f5;
+      --accent: #27272a;
+      --accent-hover: #09090b;
+      --warm-paused: #fef3c7;
+      --warm-paused-border: #fde68a;
+      --warm-paused-text: #92400e;
+      --radius: 16px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
+      background: #121316;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* Top Controls */
+    .demo-bar {
+      width: 100%;
+      max-width: 420px;
+      background: #202226;
+      padding: 10px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #e4e4e7;
+    }
+    .demo-bar button {
+      background: #2d3036;
+      color: #ffffff;
+      border: 1px solid #3f434a;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Phone Shell */
+    .device-shell {
+      width: 100%;
+      max-width: 412px;
+      height: 880px;
+      background: var(--bg);
+      border-radius: 46px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 10px #1e2024;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      height: 48px;
+      padding: 0 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* App Header */
+    .header {
+      padding: 12px 28px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+    }
+    .router-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .router-chip .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    /* Content Area */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .content::-webkit-scrollbar { width: 0; }
+
+    /* Hero Pause Card (Scandinavian warmth) */
+    .hero-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .hero-card.active-state {
+      background: #fffbf0;
+      border-color: var(--warm-paused-border);
+    }
+    .hero-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .status-pill {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--warm-paused-text);
+      background: var(--warm-paused);
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+    .hero-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.3px;
+    }
+    .hero-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .time-large {
+      font-size: 42px;
+      font-weight: 300;
+      color: var(--text-main);
+      letter-spacing: -1px;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .time-large span {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+    .thin-progress {
+      height: 3px;
+      background: #f1f1f2;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .thin-fill {
+      width: 65%;
+      height: 100%;
+      background: var(--text-main);
+      border-radius: 2px;
+    }
+    .btn-resume-clean {
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.15s;
+    }
+    .btn-resume-clean:hover {
+      background: var(--accent-hover);
+    }
+
+    /* All-devices Clean Section */
+    .quick-pause-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-subtle);
+    }
+    .segment-selector {
+      display: flex;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+    }
+    .segment-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 9px 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .segment-btn.active {
+      background: var(--bg);
+      color: var(--text-main);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .btn-pause-all-clean {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-pause-all-clean:hover {
+      background: var(--card-bg);
+      border-color: var(--text-muted);
+    }
+
+    /* Devices List */
+    .devices-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 6px 18px;
+    }
+    .device-row {
+      padding: 14px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .device-row:last-child {
+      border-bottom: none;
+    }
+    .dev-left-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .dev-glyph {
+      width: 36px;
+      height: 36px;
+      background: var(--bg);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+    .dev-primary-txt {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dev-secondary-txt {
+      font-size: 12px;
+      color: var(--text-subtle);
+      margin-top: 1px;
+    }
+    .tag-self-clean {
+      font-size: 10px;
+      color: #059669;
+      background: #ecfdf5;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .btn-action-clean {
+      border: none;
+      background: var(--bg);
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-action-clean:hover {
+      background: #e4e4e7;
+    }
+    .device-row.is-paused .btn-action-clean {
+      background: var(--warm-paused);
+      color: var(--warm-paused-text);
+    }
+
+    /* Minimal Bottom Nav */
+    .footer-bar {
+      height: 60px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .footer-item {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-subtle);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .footer-item.active {
+      color: var(--text-main);
+    }
+
+    /* Replacement Bottom Sheet */
+    .modal-sheet-bg {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 50;
+      display: none;
+      align-items: flex-end;
+    }
+    .modal-sheet-bg.open { display: flex; }
+    .sheet-body {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 24px 24px 0 0;
+      padding: 28px 24px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .sheet-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .sheet-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .btn-clean-cancel {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+    .btn-clean-confirm {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* RTL */
+    html[dir="rtl"] {
+      font-family: 'Tajawal', 'Plus Jakarta Sans', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    <div><strong>Variant 03: Minimalist Scandinavian</strong></div>
+    <div style="display:flex; gap:6px;">
+      <button onclick="toggleHeroState()">Status: <span id="status-txt">TV Paused</span></button>
+      <button onclick="toggleLang()">Lang: <span id="lang-btn">EN</span></button>
+      <button onclick="openReplaceSheet()">Replace Sheet</button>
+    </div>
+  </div>
+
+  <div class="device-shell">
+    
+    <div class="status-bar">
+      <span>18:32</span>
+      <span>Wi-Fi • 92%</span>
+    </div>
+
+    <div class="header">
+      <div class="brand" data-i18n="brand">netpause</div>
+      <div class="router-chip">
+        <span class="dot"></span>
+        <span data-i18n="router_chip">HG8245X6 • Online</span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- Active Pause Hero -->
+      <div class="hero-card active-state" id="hero-card">
+        <div class="hero-label-row">
+          <span class="status-pill" data-i18n="pill_paused">Internet paused</span>
+          <span style="font-size:12px; color:var(--text-subtle);">192.168.1.112</span>
+        </div>
+        <div>
+          <div class="hero-title" id="hero-target-name" data-i18n="hero_target">Living Room TV</div>
+          <div class="hero-subtitle" data-i18n="hero_sub">Restores automatically at 18:50 via router schedule.</div>
+        </div>
+        <div class="time-large">
+          <span id="countdown-num">17</span>
+          <span data-i18n="minutes_left">minutes left</span>
+        </div>
+        <div class="thin-progress">
+          <div class="thin-fill"></div>
+        </div>
+        <button class="btn-resume-clean" onclick="handleResumeClick()" data-i18n="btn_resume">Resume access now</button>
+      </div>
+
+      <!-- Quick Pause All -->
+      <div class="quick-pause-section">
+        <div class="section-eyebrow" data-i18n="sec_pause_all">Pause household</div>
+        <div class="segment-selector">
+          <div class="segment-btn" onclick="selectDuration(this, 10)">10m</div>
+          <div class="segment-btn active" onclick="selectDuration(this, 15)">15m</div>
+          <div class="segment-btn" onclick="selectDuration(this, 20)">20m</div>
+          <div class="segment-btn" onclick="selectDuration(this, 'inf')" data-i18n="btn_indefinite">Until resumed</div>
+        </div>
+        <button class="btn-pause-all-clean" onclick="handlePauseAll()">
+          <span data-i18n="btn_pause_all">Pause all devices (15m)</span>
+        </button>
+      </div>
+
+      <!-- Connected Devices Box -->
+      <div>
+        <div class="section-eyebrow" style="margin-bottom:10px;" data-i18n="sec_devices">Connected devices (6)</div>
+        <div class="devices-box">
+          
+          <div class="device-row">
+            <div class="dev-left-group">
+              <div class="dev-glyph">📱</div>
+              <div>
+                <div class="dev-primary-txt">
+                  <span>OdysseyA16</span>
+                  <span class="tag-self-clean" data-i18n="tag_self">Your phone</span>
+                </div>
+                <div class="dev-secondary-txt">192.168.1.104 • Wi-Fi 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-action-clean" onclick="promptDevice('OdysseyA16')" data-i18n="btn_pause_action">Pause</button>
+          </div>
+
+          <div class="device-row is-paused">
+            <div class="dev-left-group">
+              <div class="dev-glyph">📺</div>
+              <div>
+                <div class="dev-primary-txt" data-i18n="dev_tv">Living Room TV</div>
+                <div class="dev-secondary-txt" style="color:#b45309;" data-i18n="status_tv_paused">Paused • 17m remaining</div>
+              </div>
+            </div>
+            <button class="btn-action-clean" onclick="handleResumeClick()" data-i18n="btn_resume_action">Resume</button>
+          </div>
+
+          <div class="device-row">
+            <div class="dev-left-group">
+              <div class="dev-glyph">📱</div>
+              <div>
+                <div class="dev-primary-txt" data-i18n="dev_ipad">Kid's iPad Air</div>
+                <div class="dev-secondary-txt">192.168.1.120 • Wi-Fi 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-action-clean" onclick="promptDevice('Kid\'s iPad Air')" data-i18n="btn_pause_action">Pause</button>
+          </div>
+
+          <div class="device-row">
+            <div class="dev-left-group">
+              <div class="dev-glyph">💻</div>
+              <div>
+                <div class="dev-primary-txt">ThinkPad X1 Carbon</div>
+                <div class="dev-secondary-txt">192.168.1.108 • Wi-Fi 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-action-clean" onclick="promptDevice('ThinkPad X1 Carbon')" data-i18n="btn_pause_action">Pause</button>
+          </div>
+
+          <div class="device-row">
+            <div class="dev-left-group">
+              <div class="dev-glyph">🎮</div>
+              <div>
+                <div class="dev-primary-txt">PlayStation 5</div>
+                <div class="dev-secondary-txt">192.168.1.115 • Ethernet</div>
+              </div>
+            </div>
+            <button class="btn-action-clean" onclick="promptDevice('PlayStation 5')" data-i18n="btn_pause_action">Pause</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Minimal Clean Footer -->
+    <div class="footer-bar">
+      <div class="footer-item active" data-i18n="nav_overview">Overview</div>
+      <div class="footer-item" data-i18n="nav_devices">Devices</div>
+      <div class="footer-item" data-i18n="nav_settings">Settings</div>
+    </div>
+
+    <!-- Sheet -->
+    <div class="modal-sheet-bg" id="clean-sheet" onclick="if(event.target===this)closeReplaceSheet()">
+      <div class="sheet-body">
+        <div class="sheet-title" data-i18n="sheet_title">Replace active pause?</div>
+        <div class="sheet-desc" data-i18n="sheet_desc">
+          Only one pause can be active at a time. Pausing <strong id="sheet-target-name">this device</strong> will cancel the current timer and restore internet to Living Room TV immediately.
+        </div>
+        <div class="btn-row">
+          <button class="btn-clean-cancel" onclick="closeReplaceSheet()" data-i18n="btn_keep">Keep current</button>
+          <button class="btn-clean-confirm" onclick="confirmReplace()" data-i18n="btn_confirm_switch">Switch pause</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const strings = {
+      en: {
+        brand: "netpause",
+        router_chip: "HG8245X6 • Online",
+        pill_paused: "Internet paused",
+        hero_target: "Living Room TV",
+        hero_sub: "Restores automatically at 18:50 via router schedule.",
+        minutes_left: "minutes left",
+        btn_resume: "Resume access now",
+        sec_pause_all: "Pause household",
+        btn_indefinite: "Until resumed",
+        btn_pause_all: "Pause all devices (15m)",
+        sec_devices: "Connected devices (6)",
+        tag_self: "Your phone",
+        btn_pause_action: "Pause",
+        dev_tv: "Living Room TV",
+        status_tv_paused: "Paused • 17m remaining",
+        btn_resume_action: "Resume",
+        dev_ipad: "Kid's iPad Air",
+        nav_overview: "Overview",
+        nav_devices: "Devices",
+        nav_settings: "Settings",
+        sheet_title: "Replace active pause?",
+        sheet_desc: "Only one pause can be active at a time. Pausing this device will cancel the current timer and restore internet to Living Room TV immediately.",
+        btn_keep: "Keep current",
+        btn_confirm_switch: "Switch pause"
+      },
+      ar: {
+        brand: "نت بوز",
+        router_chip: "HG8245X6 • متصل",
+        pill_paused: "الإنترنت متوقف",
+        hero_target: "تلفاز المعيشة",
+        hero_sub: "يعود الاتصال تلقائياً الساعة 18:50 عبر جدول الراوتر.",
+        minutes_left: "دقيقة متبقية",
+        btn_resume: "استئناف الاتصال الآن",
+        sec_pause_all: "إيقاف إنترنت المنزل",
+        btn_indefinite: "حتى الاستئناف",
+        btn_pause_all: "إيقاف جميع الأجهزة (15 دقيقة)",
+        sec_devices: "الأجهزة المتصلة (6)",
+        tag_self: "هاتفك",
+        btn_pause_action: "إيقاف",
+        dev_tv: "تلفاز المعيشة",
+        status_tv_paused: "متوقف • متبقي 17 دقيقة",
+        btn_resume_action: "استئناف",
+        dev_ipad: "آيباد الأطفال",
+        nav_overview: "الرئيسية",
+        nav_devices: "الأجهزة",
+        nav_settings: "الإعدادات",
+        sheet_title: "استبدال الإيقاف الحالي؟",
+        sheet_desc: "يمكن تفعيل إيقاف واحد فقط في نفس الوقت. إيقاف هذا الجهاز سيلغي المؤقت السابق ويعيد الإنترنت لتلفاز المعيشة فوراً.",
+        btn_keep: "إبقاء الحالي",
+        btn_confirm_switch: "تغيير الإيقاف"
+      }
+    };
+
+    let curLang = 'en';
+    let isPaused = true;
+    let selectedMins = 15;
+
+    function toggleLang() {
+      curLang = curLang === 'en' ? 'ar' : 'en';
+      document.documentElement.dir = curLang === 'ar' ? 'rtl' : 'ltr';
+      document.getElementById('lang-btn').innerText = curLang.toUpperCase();
+      const map = strings[curLang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (map[k]) el.innerText = map[k];
+      });
+    }
+
+    function toggleHeroState() {
+      isPaused = !isPaused;
+      const hero = document.getElementById('hero-card');
+      const statusTxt = document.getElementById('status-txt');
+      if (isPaused) {
+        hero.style.display = 'flex';
+        statusTxt.innerText = "TV Paused";
+      } else {
+        hero.style.display = 'none';
+        statusTxt.innerText = "Idle";
+      }
+    }
+
+    function selectDuration(btn, val) {
+      document.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedMins = val;
+      const label = val === 'inf' ? (curLang === 'ar' ? 'دائم' : 'forever') : `${val}m`;
+      const txt = curLang === 'ar' ? `إيقاف جميع الأجهزة (${label})` : `Pause all devices (${label})`;
+      document.querySelector('.btn-pause-all-clean span').innerText = txt;
+    }
+
+    function promptDevice(dev) {
+      if (isPaused) {
+        document.getElementById('sheet-target-name').innerText = dev;
+        openReplaceSheet();
+      } else {
+        alert("Pausing " + dev);
+        isPaused = true;
+        toggleHeroState();
+      }
+    }
+
+    function handlePauseAll() {
+      if (isPaused) {
+        document.getElementById('sheet-target-name').innerText = curLang === 'ar' ? "كافة الأجهزة" : "All devices";
+        openReplaceSheet();
+      } else {
+        alert("Pausing all devices on HG8245X6...");
+        isPaused = true;
+        toggleHeroState();
+      }
+    }
+
+    function handleResumeClick() {
+      if (confirm(curLang === 'ar' ? "استئناف الإنترنت؟" : "Resume internet access?")) {
+        isPaused = false;
+        toggleHeroState();
+      }
+    }
+
+    function openReplaceSheet() { document.getElementById('clean-sheet').classList.add('open'); }
+    function closeReplaceSheet() { document.getElementById('clean-sheet').classList.remove('open'); }
+    function confirmReplace() {
+      closeReplaceSheet();
+      alert("Active pause successfully changed!");
+      document.getElementById('hero-target-name').innerText = document.getElementById('sheet-target-name').innerText;
+    }
+  </script>
+</body>
+</html>

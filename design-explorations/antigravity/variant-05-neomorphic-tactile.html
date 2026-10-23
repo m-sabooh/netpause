@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetPause - Variant 05: Tactile Neomorphic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Tajawal:wght@500;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --neu-bg: #e2e8f0;
+      --neu-base: #e2e8f0;
+      --neu-light: #ffffff;
+      --neu-dark: #b8c2cc;
+      --shadow-extruded: 6px 6px 14px var(--neu-dark), -6px -6px 14px var(--neu-light);
+      --shadow-pressed: inset 4px 4px 8px var(--neu-dark), inset -4px -4px 8px var(--neu-light);
+      --shadow-sm: 3px 3px 7px var(--neu-dark), -3px -3px 7px var(--neu-light);
+      --neu-accent: #f97316;
+      --neu-accent-glow: rgba(249, 115, 22, 0.4);
+      --neu-green: #10b981;
+      --neu-text: #334155;
+      --neu-text-light: #64748b;
+      --radius: 20px;
+      --radius-sm: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
+      background: #181d24;
+      color: var(--neu-text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* Top Controls */
+    .demo-bar {
+      width: 100%;
+      max-width: 440px;
+      background: #252e3a;
+      padding: 10px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #e2e8f0;
+    }
+    .demo-bar button {
+      background: #334155;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Device Shell */
+    .device-shell {
+      width: 100%;
+      max-width: 412px;
+      height: 880px;
+      background: var(--neu-bg);
+      border-radius: 46px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 0 12px #29323d;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      height: 48px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--neu-text-light);
+    }
+    .led {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--neu-green);
+      box-shadow: 0 0 8px var(--neu-green);
+    }
+
+    /* App Header */
+    .app-header {
+      padding: 8px 24px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-neu-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--neu-base);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--neu-accent);
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--neu-text);
+    }
+    .brand-sub {
+      font-size: 11px;
+      color: var(--neu-text-light);
+      font-weight: 600;
+    }
+
+    /* Scrollable Content */
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .app-content::-webkit-scrollbar { width: 0; }
+
+    /* Recessed Reactor Well (Hero Pause) */
+    .neu-recessed-well {
+      background: var(--neu-base);
+      box-shadow: var(--shadow-pressed);
+      border-radius: 26px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+    .well-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--neu-base);
+      box-shadow: var(--shadow-sm);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--neu-accent);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .well-target {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--neu-text);
+    }
+    .well-sub {
+      font-size: 12px;
+      color: var(--neu-text-light);
+      margin-top: 3px;
+    }
+    .well-digits {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 46px;
+      font-weight: 700;
+      color: var(--neu-text);
+      margin: 14px 0 10px;
+      text-shadow: 1px 1px 2px #fff;
+    }
+    .well-unit {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--neu-accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Physical Resume Button (Extruded convex) */
+    .btn-neu-action {
+      margin-top: 14px;
+      width: 100%;
+      background: var(--neu-base);
+      box-shadow: var(--shadow-extruded);
+      border: none;
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--neu-accent);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.1s;
+    }
+    .btn-neu-action:active {
+      box-shadow: var(--shadow-pressed);
+      transform: translateY(1px);
+    }
+
+    /* Household Pause Module (Extruded Plate) */
+    .neu-plate {
+      background: var(--neu-base);
+      box-shadow: var(--shadow-extruded);
+      border-radius: var(--radius);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .plate-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .plate-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--neu-text);
+    }
+    .plate-sub {
+      font-size: 11px;
+      color: var(--neu-text-light);
+    }
+
+    /* Inset Pill Duration Presets */
+    .neu-presets {
+      display: flex;
+      background: var(--neu-base);
+      box-shadow: var(--shadow-pressed);
+      border-radius: 12px;
+      padding: 4px;
+    }
+    .neu-preset-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 8px 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--neu-text-light);
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+    .neu-preset-btn.active {
+      background: var(--neu-base);
+      box-shadow: var(--shadow-sm);
+      color: var(--neu-accent);
+    }
+
+    .btn-plate-pause {
+      background: var(--neu-base);
+      box-shadow: var(--shadow-sm);
+      border: none;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--neu-text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-plate-pause:active {
+      box-shadow: var(--shadow-pressed);
+    }
+
+    /* Connected Devices Neu Cards */
+    .devices-neu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .dev-neu-card {
+      background: var(--neu-base);
+      box-shadow: var(--shadow-sm);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dev-neu-card.paused {
+      box-shadow: var(--shadow-pressed);
+      background: #f1ebd9;
+    }
+    .dev-l {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .dev-neu-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--neu-base);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--neu-text);
+    }
+    .dev-neu-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--neu-text);
+    }
+    .dev-neu-meta {
+      font-size: 11px;
+      color: var(--neu-text-light);
+    }
+    .btn-dev-neu {
+      border: none;
+      background: var(--neu-base);
+      box-shadow: var(--shadow-sm);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--neu-text);
+      cursor: pointer;
+    }
+    .btn-dev-neu:active {
+      box-shadow: var(--shadow-pressed);
+    }
+    .dev-neu-card.paused .btn-dev-neu {
+      color: var(--neu-accent);
+      box-shadow: var(--shadow-extruded);
+    }
+
+    /* Bottom Neu Nav */
+    .neu-nav {
+      height: 68px;
+      background: var(--neu-base);
+      box-shadow: 0 -4px 12px var(--neu-dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 18px;
+    }
+    .neu-nav-item {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--neu-base);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--neu-text-light);
+      cursor: pointer;
+    }
+    .neu-nav-item.active {
+      box-shadow: var(--shadow-pressed);
+      color: var(--neu-accent);
+    }
+
+    /* Replacement Modal */
+    .neu-modal-bg {
+      position: absolute;
+      inset: 0;
+      background: rgba(30, 41, 59, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .neu-modal-bg.open { display: flex; }
+    .neu-dialog {
+      width: 100%;
+      background: var(--neu-base);
+      box-shadow: 10px 10px 30px #94a3b8, -10px -10px 30px #ffffff;
+      border-radius: 24px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .dlg-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--neu-text);
+    }
+    .dlg-msg {
+      font-size: 13px;
+      color: var(--neu-text-light);
+      line-height: 1.5;
+    }
+    .dlg-btns {
+      display: flex;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    .btn-dlg-neu {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--neu-base);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-dlg-neu:active { box-shadow: var(--shadow-pressed); }
+    .btn-dlg-neu.accent { color: var(--neu-accent); }
+
+    /* RTL */
+    html[dir="rtl"] {
+      font-family: 'Tajawal', 'Plus Jakarta Sans', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    <div><strong>Variant 05: Tactile Neomorphic</strong></div>
+    <div style="display:flex; gap:6px;">
+      <button onclick="toggleNeuState()">State: <span id="neu-state-txt">TV Paused</span></button>
+      <button onclick="toggleLang()">Lang: <span id="neu-lang-txt">EN</span></button>
+      <button onclick="openReplaceModal()">Replace Dialog</button>
+    </div>
+  </div>
+
+  <div class="device-shell">
+    
+    <div class="status-bar">
+      <span>18:32</span>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span class="led"></span>
+        <span>HG8245X6</span>
+      </div>
+    </div>
+
+    <div class="app-header">
+      <div class="brand-wrap">
+        <div class="brand-neu-btn">⏸</div>
+        <div>
+          <div class="brand-title" data-i18n="title">NetPause</div>
+          <div class="brand-sub">192.168.1.1 • Turkcell2</div>
+        </div>
+      </div>
+      <div class="brand-neu-btn" style="width:36px; height:36px; font-size:14px; cursor:pointer;" onclick="alert('Synced!')">⟳</div>
+    </div>
+
+    <div class="app-content">
+
+      <!-- Hero Recessed Well -->
+      <div class="neu-recessed-well" id="hero-well">
+        <div class="well-badge">
+          <span>●</span>
+          <span data-i18n="tag_active">Single Active Pause</span>
+        </div>
+        <div class="well-target" id="well-target-name" data-i18n="target_tv">Living Room TV</div>
+        <div class="well-sub" data-i18n="sub_restores">Restores automatically at 18:50 via schedule</div>
+        <div class="well-digits" id="well-countdown">17:48</div>
+        <div class="well-unit" data-i18n="unit_min_left">Minutes Remaining</div>
+
+        <button class="btn-neu-action" onclick="handleResume()">
+          <span>▶</span>
+          <span data-i18n="btn_resume">Resume Internet</span>
+        </button>
+      </div>
+
+      <!-- Household Plate -->
+      <div class="neu-plate">
+        <div class="plate-top">
+          <div>
+            <div class="plate-title" data-i18n="plate_title">Household Control</div>
+            <div class="plate-sub" data-i18n="plate_sub">Apply to all devices (FF:FF:FF:FF:FF:FF)</div>
+          </div>
+        </div>
+
+        <div class="neu-presets">
+          <div class="neu-preset-btn" onclick="selectDuration(this, 10)">10m</div>
+          <div class="neu-preset-btn active" onclick="selectDuration(this, 15)">15m</div>
+          <div class="neu-preset-btn" onclick="selectDuration(this, 20)">20m</div>
+          <div class="neu-preset-btn" onclick="selectDuration(this, 'inf')" data-i18n="preset_inf">Forever</div>
+        </div>
+
+        <button class="btn-plate-pause" onclick="handlePauseAll()">
+          <span>⏸</span>
+          <span data-i18n="btn_pause_all">Pause Everyone (15 min)</span>
+        </button>
+      </div>
+
+      <!-- Connected Devices -->
+      <div>
+        <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--neu-text-light); margin-bottom:10px;" data-i18n="sec_devices">
+          Connected Devices (6)
+        </div>
+
+        <div class="devices-neu-list">
+          
+          <!-- Odyssey Phone -->
+          <div class="dev-neu-card">
+            <div class="dev-l">
+              <div class="dev-neu-icon">📱</div>
+              <div>
+                <div class="dev-neu-name">OdysseyA16 (This Phone)</div>
+                <div class="dev-neu-meta">192.168.1.104 • Wi-Fi 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-dev-neu" onclick="promptDevice('OdysseyA16')" data-i18n="btn_pause">Pause</button>
+          </div>
+
+          <!-- TV (Paused) -->
+          <div class="dev-neu-card paused">
+            <div class="dev-l">
+              <div class="dev-neu-icon" style="color:var(--neu-accent);">📺</div>
+              <div>
+                <div class="dev-neu-name" data-i18n="dev_tv_item">Living Room TV</div>
+                <div class="dev-neu-meta" style="color:var(--neu-accent); font-weight:700;" data-i18n="status_tv_paused">Paused • 17m left</div>
+              </div>
+            </div>
+            <button class="btn-dev-neu" onclick="handleResume()" data-i18n="btn_resume_sm">Resume</button>
+          </div>
+
+          <!-- iPad -->
+          <div class="dev-neu-card">
+            <div class="dev-l">
+              <div class="dev-neu-icon">📱</div>
+              <div>
+                <div class="dev-neu-name" data-i18n="dev_ipad_item">Kid's iPad Air</div>
+                <div class="dev-neu-meta">192.168.1.120 • 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-dev-neu" onclick="promptDevice('Kid\'s iPad Air')" data-i18n="btn_pause">Pause</button>
+          </div>
+
+          <!-- ThinkPad -->
+          <div class="dev-neu-card">
+            <div class="dev-l">
+              <div class="dev-neu-icon">💻</div>
+              <div>
+                <div class="dev-neu-name">ThinkPad X1 Carbon</div>
+                <div class="dev-neu-meta">192.168.1.108 • 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-dev-neu" onclick="promptDevice('ThinkPad X1 Carbon')" data-i18n="btn_pause">Pause</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Neu Footer Nav -->
+    <div class="neu-nav">
+      <div class="neu-nav-item active">⌂</div>
+      <div class="neu-nav-item">📱</div>
+      <div class="neu-nav-item">⚙</div>
+    </div>
+
+    <!-- Replacement Dialog -->
+    <div class="neu-modal-bg" id="neu-modal" onclick="if(event.target===this)closeReplaceModal()">
+      <div class="neu-dialog">
+        <div class="dlg-title" data-i18n="dlg_title">Replace Active Pause?</div>
+        <div class="dlg-msg" data-i18n="dlg_msg">
+          Only 1 active pause is supported. Pausing <strong id="neu-target-replace">Kid's iPad Air</strong> will remove the rule from Living Room TV and program the new duration on the router.
+        </div>
+        <div class="dlg-btns">
+          <button class="btn-dlg-neu" onclick="closeReplaceModal()" data-i18n="btn_cancel">Cancel</button>
+          <button class="btn-dlg-neu accent" onclick="confirmReplace()" data-i18n="btn_switch">Switch Rule</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const neuDict = {
+      en: {
+        title: "NetPause",
+        tag_active: "Single Active Pause",
+        target_tv: "Living Room TV",
+        sub_restores: "Restores automatically at 18:50 via schedule",
+        unit_min_left: "Minutes Remaining",
+        btn_resume: "Resume Internet",
+        plate_title: "Household Control",
+        plate_sub: "Apply to all devices (FF:FF:FF:FF:FF:FF)",
+        preset_inf: "Forever",
+        btn_pause_all: "Pause Everyone (15 min)",
+        sec_devices: "Connected Devices (6)",
+        btn_pause: "Pause",
+        dev_tv_item: "Living Room TV",
+        status_tv_paused: "Paused • 17m left",
+        btn_resume_sm: "Resume",
+        dev_ipad_item: "Kid's iPad Air",
+        dlg_title: "Replace Active Pause?",
+        dlg_msg: "Only 1 active pause is supported. Pausing this device will remove the rule from Living Room TV and program the new duration on the router.",
+        btn_cancel: "Cancel",
+        btn_switch: "Switch Rule"
+      },
+      ar: {
+        title: "نت بوز",
+        tag_active: "إيقاف نشط وحيد",
+        target_tv: "تلفاز المعيشة",
+        sub_restores: "يعود الاتصال تلقائيًا الساعة 18:50 عبر الجدول",
+        unit_min_left: "الدقائق المتبقية",
+        btn_resume: "استئناف الإنترنت",
+        plate_title: "تحكم المنزل الشامل",
+        plate_sub: "تطبيق على جميع الأجهزة (FF:FF:FF:FF:FF:FF)",
+        preset_inf: "دائم",
+        btn_pause_all: "إيقاف الجميع (15 دقيقة)",
+        sec_devices: "الأجهزة المتصلة (6)",
+        btn_pause: "إيقاف",
+        dev_tv_item: "تلفاز المعيشة",
+        status_tv_paused: "متوقف • متبقي 17 دقيقة",
+        btn_resume_sm: "استئناف",
+        dev_ipad_item: "آيباد الأطفال",
+        dlg_title: "استبدال الإيقاف الحالي؟",
+        dlg_msg: "يُسمح بإيقاف واحد فقط. إيقاف هذا الجهاز سيلغي قاعدة تلفاز المعيشة ويثبت المدة الجديدة على الراوتر.",
+        btn_cancel: "إلغاء",
+        btn_switch: "تبديل الإيقاف"
+      }
+    };
+
+    let neuLang = 'en';
+    let isPaused = true;
+    let neuMins = 15;
+
+    function toggleLang() {
+      neuLang = neuLang === 'en' ? 'ar' : 'en';
+      document.documentElement.dir = neuLang === 'ar' ? 'rtl' : 'ltr';
+      document.getElementById('neu-lang-txt').innerText = neuLang.toUpperCase();
+      const map = neuDict[neuLang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (map[k]) el.innerText = map[k];
+      });
+    }
+
+    function toggleNeuState() {
+      isPaused = !isPaused;
+      const well = document.getElementById('hero-well');
+      const lbl = document.getElementById('neu-state-txt');
+      if (isPaused) {
+        well.style.display = 'flex';
+        lbl.innerText = "TV Paused";
+      } else {
+        well.style.display = 'none';
+        lbl.innerText = "All Connected";
+      }
+    }
+
+    function selectDuration(btn, dur) {
+      document.querySelectorAll('.neu-preset-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      neuMins = dur;
+      const str = dur === 'inf' ? (neuLang === 'ar' ? 'دائم' : 'Forever') : `${dur} min`;
+      document.querySelector('.btn-plate-pause span:last-child').innerText = neuLang === 'ar' ? `إيقاف الجميع (${str})` : `Pause Everyone (${str})`;
+    }
+
+    function promptDevice(dev) {
+      if (isPaused) {
+        document.getElementById('neu-target-replace').innerText = dev;
+        openReplaceModal();
+      } else {
+        alert("Pausing " + dev);
+        isPaused = true;
+        toggleNeuState();
+      }
+    }
+
+    function handlePauseAll() {
+      if (isPaused) {
+        document.getElementById('neu-target-replace').innerText = neuLang === 'ar' ? "كافة الأجهزة" : "All Devices";
+        openReplaceModal();
+      } else {
+        alert("All Devices Paused!");
+        isPaused = true;
+        toggleNeuState();
+      }
+    }
+
+    function handleResume() {
+      if (confirm(neuLang === 'ar' ? "استئناف الإنترنت الآن؟" : "Resume internet access now?")) {
+        isPaused = false;
+        toggleNeuState();
+      }
+    }
+
+    function openReplaceModal() { document.getElementById('neu-modal').classList.add('open'); }
+    function closeReplaceModal() { document.getElementById('neu-modal').classList.remove('open'); }
+    function confirmReplace() {
+      closeReplaceModal();
+      alert("Replacement confirmed!");
+      document.getElementById('well-target-name').innerText = document.getElementById('neu-target-replace').innerText;
+    }
+  </script>
+</body>
+</html>

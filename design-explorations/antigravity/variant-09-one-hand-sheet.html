@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetPause - Variant 09: Split-Deck One-Handed</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --one-bg-top: #1e1b4b;
+      --one-bg-bottom: #0f172a;
+      --one-card: #1e293b;
+      --one-border: rgba(255, 255, 255, 0.08);
+      --one-accent: #6366f1;
+      --one-coral: #f43f5e;
+      --one-emerald: #10b981;
+      --one-text: #f8fafc;
+      --one-muted: #94a3b8;
+      --radius: 28px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
+      background: #090d16;
+      color: var(--one-text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* Top Controls */
+    .demo-bar {
+      width: 100%;
+      max-width: 440px;
+      background: #1e293b;
+      padding: 10px 16px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      border: 1px solid var(--one-border);
+    }
+    .demo-bar button {
+      background: #334155;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Device Shell */
+    .device-shell {
+      width: 100%;
+      max-width: 412px;
+      height: 880px;
+      background: var(--one-bg-bottom);
+      border-radius: 46px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.8), 0 0 0 12px #182030;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* System Status Bar */
+    .status-bar {
+      height: 44px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.7);
+      background: var(--one-bg-top);
+      z-index: 10;
+    }
+
+    /* UPPER DECK: Glance & Countdown View (Thumb Viewport Top) */
+    .upper-deck {
+      background: linear-gradient(180deg, var(--one-bg-top) 0%, #151936 100%);
+      padding: 14px 24px 34px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+    .router-chip {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: #a5b4fc;
+      margin-bottom: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .upper-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .upper-sub {
+      font-size: 12px;
+      color: var(--one-muted);
+    }
+    .upper-countdown {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 54px;
+      font-weight: 700;
+      color: #fff;
+      margin: 12px 0 16px;
+      letter-spacing: -1.5px;
+      line-height: 1;
+    }
+    .upper-countdown span {
+      font-size: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #f43f5e;
+      letter-spacing: 0;
+      margin-left: 6px;
+    }
+    .btn-upper-resume {
+      background: #f43f5e;
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(244, 63, 94, 0.4);
+    }
+
+    /* LOWER DECK: Bottom Reachable Action Sheet */
+    .lower-deck {
+      flex: 1;
+      background: var(--one-bg-bottom);
+      border-radius: var(--radius) var(--radius) 0 0;
+      margin-top: -20px;
+      padding: 18px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 -10px 25px rgba(0,0,0,0.4);
+      overflow-y: auto;
+      z-index: 5;
+    }
+    .lower-deck::-webkit-scrollbar { width: 0; }
+
+    .grab-handle {
+      width: 40px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      align-self: center;
+      margin-bottom: 2px;
+    }
+
+    /* Household Quick Bar (In reach zone) */
+    .deck-action-card {
+      background: var(--one-card);
+      border: 1px solid var(--one-border);
+      border-radius: 20px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .deck-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .deck-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .deck-presets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .d-chip {
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 0;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+    }
+    .d-chip.active {
+      background: var(--one-accent);
+      border-color: var(--one-accent);
+      color: #fff;
+    }
+    .btn-deck-pause {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #a5b4fc;
+      padding: 11px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    /* Devices Thumb List */
+    .thumb-devices {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .device-thumb-item {
+      background: var(--one-card);
+      border: 1px solid var(--one-border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .device-thumb-item.paused-item {
+      border-color: var(--one-coral);
+      background: rgba(244, 63, 94, 0.08);
+    }
+    .t-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .t-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .t-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .t-meta {
+      font-size: 11px;
+      color: var(--one-muted);
+    }
+    .btn-thumb-action {
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      padding: 7px 14px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .device-thumb-item.paused-item .btn-thumb-action {
+      background: var(--one-coral);
+      border-color: var(--one-coral);
+    }
+
+    /* Bottom Reachable Navigation */
+    .one-nav {
+      height: 56px;
+      background: #0b1120;
+      border-top: 1px solid var(--one-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 16px;
+    }
+    .nav-one-btn {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--one-muted);
+      cursor: pointer;
+    }
+    .nav-one-btn.active {
+      color: #a5b4fc;
+    }
+
+    /* Modal */
+    .one-modal-bg {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+      display: none;
+      align-items: flex-end;
+    }
+    .one-modal-bg.open { display: flex; }
+    .one-modal-sheet {
+      width: 100%;
+      background: #1e293b;
+      border-radius: 28px 28px 0 0;
+      padding: 24px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .m-head {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .m-sub {
+      font-size: 13px;
+      color: var(--one-muted);
+      line-height: 1.5;
+    }
+    .m-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .btn-m-back {
+      flex: 1;
+      padding: 12px;
+      background: #0f172a;
+      border: 1px solid var(--one-border);
+      color: #fff;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-m-confirm {
+      flex: 1;
+      padding: 12px;
+      background: var(--one-coral);
+      border: none;
+      color: #fff;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* RTL */
+    html[dir="rtl"] {
+      font-family: 'Tajawal', 'Plus Jakarta Sans', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    <div><strong>Variant 09: Split-Deck One-Handed</strong></div>
+    <div style="display:flex; gap:6px;">
+      <button onclick="toggleDeckState()">State: <span id="deck-state-txt">TV Paused</span></button>
+      <button onclick="toggleLang()">Lang: <span id="deck-lang-txt">EN</span></button>
+      <button onclick="openModal()">Replace Sheet</button>
+    </div>
+  </div>
+
+  <div class="device-shell">
+    
+    <div class="status-bar">
+      <span>18:32</span>
+      <span>Wi-Fi • HG8245X6</span>
+    </div>
+
+    <!-- UPPER DECK: Hero Status View -->
+    <div class="upper-deck" id="upper-deck-view">
+      <div class="router-chip">
+        <span>●</span>
+        <span>192.168.1.1 (TURKCELL2)</span>
+      </div>
+      <div class="upper-title" id="upper-title-txt" data-i18n="target_name">Living Room TV</div>
+      <div class="upper-sub" data-i18n="target_sub">Restores automatically at 18:50 (router schedule)</div>
+
+      <div class="upper-countdown">
+        <span id="upper-digits">17:48</span>
+        <span data-i18n="unit_left">left</span>
+      </div>
+
+      <button class="btn-upper-resume" onclick="handleResume()" data-i18n="btn_resume">
+        <span>▶</span>
+        <span>Resume Internet</span>
+      </button>
+    </div>
+
+    <!-- LOWER DECK: Reachable Thumb Sheet -->
+    <div class="lower-deck">
+      <div class="grab-handle"></div>
+
+      <!-- Quick All-Devices Card -->
+      <div class="deck-action-card">
+        <div class="deck-head">
+          <div class="deck-title" data-i18n="sec_all">Household Internet</div>
+          <span style="font-size:11px; color:var(--one-muted);">Sentinel FF:FF:FF:FF:FF:FF</span>
+        </div>
+
+        <div class="deck-presets">
+          <div class="d-chip" onclick="setPreset(this, 10)">10m</div>
+          <div class="d-chip active" onclick="setPreset(this, 15)">15m</div>
+          <div class="d-chip" onclick="setPreset(this, 20)">20m</div>
+          <div class="d-chip" onclick="setPreset(this, 'inf')" data-i18n="chip_forever">Forever</div>
+        </div>
+
+        <button class="btn-deck-pause" onclick="handlePauseAll()" data-i18n="btn_pause_everyone">
+          Pause Everyone (15 min)
+        </button>
+      </div>
+
+      <!-- Connected Devices -->
+      <div>
+        <div style="font-size:12px; font-weight:700; color:var(--one-muted); margin-bottom:8px;" data-i18n="sec_devices">
+          Connected Devices (6)
+        </div>
+
+        <div class="thumb-devices">
+          
+          <!-- TV Paused -->
+          <div class="device-thumb-item paused-item">
+            <div class="t-left">
+              <div class="t-icon" style="color:var(--one-coral);">📺</div>
+              <div>
+                <div class="t-name" data-i18n="dev_tv">Living Room TV</div>
+                <div class="t-meta" style="color:var(--one-coral);" data-i18n="status_tv_paused">Paused • 17m left</div>
+              </div>
+            </div>
+            <button class="btn-thumb-action" onclick="handleResume()" data-i18n="btn_resume_sm">Resume</button>
+          </div>
+
+          <!-- Phone -->
+          <div class="device-thumb-item">
+            <div class="t-left">
+              <div class="t-icon">📱</div>
+              <div>
+                <div class="t-name">OdysseyA16 (This Phone)</div>
+                <div class="t-meta">192.168.1.104 • 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-thumb-action" onclick="promptDevice('OdysseyA16')" data-i18n="btn_pause">Pause</button>
+          </div>
+
+          <!-- iPad -->
+          <div class="device-thumb-item">
+            <div class="t-left">
+              <div class="t-icon">📱</div>
+              <div>
+                <div class="t-name" data-i18n="dev_ipad">Kid's iPad Air</div>
+                <div class="t-meta">192.168.1.120 • 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-thumb-action" onclick="promptDevice('Kid\'s iPad Air')" data-i18n="btn_pause">Pause</button>
+          </div>
+
+          <!-- ThinkPad -->
+          <div class="device-thumb-item">
+            <div class="t-left">
+              <div class="t-icon">💻</div>
+              <div>
+                <div class="t-name">ThinkPad X1</div>
+                <div class="t-meta">192.168.1.108 • 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-thumb-action" onclick="promptDevice('ThinkPad X1')" data-i18n="btn_pause">Pause</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Reachable Thumb Nav -->
+    <div class="one-nav">
+      <div class="nav-one-btn active" data-i18n="nav_control">Control</div>
+      <div class="nav-one-btn" data-i18n="nav_devices">Devices</div>
+      <div class="nav-one-btn" data-i18n="nav_settings">Settings</div>
+    </div>
+
+    <!-- Modal -->
+    <div class="one-modal-bg" id="one-modal" onclick="if(event.target===this)closeModal()">
+      <div class="one-modal-sheet">
+        <div class="m-head" data-i18n="dlg_title">Replace Active Pause?</div>
+        <div class="m-sub" data-i18n="dlg_sub">
+          One active pause is supported. Pausing <strong id="m-target-txt">Kid's iPad Air</strong> will remove the rule from Living Room TV and program the new duration on the router.
+        </div>
+        <div class="m-actions">
+          <button class="btn-m-back" onclick="closeModal()" data-i18n="btn_cancel">Cancel</button>
+          <button class="btn-m-confirm" onclick="confirmReplace()" data-i18n="btn_confirm">Switch Target</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const oneI18n = {
+      en: {
+        target_name: "Living Room TV",
+        target_sub: "Restores automatically at 18:50 (router schedule)",
+        unit_left: "left",
+        btn_resume: "Resume Internet",
+        sec_all: "Household Internet",
+        chip_forever: "Forever",
+        btn_pause_everyone: "Pause Everyone (15 min)",
+        sec_devices: "Connected Devices (6)",
+        dev_tv: "Living Room TV",
+        status_tv_paused: "Paused • 17m left",
+        btn_resume_sm: "Resume",
+        btn_pause: "Pause",
+        dev_ipad: "Kid's iPad Air",
+        nav_control: "Control",
+        nav_devices: "Devices",
+        nav_settings: "Settings",
+        dlg_title: "Replace Active Pause?",
+        dlg_sub: "One active pause is supported. Pausing this device will remove the rule from Living Room TV and program the new duration on the router.",
+        btn_cancel: "Cancel",
+        btn_confirm: "Switch Target"
+      },
+      ar: {
+        target_name: "تلفاز المعيشة",
+        target_sub: "يعود الاتصال تلقائيًا الساعة 18:50 (جدول الراوتر)",
+        unit_left: "متبقية",
+        btn_resume: "استئناف الإنترنت",
+        sec_all: "إنترنت المنزل",
+        chip_forever: "دائم",
+        btn_pause_everyone: "إيقاف الجميع (15 دقيقة)",
+        sec_devices: "الأجهزة المتصلة (6)",
+        dev_tv: "تلفاز المعيشة",
+        status_tv_paused: "متوقف • متبقي 17 دقيقة",
+        btn_resume_sm: "استئناف",
+        btn_pause: "إيقاف",
+        dev_ipad: "آيباد الأطفال",
+        nav_control: "التحكم",
+        nav_devices: "الأجهزة",
+        nav_settings: "الإعدادات",
+        dlg_title: "استبدال الإيقاف الحالي؟",
+        dlg_sub: "يُسمح بإيقاف نشط واحد فقط. إيقاف هذا الجهاز سيلغي قاعدة تلفاز المعيشة ويثبت المدة الجديدة على الراوتر.",
+        btn_cancel: "إلغاء",
+        btn_confirm: "تبديل الهدف"
+      }
+    };
+
+    let oneLang = 'en';
+    let isPaused = true;
+    let onePreset = 15;
+
+    function toggleLang() {
+      oneLang = oneLang === 'en' ? 'ar' : 'en';
+      document.documentElement.dir = oneLang === 'ar' ? 'rtl' : 'ltr';
+      document.getElementById('deck-lang-txt').innerText = oneLang.toUpperCase();
+      const map = oneI18n[oneLang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (map[k]) el.innerText = map[k];
+      });
+    }
+
+    function toggleDeckState() {
+      isPaused = !isPaused;
+      const upper = document.getElementById('upper-deck-view');
+      const lbl = document.getElementById('deck-state-txt');
+      if (isPaused) {
+        upper.style.opacity = '1';
+        lbl.innerText = "TV Paused";
+      } else {
+        upper.style.opacity = '0.5';
+        lbl.innerText = "All Connected";
+      }
+    }
+
+    function setPreset(el, mins) {
+      document.querySelectorAll('.d-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      onePreset = mins;
+      const str = mins === 'inf' ? (oneLang === 'ar' ? 'دائم' : 'Forever') : `${mins} min`;
+      document.querySelector('.btn-deck-pause').innerText = oneLang === 'ar' ? `إيقاف الجميع (${str})` : `Pause Everyone (${str})`;
+    }
+
+    function promptDevice(dev) {
+      if (isPaused) {
+        document.getElementById('m-target-txt').innerText = dev;
+        openModal();
+      } else {
+        alert("Pausing " + dev);
+        isPaused = true;
+        toggleDeckState();
+      }
+    }
+
+    function handlePauseAll() {
+      if (isPaused) {
+        document.getElementById('m-target-txt').innerText = oneLang === 'ar' ? "كافة الأجهزة" : "All Devices";
+        openModal();
+      } else {
+        alert("All Devices Paused via FF:FF:FF:FF:FF:FF");
+        isPaused = true;
+        toggleDeckState();
+      }
+    }
+
+    function handleResume() {
+      if (confirm(oneLang === 'ar' ? "استئناف الإنترنت؟" : "Resume internet access?")) {
+        isPaused = false;
+        toggleDeckState();
+      }
+    }
+
+    function openModal() { document.getElementById('one-modal').classList.add('open'); }
+    function closeModal() { document.getElementById('one-modal').classList.remove('open'); }
+    function confirmReplace() {
+      closeModal();
+      alert("Switched target!");
+      document.getElementById('upper-title-txt').innerText = document.getElementById('m-target-txt').innerText;
+    }
+  </script>
+</body>
+</html>

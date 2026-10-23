@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetPause - Variant 08: Frosted Glassmorphism</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-bg-hover: rgba(255, 255, 255, 0.12);
+      --glass-border: rgba(255, 255, 255, 0.16);
+      --glass-border-light: rgba(255, 255, 255, 0.3);
+      --glass-glow: rgba(99, 102, 241, 0.3);
+      --neon-pink: #ec4899;
+      --neon-cyan: #06b6d4;
+      --neon-amber: #f59e0b;
+      --neon-emerald: #10b981;
+      --text-white: #ffffff;
+      --text-dim: #cbd5e1;
+      --radius: 24px;
+      --radius-sm: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
+      background: #020617;
+      color: var(--text-white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* Top Controls */
+    .demo-bar {
+      width: 100%;
+      max-width: 440px;
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 10px 16px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      border: 1px solid var(--glass-border);
+    }
+    .demo-bar button {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Device Shell */
+    .device-shell {
+      width: 100%;
+      max-width: 412px;
+      height: 880px;
+      background: #0b0f19;
+      border-radius: 46px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.8), 0 0 0 12px #151c2c;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Vibrant Mesh Gradient Background Orbs */
+    .mesh-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .orb-1 {
+      position: absolute;
+      top: -100px;
+      left: -100px;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, #6366f1 0%, transparent 70%);
+      opacity: 0.6;
+      filter: blur(40px);
+    }
+    .orb-2 {
+      position: absolute;
+      top: 250px;
+      right: -80px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, #ec4899 0%, transparent 70%);
+      opacity: 0.45;
+      filter: blur(45px);
+    }
+    .orb-3 {
+      position: absolute;
+      bottom: -60px;
+      left: 20px;
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, #06b6d4 0%, transparent 70%);
+      opacity: 0.5;
+      filter: blur(40px);
+    }
+
+    /* Status Bar */
+    .status-bar {
+      height: 48px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.7);
+      z-index: 10;
+    }
+
+    /* App Header */
+    .app-header {
+      padding: 6px 20px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+    .brand-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .glass-status-pill {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot-green {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--neon-emerald);
+      box-shadow: 0 0 8px var(--neon-emerald);
+    }
+
+    /* Content Area */
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 10;
+    }
+    .app-content::-webkit-scrollbar { width: 0; }
+
+    /* Glass Hero Card (Active Pause) */
+    .glass-card-hero {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border-light);
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .glass-pill-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(236, 72, 153, 0.2);
+      border: 1px solid rgba(236, 72, 153, 0.4);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #f472b6;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .pulse-ring {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ec4899;
+      box-shadow: 0 0 8px #ec4899;
+    }
+    .hero-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+    .hero-sub {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+    .countdown-glass {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 46px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin: 14px 0 10px;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      text-shadow: 0 0 20px rgba(255,255,255,0.4);
+    }
+    .countdown-glass span {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #f472b6;
+    }
+    .glass-bar-track {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .glass-bar-fill {
+      width: 68%;
+      height: 100%;
+      background: linear-gradient(90deg, #ec4899, #8b5cf6);
+      box-shadow: 0 0 12px rgba(236, 72, 153, 0.6);
+      border-radius: 20px;
+    }
+    .btn-glass-resume {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.8), rgba(139, 92, 246, 0.8));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 13px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4);
+    }
+
+    /* Master All-Devices Glass Module */
+    .glass-card-compact {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .glass-head-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .glass-head-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    .glass-chips-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .g-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 0;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+    }
+    .g-chip.active {
+      background: rgba(99, 102, 241, 0.3);
+      border-color: #818cf8;
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+      color: #fff;
+    }
+    .btn-glass-pause-all {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--glass-border);
+      color: #fff;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-glass-pause-all:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Connected Devices Glass Shelf */
+    .glass-shelf {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .shelf-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .shelf-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .device-g-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .device-g-row:last-child { border-bottom: none; }
+    .dev-g-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+    }
+    .dev-g-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .dev-g-info { min-width: 0; flex: 1; }
+    .dev-g-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tag-this {
+      font-size: 9px;
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .dev-g-meta {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    .btn-g-act {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .device-g-row.is-paused .btn-g-act {
+      background: rgba(236, 72, 153, 0.4);
+      border-color: #ec4899;
+      color: #fff;
+    }
+
+    /* Glass Bottom Nav */
+    .glass-nav {
+      height: 64px;
+      background: rgba(11, 15, 25, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 16px;
+      z-index: 10;
+    }
+    .nav-g-btn {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+    }
+    .nav-g-btn.active {
+      color: #818cf8;
+    }
+
+    /* Glass Replacement Modal */
+    .glass-modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .glass-modal-overlay.open { display: flex; }
+    .glass-modal-card {
+      width: 100%;
+      background: rgba(30, 41, 59, 0.75);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid var(--glass-border-light);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    .modal-g-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .modal-g-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+    .modal-g-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-g-cancel {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--glass-border);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-g-confirm {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ec4899, #8b5cf6);
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+    }
+
+    /* RTL */
+    html[dir="rtl"] {
+      font-family: 'Tajawal', 'Plus Jakarta Sans', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    <div><strong>Variant 08: Frosted Glassmorphism</strong></div>
+    <div style="display:flex; gap:6px;">
+      <button onclick="toggleGlassState()">State: <span id="glass-state-lbl">Paused (TV)</span></button>
+      <button onclick="toggleLang()">Lang: <span id="glass-lang-lbl">EN</span></button>
+      <button onclick="openModal()">Replace Sheet</button>
+    </div>
+  </div>
+
+  <div class="device-shell">
+    
+    <!-- Animated Color Mesh Orbs -->
+    <div class="mesh-bg">
+      <div class="orb-1"></div>
+      <div class="orb-2"></div>
+      <div class="orb-3"></div>
+    </div>
+
+    <div class="status-bar">
+      <span>18:32</span>
+      <span>Wi-Fi 5GHz</span>
+    </div>
+
+    <div class="app-header">
+      <div class="brand-title" data-i18n="title">NetPause Glass</div>
+      <div class="glass-status-pill">
+        <span class="dot-green"></span>
+        <span>HG8245X6 (192.168.1.1)</span>
+      </div>
+    </div>
+
+    <div class="app-content">
+
+      <!-- Hero Glass Card -->
+      <div class="glass-card-hero" id="glass-hero">
+        <div class="glass-pill-tag">
+          <span class="pulse-ring"></span>
+          <span data-i18n="tag_active">Single Active Rule</span>
+        </div>
+        <div class="hero-title" id="hero-target-txt" data-i18n="target_name">Living Room TV</div>
+        <div class="hero-sub" data-i18n="target_sub">Scheduled pause via router parental rules (Ends 18:50)</div>
+
+        <div class="countdown-glass">
+          <span id="countdown-val">17:48</span>
+          <span data-i18n="unit_left">remaining</span>
+        </div>
+
+        <div class="glass-bar-track">
+          <div class="glass-bar-fill"></div>
+        </div>
+
+        <button class="btn-glass-resume" onclick="handleResume()">
+          <span>▶</span>
+          <span data-i18n="btn_resume">Resume Internet Access</span>
+        </button>
+      </div>
+
+      <!-- Master Household Controls -->
+      <div class="glass-card-compact">
+        <div>
+          <div class="glass-head-title" data-i18n="sec_all">Household Pause</div>
+          <div class="glass-head-sub" data-i18n="sec_all_sub">Block internet on all devices (FF:FF:FF:FF:FF:FF)</div>
+        </div>
+
+        <div class="glass-chips-row">
+          <div class="g-chip" onclick="setDuration(this, 10)">10m</div>
+          <div class="g-chip active" onclick="setDuration(this, 15)">15m</div>
+          <div class="g-chip" onclick="setDuration(this, 20)">20m</div>
+          <div class="g-chip" onclick="setDuration(this, 'inf')" data-i18n="chip_forever">Forever</div>
+        </div>
+
+        <button class="btn-glass-pause-all" onclick="handlePauseAll()">
+          <span>⏸</span>
+          <span data-i18n="btn_pause_everyone">Pause Everyone (15 min)</span>
+        </button>
+      </div>
+
+      <!-- Connected Devices Glass Shelf -->
+      <div class="glass-shelf">
+        <div class="shelf-title-row">
+          <div class="shelf-title" data-i18n="sec_devices">Connected Devices (6)</div>
+          <span style="font-size:11px; color:var(--text-dim);">Live Sync</span>
+        </div>
+
+        <!-- TV (Paused) -->
+        <div class="device-g-row is-paused">
+          <div class="dev-g-left">
+            <div class="dev-g-avatar" style="color:#ec4899;">📺</div>
+            <div class="dev-g-info">
+              <div class="dev-g-name" data-i18n="dev_tv">Living Room TV</div>
+              <div class="dev-g-meta" style="color:#f472b6;" data-i18n="status_tv_paused">Paused • 17m remaining</div>
+            </div>
+          </div>
+          <button class="btn-g-act" onclick="handleResume()" data-i18n="btn_resume_sm">Resume</button>
+        </div>
+
+        <!-- Odyssey This Phone -->
+        <div class="device-g-row">
+          <div class="dev-g-left">
+            <div class="dev-g-avatar">📱</div>
+            <div class="dev-g-info">
+              <div class="dev-g-name">
+                <span>OdysseyA16</span>
+                <span class="tag-this" data-i18n="tag_self">This Phone</span>
+              </div>
+              <div class="dev-g-meta">192.168.1.104 • Wi-Fi 5GHz</div>
+            </div>
+          </div>
+          <button class="btn-g-act" onclick="promptDevice('OdysseyA16')" data-i18n="btn_pause">Pause</button>
+        </div>
+
+        <!-- iPad -->
+        <div class="device-g-row">
+          <div class="dev-g-left">
+            <div class="dev-g-avatar">📱</div>
+            <div class="dev-g-info">
+              <div class="dev-g-name" data-i18n="dev_ipad">Kid's iPad Air</div>
+              <div class="dev-g-meta">192.168.1.120 • Wi-Fi 5GHz</div>
+            </div>
+          </div>
+          <button class="btn-g-act" onclick="promptDevice('Kid\'s iPad Air')" data-i18n="btn_pause">Pause</button>
+        </div>
+
+        <!-- ThinkPad -->
+        <div class="device-g-row">
+          <div class="dev-g-left">
+            <div class="dev-g-avatar">💻</div>
+            <div class="dev-g-info">
+              <div class="dev-g-name">ThinkPad X1</div>
+              <div class="dev-g-meta">192.168.1.108 • Wi-Fi 5GHz</div>
+            </div>
+          </div>
+          <button class="btn-g-act" onclick="promptDevice('ThinkPad X1')" data-i18n="btn_pause">Pause</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Glass Bottom Nav -->
+    <div class="glass-nav">
+      <div class="nav-g-btn active">
+        <span>✨</span>
+        <span data-i18n="nav_control">Control</span>
+      </div>
+      <div class="nav-g-btn">
+        <span>📱</span>
+        <span data-i18n="nav_devices">Devices</span>
+      </div>
+      <div class="nav-g-btn">
+        <span>⚙</span>
+        <span data-i18n="nav_settings">Settings</span>
+      </div>
+    </div>
+
+    <!-- Replacement Modal -->
+    <div class="glass-modal-overlay" id="glass-modal" onclick="if(event.target===this)closeModal()">
+      <div class="glass-modal-card">
+        <div class="modal-g-title" data-i18n="dlg_title">Replace Active Pause?</div>
+        <div class="modal-g-desc" data-i18n="dlg_desc">
+          Only 1 active pause can be active at a time. Pausing <strong id="modal-target-dev">Kid's iPad Air</strong> will remove the rule from Living Room TV and program the new duration on the router.
+        </div>
+        <div class="modal-g-actions">
+          <button class="btn-g-cancel" onclick="closeModal()" data-i18n="btn_cancel">Cancel</button>
+          <button class="btn-g-confirm" onclick="confirmReplace()" data-i18n="btn_confirm">Switch Target</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const glassI18n = {
+      en: {
+        title: "NetPause Glass",
+        tag_active: "Single Active Rule",
+        target_name: "Living Room TV",
+        target_sub: "Scheduled pause via router parental rules (Ends 18:50)",
+        unit_left: "remaining",
+        btn_resume: "Resume Internet Access",
+        sec_all: "Household Pause",
+        sec_all_sub: "Block internet on all devices (FF:FF:FF:FF:FF:FF)",
+        chip_forever: "Forever",
+        btn_pause_everyone: "Pause Everyone (15 min)",
+        sec_devices: "Connected Devices (6)",
+        dev_tv: "Living Room TV",
+        status_tv_paused: "Paused • 17m remaining",
+        btn_resume_sm: "Resume",
+        tag_self: "This Phone",
+        btn_pause: "Pause",
+        dev_ipad: "Kid's iPad Air",
+        nav_control: "Control",
+        nav_devices: "Devices",
+        nav_settings: "Settings",
+        dlg_title: "Replace Active Pause?",
+        dlg_desc: "Only 1 active pause can be active at a time. Pausing this device will remove the rule from Living Room TV and program the new duration on the router.",
+        btn_cancel: "Cancel",
+        btn_confirm: "Switch Target"
+      },
+      ar: {
+        title: "نت بوز جلاس",
+        tag_active: "قاعدة راوتر نشطة وحيدة",
+        target_name: "تلفاز المعيشة",
+        target_sub: "إيقاف مجدول عبر قواعد الراوتر (ينتهي 18:50)",
+        unit_left: "متبقية",
+        btn_resume: "استئناف الإنترنت الآن",
+        sec_all: "إيقاف المنزل",
+        sec_all_sub: "حظر الإنترنت عن كافة الأجهزة (FF:FF:FF:FF:FF:FF)",
+        chip_forever: "دائم",
+        btn_pause_everyone: "إيقاف الجميع (15 دقيقة)",
+        sec_devices: "الأجهزة المتصلة (6)",
+        dev_tv: "تلفاز المعيشة",
+        status_tv_paused: "متوقف • متبقي 17 دقيقة",
+        btn_resume_sm: "استئناف",
+        tag_self: "هذا الهاتف",
+        btn_pause: "إيقاف",
+        dev_ipad: "آيباد الأطفال",
+        nav_control: "التحكم",
+        nav_devices: "الأجهزة",
+        nav_settings: "الإعدادات",
+        dlg_title: "استبدال الإيقاف الحالي؟",
+        dlg_desc: "يمكن تفعيل إيقاف واحد فقط في المرة الواحدة. إيقاف هذا الجهاز سيلغي قاعدة تلفاز المعيشة ويثبت المدة الجديدة على الراوتر.",
+        btn_cancel: "إلغاء",
+        btn_confirm: "تبديل الهدف"
+      }
+    };
+
+    let glassLang = 'en';
+    let isPaused = true;
+    let selectedMins = 15;
+
+    function toggleLang() {
+      glassLang = glassLang === 'en' ? 'ar' : 'en';
+      document.documentElement.dir = glassLang === 'ar' ? 'rtl' : 'ltr';
+      document.getElementById('glass-lang-lbl').innerText = glassLang.toUpperCase();
+      const map = glassI18n[glassLang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (map[k]) el.innerText = map[k];
+      });
+    }
+
+    function toggleGlassState() {
+      isPaused = !isPaused;
+      const hero = document.getElementById('glass-hero');
+      const lbl = document.getElementById('glass-state-lbl');
+      if (isPaused) {
+        hero.style.display = 'block';
+        lbl.innerText = "Paused (TV)";
+      } else {
+        hero.style.display = 'none';
+        lbl.innerText = "Idle";
+      }
+    }
+
+    function setDuration(el, mins) {
+      document.querySelectorAll('.g-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      selectedMins = mins;
+      const str = mins === 'inf' ? (glassLang === 'ar' ? 'دائم' : 'Forever') : `${mins} min`;
+      document.querySelector('.btn-glass-pause-all span:last-child').innerText = glassLang === 'ar' ? `إيقاف الجميع (${str})` : `Pause Everyone (${str})`;
+    }
+
+    function promptDevice(dev) {
+      if (isPaused) {
+        document.getElementById('modal-target-dev').innerText = dev;
+        openModal();
+      } else {
+        alert("Pausing " + dev);
+        isPaused = true;
+        toggleGlassState();
+      }
+    }
+
+    function handlePauseAll() {
+      if (isPaused) {
+        document.getElementById('modal-target-dev').innerText = glassLang === 'ar' ? "كافة الأجهزة" : "All Devices";
+        openModal();
+      } else {
+        alert("All Devices Paused via FF:FF:FF:FF:FF:FF");
+        isPaused = true;
+        toggleGlassState();
+      }
+    }
+
+    function handleResume() {
+      if (confirm(glassLang === 'ar' ? "استئناف الإنترنت؟" : "Resume internet access?")) {
+        isPaused = false;
+        toggleGlassState();
+      }
+    }
+
+    function openModal() { document.getElementById('glass-modal').classList.add('open'); }
+    function closeModal() { document.getElementById('glass-modal').classList.remove('open'); }
+    function confirmReplace() {
+      closeModal();
+      alert("Switched target!");
+      document.getElementById('hero-target-txt').innerText = document.getElementById('modal-target-dev').innerText;
+    }
+  </script>
+</body>
+</html>

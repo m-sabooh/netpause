@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetPause - Variant 02: Tactical Command HUD</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;800&family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --hud-bg: #07090e;
+      --hud-card: #0d121c;
+      --hud-card-border: #1a2336;
+      --hud-cyan: #00f2fe;
+      --hud-cyan-glow: rgba(0, 242, 254, 0.25);
+      --hud-amber: #ff9100;
+      --hud-amber-glow: rgba(255, 145, 0, 0.3);
+      --hud-red: #ff2d55;
+      --hud-green: #00e676;
+      --hud-muted: #57657d;
+      --hud-text: #e6edf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Chakra Petch', 'Tajawal', sans-serif;
+      background: #030407;
+      color: var(--hud-text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* Top Controls */
+    .demo-bar {
+      width: 100%;
+      max-width: 440px;
+      background: #0f1523;
+      padding: 10px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      border: 1px solid var(--hud-card-border);
+    }
+    .demo-bar button {
+      background: #172134;
+      color: var(--hud-cyan);
+      border: 1px solid #233453;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Phone Shell */
+    .device-shell {
+      width: 100%;
+      max-width: 412px;
+      height: 880px;
+      background: var(--hud-bg);
+      border-radius: 46px;
+      box-shadow: 0 0 50px rgba(0, 242, 254, 0.08), 0 0 0 12px #101622, 0 0 0 14px #192337;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Tech Status Bar */
+    .status-bar {
+      height: 44px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--hud-muted);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .status-bar .online-flag {
+      color: var(--hud-green);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .blip {
+      width: 6px;
+      height: 6px;
+      background: var(--hud-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--hud-green);
+    }
+
+    /* App Header */
+    .app-header {
+      padding: 14px 20px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hud-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hud-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: #111a2c;
+      border: 1px solid var(--hud-cyan);
+      box-shadow: 0 0 12px var(--hud-cyan-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--hud-cyan);
+      font-size: 18px;
+    }
+    .title-main {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+    .title-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--hud-cyan);
+      letter-spacing: 0.5px;
+    }
+    .header-btns {
+      display: flex;
+      gap: 8px;
+    }
+    .hud-btn-icon {
+      width: 36px;
+      height: 36px;
+      background: #111827;
+      border: 1px solid var(--hud-card-border);
+      border-radius: 8px;
+      color: var(--hud-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .hud-btn-icon:hover {
+      border-color: var(--hud-cyan);
+      color: var(--hud-cyan);
+    }
+
+    /* Content Area */
+    .hud-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .hud-content::-webkit-scrollbar { width: 0; }
+
+    /* Core Status HUD Module */
+    .core-reactor {
+      background: radial-gradient(circle at 50% 20%, #151f33 0%, #0d121c 70%);
+      border: 1px solid #1c2b45;
+      border-radius: 18px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .core-reactor.active-pause {
+      border-color: var(--hud-amber);
+      box-shadow: 0 0 25px var(--hud-amber-glow);
+      background: radial-gradient(circle at 50% 20%, #2b1d09 0%, #0d121c 75%);
+    }
+    .reactor-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .rule-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--hud-amber);
+      background: rgba(255, 145, 0, 0.12);
+      border: 1px solid rgba(255, 145, 0, 0.3);
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .telemetry-row {
+      display: flex;
+      gap: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--hud-muted);
+    }
+    .telemetry-item span {
+      color: #fff;
+      font-weight: 700;
+    }
+
+    /* Big Countdown & Radar */
+    .radar-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+    }
+    .radar-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 2px dashed rgba(255, 145, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: rgba(0,0,0,0.4);
+    }
+    .radar-circle::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 145, 0, 0.15);
+    }
+    .time-digits {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 34px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -1px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.4);
+    }
+    .time-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--hud-amber);
+      font-weight: 700;
+    }
+    .target-highlight {
+      margin-top: 10px;
+      text-align: center;
+    }
+    .target-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .target-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--hud-muted);
+    }
+
+    /* Core Action Button */
+    .hud-override-btn {
+      width: 100%;
+      margin-top: 14px;
+      background: var(--hud-amber);
+      color: #000000;
+      border: none;
+      padding: 13px;
+      border-radius: 10px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 0 20px var(--hud-amber-glow);
+      transition: all 0.2s;
+    }
+    .hud-override-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Master Intercept Section */
+    .master-intercept {
+      background: var(--hud-card);
+      border: 1px solid var(--hud-card-border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .section-title-hud {
+      font-size: 12px;
+      color: var(--hud-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .preset-selector {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .preset-btn {
+      background: #131a29;
+      border: 1px solid #1e2c45;
+      color: var(--hud-text);
+      padding: 8px 0;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+    }
+    .preset-btn.active {
+      border-color: var(--hud-cyan);
+      background: rgba(0, 242, 254, 0.12);
+      color: var(--hud-cyan);
+      box-shadow: 0 0 8px var(--hud-cyan-glow);
+    }
+    .btn-killswitch {
+      width: 100%;
+      background: #172134;
+      border: 1px solid #283a5c;
+      color: #ffffff;
+      padding: 11px;
+      border-radius: 8px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-killswitch:hover {
+      border-color: var(--hud-red);
+      color: var(--hud-red);
+      background: rgba(255, 45, 85, 0.08);
+    }
+
+    /* Connected Nodes List */
+    .nodes-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .node-row {
+      background: var(--hud-card);
+      border: 1px solid var(--hud-card-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s;
+    }
+    .node-row.self {
+      border-color: #00e676;
+      background: rgba(0, 230, 118, 0.04);
+    }
+    .node-row.paused {
+      border-color: var(--hud-amber);
+      background: rgba(255, 145, 0, 0.06);
+    }
+    .node-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+    }
+    .node-status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--hud-green);
+    }
+    .node-row.paused .node-status-indicator {
+      background: var(--hud-amber);
+      box-shadow: 0 0 6px var(--hud-amber);
+    }
+    .node-details {
+      min-width: 0;
+      flex: 1;
+    }
+    .node-alias-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .node-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .node-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: rgba(0, 230, 118, 0.15);
+      color: #00e676;
+      border: 1px solid rgba(0, 230, 118, 0.3);
+    }
+    .node-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--hud-muted);
+      margin-top: 2px;
+    }
+    .btn-node-toggle {
+      background: #151d2c;
+      border: 1px solid #23304a;
+      color: var(--hud-text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .btn-node-toggle:hover {
+      border-color: var(--hud-cyan);
+      color: var(--hud-cyan);
+    }
+    .node-row.paused .btn-node-toggle {
+      border-color: var(--hud-amber);
+      color: var(--hud-amber);
+      background: rgba(255, 145, 0, 0.1);
+    }
+
+    /* Tech Footer Nav */
+    .hud-nav {
+      height: 56px;
+      background: #090d15;
+      border-top: 1px solid var(--hud-card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 10px;
+    }
+    .nav-tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--hud-muted);
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+    .nav-tab.active {
+      color: var(--hud-cyan);
+      background: rgba(0, 242, 254, 0.08);
+      border: 1px solid rgba(0, 242, 254, 0.2);
+    }
+
+    /* Override Modal Sheet */
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-box {
+      width: 100%;
+      background: #0e1422;
+      border: 1px solid var(--hud-amber);
+      box-shadow: 0 0 30px var(--hud-amber-glow);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .modal-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--hud-amber);
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .modal-msg {
+      font-size: 13px;
+      color: #cfd8dc;
+      line-height: 1.5;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .btn-modal-cancel {
+      flex: 1;
+      background: #182236;
+      border: 1px solid #283857;
+      color: #fff;
+      padding: 10px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-modal-override {
+      flex: 1;
+      background: var(--hud-amber);
+      border: none;
+      color: #000;
+      padding: 10px;
+      border-radius: 6px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    /* RTL */
+    html[dir="rtl"] {
+      font-family: 'Tajawal', 'Chakra Petch', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    <div><strong>Variant 02: Tactical HUD</strong></div>
+    <div style="display:flex; gap:6px;">
+      <button onclick="toggleActiveState()">Rule: <span id="hud-rule-label">TV Locked</span></button>
+      <button onclick="toggleLang()">Lang: <span id="hud-lang">EN</span></button>
+      <button onclick="openModal()">Override Modal</button>
+    </div>
+  </div>
+
+  <div class="device-shell">
+    
+    <div class="status-bar">
+      <span>18:32:09</span>
+      <div class="online-flag">
+        <span class="blip"></span>
+        <span>LAN: 192.168.1.1</span>
+      </div>
+      <span>TX 42KB/s</span>
+    </div>
+
+    <div class="app-header">
+      <div class="hud-title-wrap">
+        <div class="hud-logo">⚡</div>
+        <div>
+          <div class="title-main" data-i18n="title">NETPAUSE // HUD</div>
+          <div class="title-sub" data-i18n="router_tag">HUAWEI HG8245X6 • FIRMWARE V5R022</div>
+        </div>
+      </div>
+      <div class="header-btns">
+        <button class="hud-btn-icon" onclick="simulateSync(this)" title="Poll Router">⟳</button>
+        <button class="hud-btn-icon" title="Terminal Config">⚙</button>
+      </div>
+    </div>
+
+    <div class="hud-content">
+
+      <!-- Central Reactor Module -->
+      <div class="core-reactor active-pause" id="reactor-box">
+        <div class="reactor-top">
+          <span class="rule-tag" id="rule-mode-tag" data-i18n="tag_active">RULE #01 ACTIVE</span>
+          <div class="telemetry-row">
+            <div class="telemetry-item">STATUS: <span style="color:var(--hud-amber)" data-i18n="status_isolated">ISOLATED</span></div>
+            <div class="telemetry-item">PORT: <span>WLAN-5G</span></div>
+          </div>
+        </div>
+
+        <div class="radar-center">
+          <div class="radar-circle">
+            <div class="time-digits" id="time-readout">17:48</div>
+            <div class="time-label" data-i18n="label_deadline">RESTORING AT 18:50</div>
+          </div>
+          <div class="target-highlight">
+            <div class="target-name" id="hero-target-name" data-i18n="target_name">Samsung Smart TV 65"</div>
+            <div class="target-meta">MAC: 3C:CD:5D:84:92:1A • IP: 192.168.1.112</div>
+          </div>
+        </div>
+
+        <button class="hud-override-btn" onclick="handleResume()">
+          <span>▶</span>
+          <span data-i18n="btn_restore">DISARM & RESTORE NOW</span>
+        </button>
+      </div>
+
+      <!-- Master Intercept Matrix -->
+      <div class="master-intercept">
+        <div class="section-title-hud">
+          <span data-i18n="sec_all_pause">GLOBAL INTERCEPT // ALL NODES</span>
+          <span style="font-family:'JetBrains Mono'; font-size:10px; color:var(--hud-muted);">FF:FF:FF:FF:FF:FF</span>
+        </div>
+
+        <div class="preset-selector">
+          <div class="preset-btn" onclick="selectDuration(this, 10)">10m</div>
+          <div class="preset-btn active" onclick="selectDuration(this, 15)">15m</div>
+          <div class="preset-btn" onclick="selectDuration(this, 20)">20m</div>
+          <div class="preset-btn" onclick="selectDuration(this, 'inf')" data-i18n="preset_inf">INF</div>
+        </div>
+
+        <button class="btn-killswitch" onclick="handleGlobalPause()">
+          <span>⛔</span>
+          <span id="killswitch-txt" data-i18n="btn_all_pause">INTERCEPT ALL DEVICES (15M)</span>
+        </button>
+      </div>
+
+      <!-- Connected Nodes -->
+      <div>
+        <div class="section-title-hud">
+          <span data-i18n="sec_inventory">NETWORK INVENTORY</span>
+          <span style="font-family:'JetBrains Mono'; font-size:10px;">6 ONLINE / 26 KNOWN</span>
+        </div>
+
+        <div class="nodes-container">
+          
+          <!-- Node 1: Phone -->
+          <div class="node-row self">
+            <div class="node-left">
+              <div class="node-status-indicator"></div>
+              <div class="node-details">
+                <div class="node-alias-row">
+                  <div class="node-name">OdysseyA16</div>
+                  <span class="node-badge" data-i18n="tag_self">THIS CONTROLLER</span>
+                </div>
+                <div class="node-meta">192.168.1.104 • Wi-Fi 5GHz • 0 B/s drop</div>
+              </div>
+            </div>
+            <button class="btn-node-toggle" onclick="promptDevice('OdysseyA16')" data-i18n="btn_isolate">ISOLATE</button>
+          </div>
+
+          <!-- Node 2: TV (Active) -->
+          <div class="node-row paused">
+            <div class="node-left">
+              <div class="node-status-indicator"></div>
+              <div class="node-details">
+                <div class="node-alias-row">
+                  <div class="node-name" data-i18n="node_tv">Samsung Smart TV 65"</div>
+                </div>
+                <div class="node-meta">192.168.1.112 • 100% WAN LOSS</div>
+              </div>
+            </div>
+            <button class="btn-node-toggle" onclick="handleResume()" data-i18n="btn_restore_short">RESTORE</button>
+          </div>
+
+          <!-- Node 3: iPad -->
+          <div class="node-row">
+            <div class="node-left">
+              <div class="node-status-indicator"></div>
+              <div class="node-details">
+                <div class="node-alias-row">
+                  <div class="node-name" data-i18n="node_ipad">Kid's iPad Air</div>
+                </div>
+                <div class="node-meta">192.168.1.120 • Wi-Fi 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-node-toggle" onclick="promptDevice('Kid\'s iPad Air')" data-i18n="btn_isolate">ISOLATE</button>
+          </div>
+
+          <!-- Node 4: PC -->
+          <div class="node-row">
+            <div class="node-left">
+              <div class="node-status-indicator"></div>
+              <div class="node-details">
+                <div class="node-alias-row">
+                  <div class="node-name">ThinkPad X1 Carbon</div>
+                </div>
+                <div class="node-meta">192.168.1.108 • Wi-Fi 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-node-toggle" onclick="promptDevice('ThinkPad X1 Carbon')" data-i18n="btn_isolate">ISOLATE</button>
+          </div>
+
+          <!-- Node 5: PS5 -->
+          <div class="node-row">
+            <div class="node-left">
+              <div class="node-status-indicator"></div>
+              <div class="node-details">
+                <div class="node-alias-row">
+                  <div class="node-name">PlayStation 5</div>
+                </div>
+                <div class="node-meta">192.168.1.115 • Ethernet LAN1</div>
+              </div>
+            </div>
+            <button class="btn-node-toggle" onclick="promptDevice('PlayStation 5')" data-i18n="btn_isolate">ISOLATE</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- HUD Footer -->
+    <div class="hud-nav">
+      <div class="nav-tab active">
+        <span>⚡</span>
+        <span data-i18n="nav_cmd">RADAR</span>
+      </div>
+      <div class="nav-tab">
+        <span>◫</span>
+        <span data-i18n="nav_nodes">NODES</span>
+      </div>
+      <div class="nav-tab">
+        <span>⏱</span>
+        <span data-i18n="nav_schedules">SCHEDULES</span>
+      </div>
+      <div class="nav-tab">
+        <span>⚙</span>
+        <span data-i18n="nav_sys">SYSTEM</span>
+      </div>
+    </div>
+
+    <!-- Override Modal -->
+    <div class="modal-overlay" id="override-modal" onclick="if(event.target===this)closeModal()">
+      <div class="modal-box">
+        <div class="modal-head">
+          <span>⚠</span>
+          <span data-i18n="modal_warn">OVERRIDE ACTIVE BINDING</span>
+        </div>
+        <div class="modal-msg" data-i18n="modal_desc">
+          System rule limits active intercept to <strong>1 active target</strong>. Binding <strong id="modal-target-txt">NEW TARGET</strong> will cancel the current schedule on the router and immediately restore access to Samsung Smart TV.
+        </div>
+        <div class="modal-actions">
+          <button class="btn-modal-cancel" onclick="closeModal()" data-i18n="btn_abort">ABORT</button>
+          <button class="btn-modal-override" onclick="confirmOverride()" data-i18n="btn_proceed">EXECUTE OVERRIDE</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const i18nData = {
+      en: {
+        title: "NETPAUSE // HUD",
+        router_tag: "HUAWEI HG8245X6 • FIRMWARE V5R022",
+        tag_active: "RULE #01 ACTIVE",
+        status_isolated: "ISOLATED",
+        label_deadline: "RESTORING AT 18:50",
+        target_name: "Samsung Smart TV 65\"",
+        btn_restore: "DISARM & RESTORE NOW",
+        sec_all_pause: "GLOBAL INTERCEPT // ALL NODES",
+        preset_inf: "INF",
+        btn_all_pause: "INTERCEPT ALL DEVICES (15M)",
+        sec_inventory: "NETWORK INVENTORY",
+        tag_self: "THIS CONTROLLER",
+        btn_isolate: "ISOLATE",
+        node_tv: "Samsung Smart TV 65\"",
+        btn_restore_short: "RESTORE",
+        node_ipad: "Kid's iPad Air",
+        nav_cmd: "RADAR",
+        nav_nodes: "NODES",
+        nav_schedules: "SCHEDULES",
+        nav_sys: "SYSTEM",
+        modal_warn: "OVERRIDE ACTIVE BINDING",
+        modal_desc: "System rule limits active intercept to 1 active target. Binding this target will cancel the current schedule on the router and immediately restore access to the previous node.",
+        btn_abort: "ABORT",
+        btn_proceed: "EXECUTE OVERRIDE"
+      },
+      ar: {
+        title: "نت بوز // شاشة التحكم",
+        router_tag: "راوتر هواوي HG8245X6 • إصدار V5R022",
+        tag_active: "القاعدة الأولى نشطة",
+        status_isolated: "معزول عن النت",
+        label_deadline: "الاستئناف عند 18:50",
+        target_name: "شاشة سامسونج الذكية 65\"",
+        btn_restore: "إلغاء الإيقاف والاستئناف فوراً",
+        sec_all_pause: "إيقاف شامل // كافة الأجهزة",
+        preset_inf: "دائم",
+        btn_all_pause: "إيقاف جميع الأجهزة (15 د)",
+        sec_inventory: "سجل الأجهزة المتصلة",
+        tag_self: "هذا الجهاز",
+        btn_isolate: "إيقاف",
+        node_tv: "شاشة سامسونج الذكية 65\"",
+        btn_restore_short: "استئناف",
+        node_ipad: "آيباد الأطفال",
+        nav_cmd: "الرادار",
+        nav_nodes: "الأجهزة",
+        nav_schedules: "المواعيد",
+        nav_sys: "النظام",
+        modal_warn: "استبدال قاعدة الحظر الحالية",
+        modal_desc: "نظام الراوتر يقبل إيقافًا نشطًا واحدًا فقط. تفعيل هذا الهدف سيلغي جدول الراوتر الحالي ويعيد الإنترنت للجهاز السابق فوراً.",
+        btn_abort: "إلغاء",
+        btn_proceed: "تنفيذ الاستبدال"
+      }
+    };
+
+    let activeLang = 'en';
+    let isPaused = true;
+    let durationMins = 15;
+
+    function toggleLang() {
+      activeLang = activeLang === 'en' ? 'ar' : 'en';
+      document.documentElement.dir = activeLang === 'ar' ? 'rtl' : 'ltr';
+      document.getElementById('hud-lang').innerText = activeLang.toUpperCase();
+      const map = i18nData[activeLang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (map[key]) el.innerText = map[key];
+      });
+    }
+
+    function toggleActiveState() {
+      isPaused = !isPaused;
+      const reactor = document.getElementById('reactor-box');
+      const timeReadout = document.getElementById('time-readout');
+      const label = document.getElementById('hud-rule-label');
+      if (isPaused) {
+        reactor.classList.add('active-pause');
+        timeReadout.innerText = "17:48";
+        label.innerText = "TV Locked";
+      } else {
+        reactor.classList.remove('active-pause');
+        timeReadout.innerText = "--:--";
+        label.innerText = "All Clear";
+      }
+    }
+
+    function selectDuration(btn, dur) {
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      durationMins = dur;
+      const label = dur === 'inf' ? (activeLang === 'ar' ? 'دائم' : 'FOREVER') : `${dur}M`;
+      document.getElementById('killswitch-txt').innerText = activeLang === 'ar' ? `إيقاف جميع الأجهزة (${label})` : `INTERCEPT ALL DEVICES (${label})`;
+    }
+
+    function promptDevice(name) {
+      if (isPaused) {
+        document.getElementById('modal-target-txt').innerText = name;
+        openModal();
+      } else {
+        alert("Enforcing pause for " + name + " (" + durationMins + "m)");
+        isPaused = true;
+        toggleActiveState();
+      }
+    }
+
+    function handleGlobalPause() {
+      if (isPaused) {
+        document.getElementById('modal-target-txt').innerText = activeLang === 'ar' ? "كافة الأجهزة" : "ALL DEVICES";
+        openModal();
+      } else {
+        alert("Sending FF:FF:FF:FF:FF:FF sentinel command to HG8245X6...");
+        isPaused = true;
+        toggleActiveState();
+      }
+    }
+
+    function handleResume() {
+      if (confirm(activeLang === 'ar' ? "إلغاء حظر الإنترنت واستعادة الاتصال؟" : "Terminate active schedule and resume internet?")) {
+        isPaused = false;
+        toggleActiveState();
+      }
+    }
+
+    function openModal() { document.getElementById('override-modal').classList.add('open'); }
+    function closeModal() { document.getElementById('override-modal').classList.remove('open'); }
+    function confirmOverride() {
+      closeModal();
+      alert("Override completed. Old rule retired, new rule written to router.");
+      document.getElementById('hero-target-name').innerText = document.getElementById('modal-target-txt').innerText;
+    }
+
+    function simulateSync(btn) {
+      btn.style.transform = "rotate(360deg)";
+      btn.style.transition = "transform 0.5s ease";
+      setTimeout(() => { btn.style.transform = "none"; btn.style.transition = "none"; }, 550);
+    }
+  </script>
+</body>
+</html>

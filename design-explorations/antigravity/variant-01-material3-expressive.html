@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetPause - Variant 01: Material 3 Expressive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --md-sys-color-primary: #006874;
+      --md-sys-color-on-primary: #ffffff;
+      --md-sys-color-primary-container: #9eeffd;
+      --md-sys-color-on-primary-container: #001f24;
+      --md-sys-color-secondary: #4a6267;
+      --md-sys-color-secondary-container: #cde7ec;
+      --md-sys-color-on-secondary-container: #051f23;
+      --md-sys-color-tertiary: #525e7d;
+      --md-sys-color-tertiary-container: #dae2ff;
+      --md-sys-color-error: #ba1a1a;
+      --md-sys-color-error-container: #ffdad6;
+      --md-sys-color-on-error: #ffffff;
+      --md-sys-color-background: #fafdfc;
+      --md-sys-color-on-background: #191c1d;
+      --md-sys-color-surface: #fafdfc;
+      --md-sys-color-surface-container-low: #f3f6f5;
+      --md-sys-color-surface-container: #edf0ef;
+      --md-sys-color-surface-container-high: #e7eaeb;
+      --md-sys-color-surface-container-highest: #e1e4e3;
+      --md-sys-color-on-surface: #191c1d;
+      --md-sys-color-on-surface-variant: #3f484a;
+      --md-sys-color-outline: #6f797a;
+      --md-sys-color-outline-variant: #bfc8ca;
+      --md-sys-color-warning: #b05400;
+      --md-sys-color-warning-container: #ffdcbe;
+      --md-sys-color-on-warning-container: #2e1500;
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+      --radius-full: 9999px;
+      --elevation-1: 0px 1px 3px 1px rgba(0,0,0,0.06), 0px 1px 2px 0px rgba(0,0,0,0.1);
+      --elevation-2: 0px 2px 6px 2px rgba(0,0,0,0.08), 0px 1px 2px 0px rgba(0,0,0,0.12);
+      --elevation-3: 0px 4px 12px 3px rgba(0,0,0,0.1), 0px 1px 3px 0px rgba(0,0,0,0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
+      background: #0f1416;
+      color: var(--md-sys-color-on-background);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* Top Demo Bar Controls */
+    .demo-bar {
+      width: 100%;
+      max-width: 440px;
+      background: #1e2629;
+      color: #e1e4e3;
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .demo-bar button, .demo-bar select {
+      background: #2a3438;
+      color: #fff;
+      border: 1px solid #3f4a4f;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .demo-bar button:hover { background: #39464b; }
+
+    /* Phone Mockup Frame */
+    .device-shell {
+      width: 100%;
+      max-width: 412px;
+      height: 880px;
+      background: var(--md-sys-color-background);
+      border-radius: 46px;
+      box-shadow: 0 25px 60px -15px rgba(0,0,0,0.7), 0 0 0 12px #20272a, 0 0 0 14px #333d42;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* System Status Bar */
+    .status-bar {
+      height: 48px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+      user-select: none;
+      z-index: 10;
+    }
+    .status-bar .icons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* App Header */
+    .app-header {
+      padding: 8px 20px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #006874, #004f58);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: var(--elevation-1);
+    }
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--md-sys-color-on-surface);
+    }
+    .brand-subtitle {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--md-sys-color-outline);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--md-sys-color-surface-container);
+      border: none;
+      color: var(--md-sys-color-on-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.2s;
+    }
+    .icon-btn:hover {
+      background: var(--md-sys-color-surface-container-high);
+    }
+
+    /* Scrollable Content */
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .app-content::-webkit-scrollbar { width: 0; }
+
+    /* Active Pause Hero Card (State A: Active Timed Pause) */
+    .active-pause-card {
+      background: linear-gradient(135deg, #2b1300, #411e00);
+      color: #ffdcbe;
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--elevation-2);
+      border: 1px solid rgba(255, 180, 110, 0.25);
+    }
+    .active-pause-card::after {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -20%;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(255, 140, 40, 0.2) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .pause-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 220, 190, 0.15);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #ffb686;
+      margin-bottom: 12px;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #ff7828;
+      border-radius: 50%;
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 120, 40, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(255, 120, 40, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 120, 40, 0); }
+    }
+    .pause-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .pause-target-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .pause-subtext {
+      font-size: 12px;
+      color: #ffc49e;
+      margin-top: 2px;
+    }
+    .countdown-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 38px;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 14px 0 10px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      letter-spacing: -1px;
+    }
+    .countdown-unit {
+      font-size: 14px;
+      font-weight: 500;
+      color: #ffb686;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .pause-progress-bar {
+      height: 6px;
+      background: rgba(255,255,255,0.15);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .pause-progress-fill {
+      width: 62%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff9142, #ff5c00);
+      border-radius: var(--radius-full);
+      transition: width 1s linear;
+    }
+    .pause-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-resume {
+      flex: 1;
+      background: #ffb686;
+      color: #4a1c00;
+      border: none;
+      padding: 12px 18px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      transition: transform 0.15s;
+    }
+    .btn-resume:active { transform: scale(0.98); }
+
+    /* Global Pause Quick Action Card (When idle or secondary) */
+    .master-switch-card {
+      background: var(--md-sys-color-surface-container);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--md-sys-color-on-surface);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-desc {
+      font-size: 12px;
+      color: var(--md-sys-color-outline);
+      margin-top: 2px;
+    }
+    .preset-chips {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .chip {
+      background: var(--md-sys-color-surface-container-highest);
+      color: var(--md-sys-color-on-surface);
+      border: 1px solid transparent;
+      padding: 9px 4px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .chip:hover, .chip.selected {
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      border-color: var(--md-sys-color-primary);
+    }
+    .btn-pause-all {
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      border: none;
+      padding: 13px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--elevation-1);
+      transition: background 0.2s;
+    }
+    .btn-pause-all:hover {
+      background: #00505a;
+    }
+
+    /* Devices Section */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 2px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--md-sys-color-on-surface);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .count-badge {
+      background: var(--md-sys-color-secondary-container);
+      color: var(--md-sys-color-on-secondary-container);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+    }
+    .filter-btn {
+      background: transparent;
+      border: none;
+      color: var(--md-sys-color-primary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Device Cards */
+    .device-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .device-card {
+      background: var(--md-sys-color-surface-container-low);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--md-sys-color-surface-container-highest);
+      transition: all 0.2s;
+      position: relative;
+    }
+    .device-card.this-phone {
+      background: #f0fdf9;
+      border-color: #a7f3d0;
+    }
+    .device-card.paused {
+      background: var(--md-sys-color-warning-container);
+      border-color: #f59e0b;
+    }
+    .dev-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      min-width: 0;
+    }
+    .dev-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--md-sys-color-surface-container);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--md-sys-color-on-surface-variant);
+      flex-shrink: 0;
+    }
+    .this-phone .dev-icon {
+      background: #ccfbf1;
+      color: #0f766e;
+    }
+    .dev-info {
+      min-width: 0;
+      flex: 1;
+    }
+    .dev-name-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+    .dev-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--md-sys-color-on-surface);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .dev-tag {
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .dev-meta {
+      font-size: 11px;
+      color: var(--md-sys-color-outline);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dev-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .btn-dev-action {
+      background: var(--md-sys-color-surface-container-highest);
+      color: var(--md-sys-color-on-surface);
+      border: none;
+      padding: 8px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-dev-action:hover {
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+    }
+    .paused .btn-dev-action {
+      background: #b45309;
+      color: #ffffff;
+    }
+
+    /* Bottom Navigation Bar M3 */
+    .bottom-nav {
+      height: 72px;
+      background: var(--md-sys-color-surface-container);
+      border-top: 1px solid var(--md-sys-color-surface-container-high);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 12px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--md-sys-color-outline);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      transition: all 0.2s;
+    }
+    .nav-item.active {
+      color: var(--md-sys-color-on-surface);
+    }
+    .nav-pill {
+      width: 48px;
+      height: 28px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: background 0.2s;
+    }
+    .nav-item.active .nav-pill {
+      background: var(--md-sys-color-secondary-container);
+      color: var(--md-sys-color-on-secondary-container);
+    }
+
+    /* Modal / Bottom Sheet: Replacement Confirmation */
+    .sheet-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(2px);
+      z-index: 50;
+      display: none;
+      align-items: flex-end;
+      animation: fadeIn 0.2s;
+    }
+    .sheet-overlay.open {
+      display: flex;
+    }
+    .sheet-card {
+      width: 100%;
+      background: var(--md-sys-color-surface);
+      border-radius: 28px 28px 0 0;
+      padding: 24px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: slideUp 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+    .sheet-drag {
+      width: 36px;
+      height: 4px;
+      background: var(--md-sys-color-outline-variant);
+      border-radius: 2px;
+      align-self: center;
+      margin-bottom: 4px;
+    }
+    .sheet-icon-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      background: var(--md-sys-color-warning-container);
+      color: var(--md-sys-color-warning);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    .sheet-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--md-sys-color-on-surface);
+    }
+    .sheet-text {
+      font-size: 13px;
+      color: var(--md-sys-color-on-surface-variant);
+      line-height: 1.5;
+    }
+    .rule-box {
+      background: var(--md-sys-color-surface-container-low);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      border-left: 4px solid var(--md-sys-color-warning);
+      font-size: 12px;
+      color: var(--md-sys-color-on-surface);
+    }
+    .sheet-btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .btn-secondary {
+      flex: 1;
+      background: var(--md-sys-color-surface-container);
+      color: var(--md-sys-color-on-surface);
+      border: none;
+      padding: 13px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .btn-confirm-replace {
+      flex: 1;
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      border: none;
+      padding: 13px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* RTL Support */
+    html[dir="rtl"] {
+      font-family: 'Tajawal', 'Plus Jakarta Sans', sans-serif;
+    }
+    html[dir="rtl"] .rule-box {
+      border-left: none;
+      border-right: 4px solid var(--md-sys-color-warning);
+    }
+    html[dir="rtl"] .active-pause-card::after {
+      right: auto;
+      left: -20%;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+  <!-- Design Mode Bar -->
+  <div class="demo-bar">
+    <div><strong>Variant 01: Material 3 Expressive</strong></div>
+    <div style="display:flex; gap:6px;">
+      <button onclick="toggleActiveState()">State: <span id="state-label">Paused (TV)</span></button>
+      <button onclick="toggleLang()">Lang: <span id="lang-label">EN</span></button>
+      <button onclick="openReplaceModal()">Show Replace Sheet</button>
+    </div>
+  </div>
+
+  <!-- Android Phone Mockup -->
+  <div class="device-shell">
+    
+    <!-- System Status Bar -->
+    <div class="status-bar">
+      <span>18:32</span>
+      <div class="icons">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C7.5 3 3.7 4.9 1 8l11 13 11-13c-2.7-3.1-6.5-5-11-5z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M2 22h20V2z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17 4h-3V2h-4v2H7v18h10V4z"/></svg>
+      </div>
+    </div>
+
+    <!-- App Top Bar -->
+    <div class="app-header">
+      <div class="brand-group">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+            <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title" data-i18n="app_title">NetPause</div>
+          <div class="brand-subtitle">
+            <span class="status-dot"></span>
+            <span data-i18n="router_status">Huawei HG8245X6 (192.168.1.1)</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" title="Refresh router data" onclick="simulateRefresh(this)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"/>
+          </svg>
+        </button>
+        <button class="icon-btn" title="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="app-content">
+
+      <!-- Hero Active Pause Card (State 1: When a device is paused) -->
+      <div class="active-pause-card" id="hero-pause-card">
+        <div class="pause-header">
+          <div>
+            <div class="pause-badge">
+              <span class="pulse-dot"></span>
+              <span data-i18n="badge_active_pause">Active Router Rule</span>
+            </div>
+            <div class="pause-target-title" id="active-target-title" data-i18n="hero_target">Living Room TV Paused</div>
+            <div class="pause-subtext" id="active-target-sub" data-i18n="hero_sub">Restores automatically at 18:50 (router schedule)</div>
+          </div>
+          <div style="background: rgba(255,255,255,0.1); border-radius:12px; padding:8px 12px; text-align:center;">
+            <div style="font-size:10px; color:#ffb686; text-transform:uppercase; font-weight:700;">Rule #1</div>
+            <div style="font-size:12px; font-weight:700; color:#fff;">Single Active</div>
+          </div>
+        </div>
+
+        <div class="countdown-display">
+          <span id="countdown-val">17:48</span>
+          <span class="countdown-unit" data-i18n="unit_remaining">remaining</span>
+        </div>
+
+        <div class="pause-progress-bar">
+          <div class="pause-progress-fill" id="progress-fill"></div>
+        </div>
+
+        <div class="pause-actions">
+          <button class="btn-resume" onclick="handleResumeClick()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span data-i18n="btn_resume">Resume Internet Now</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick All-Devices Master Control -->
+      <div class="master-switch-card">
+        <div class="card-top">
+          <div>
+            <div class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+              <span data-i18n="pause_all_title">Pause All Devices</span>
+            </div>
+            <div class="card-desc" data-i18n="pause_all_desc">Applies household-wide via router sentinel FF:FF:FF:FF:FF:FF</div>
+          </div>
+        </div>
+
+        <!-- Duration Presets -->
+        <div class="preset-chips">
+          <div class="chip" onclick="selectChip(this, 10)">10m</div>
+          <div class="chip selected" onclick="selectChip(this, 15)">15m</div>
+          <div class="chip" onclick="selectChip(this, 20)">20m</div>
+          <div class="chip" onclick="selectChip(this, 'indefinite')" data-i18n="chip_indefinite">Forever</div>
+        </div>
+
+        <button class="btn-pause-all" onclick="handlePauseAllClick()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+            <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+          </svg>
+          <span data-i18n="btn_pause_everyone">Pause Everyone (15 min)</span>
+        </button>
+      </div>
+
+      <!-- Connected Devices Section -->
+      <div class="section-header">
+        <div class="section-title">
+          <span data-i18n="connected_devices">Connected Devices</span>
+          <span class="count-badge">6 online</span>
+        </div>
+        <button class="filter-btn" data-i18n="btn_rename">Edit Names</button>
+      </div>
+
+      <div class="device-list">
+        
+        <!-- Device 1: This Phone -->
+        <div class="device-card this-phone">
+          <div class="dev-left">
+            <div class="dev-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                <line x1="12" y1="18" x2="12.01" y2="18"></line>
+              </svg>
+            </div>
+            <div class="dev-info">
+              <div class="dev-name-row">
+                <div class="dev-name">OdysseyA16</div>
+                <span class="dev-tag" data-i18n="tag_this_phone">This Phone</span>
+              </div>
+              <div class="dev-meta">
+                <span>192.168.1.104</span>
+                <span>•</span>
+                <span>Wi-Fi 5GHz</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn-dev-action" onclick="promptDevicePause('OdysseyA16 (This Phone)')" data-i18n="btn_pause">Pause</button>
+        </div>
+
+        <!-- Device 2: Living Room TV (Currently Paused) -->
+        <div class="device-card paused">
+          <div class="dev-left">
+            <div class="dev-icon" style="background:#fed7aa; color:#9a3412;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                <polyline points="17 2 12 7 7 2"></polyline>
+              </svg>
+            </div>
+            <div class="dev-info">
+              <div class="dev-name-row">
+                <div class="dev-name" data-i18n="dev_tv">Living Room TV (Samsung 65")</div>
+              </div>
+              <div class="dev-meta">
+                <span style="color:#b45309; font-weight:700;" data-i18n="status_paused_indicator">Paused • 17m left</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn-dev-action" onclick="handleResumeClick()" data-i18n="btn_resume_sm">Resume</button>
+        </div>
+
+        <!-- Device 3: Kid's Tablet -->
+        <div class="device-card">
+          <div class="dev-left">
+            <div class="dev-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                <line x1="12" y1="18" x2="12.01" y2="18"></line>
+              </svg>
+            </div>
+            <div class="dev-info">
+              <div class="dev-name-row">
+                <div class="dev-name" data-i18n="dev_ipad">Kid's iPad Air</div>
+              </div>
+              <div class="dev-meta">
+                <span>192.168.1.120</span>
+                <span>•</span>
+                <span>Wi-Fi 5GHz</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn-dev-action" onclick="promptDevicePause('Kid\'s iPad Air')" data-i18n="btn_pause">Pause</button>
+        </div>
+
+        <!-- Device 4: Dad's Laptop -->
+        <div class="device-card">
+          <div class="dev-left">
+            <div class="dev-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="12" rx="2"></rect>
+                <line x1="2" y1="20" x2="22" y2="20"></line>
+              </svg>
+            </div>
+            <div class="dev-info">
+              <div class="dev-name-row">
+                <div class="dev-name" data-i18n="dev_laptop">ThinkPad X1 Carbon</div>
+              </div>
+              <div class="dev-meta">
+                <span>192.168.1.108</span>
+                <span>•</span>
+                <span>Wi-Fi 5GHz</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn-dev-action" onclick="promptDevicePause('ThinkPad X1 Carbon')" data-i18n="btn_pause">Pause</button>
+        </div>
+
+        <!-- Device 5: PlayStation 5 -->
+        <div class="device-card">
+          <div class="dev-left">
+            <div class="dev-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="6 3 18 3 22 21 2 21 6 3"></polygon>
+                <circle cx="12" cy="13" r="2"></circle>
+              </svg>
+            </div>
+            <div class="dev-info">
+              <div class="dev-name-row">
+                <div class="dev-name">PlayStation 5</div>
+              </div>
+              <div class="dev-meta">
+                <span>192.168.1.115</span>
+                <span>•</span>
+                <span>Ethernet LAN1</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn-dev-action" onclick="promptDevicePause('PlayStation 5')" data-i18n="btn_pause">Pause</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- M3 Bottom Navigation -->
+    <div class="bottom-nav">
+      <div class="nav-item active">
+        <div class="nav-pill">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          </svg>
+        </div>
+        <span data-i18n="nav_home">Control</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-pill">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </div>
+        <span data-i18n="nav_devices">Devices</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-pill">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </div>
+        <span data-i18n="nav_widgets">Widget</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-pill">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </div>
+        <span data-i18n="nav_settings">Settings</span>
+      </div>
+    </div>
+
+    <!-- Replacement Confirmation Bottom Sheet Modal -->
+    <div class="sheet-overlay" id="replace-sheet" onclick="if(event.target===this)closeReplaceModal()">
+      <div class="sheet-card">
+        <div class="sheet-drag"></div>
+        <div style="display:flex; gap:14px; align-items:center;">
+          <div class="sheet-icon-circle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"/>
+            </svg>
+          </div>
+          <div>
+            <div class="sheet-title" data-i18n="replace_title">Replace Active Pause?</div>
+            <div class="sheet-text" data-i18n="replace_sub">One active pause allowed at a time</div>
+          </div>
+        </div>
+
+        <div class="sheet-text" id="replace-detail-text" data-i18n="replace_body">
+          Currently, <strong>Living Room TV</strong> is paused (17 mins remaining). Pausing <strong id="new-target-name">Kid's iPad Air</strong> will resume internet for the TV and install the new timer on the router.
+        </div>
+
+        <div class="rule-box" data-i18n="replace_note">
+          Notice: The existing router schedule will be cleared safely before binding the new device.
+        </div>
+
+        <div class="sheet-btn-row">
+          <button class="btn-secondary" onclick="closeReplaceModal()" data-i18n="btn_cancel">Cancel</button>
+          <button class="btn-confirm-replace" onclick="confirmReplacement()" data-i18n="btn_replace">Replace Pause</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const translations = {
+      en: {
+        app_title: "NetPause",
+        router_status: "Huawei HG8245X6 (192.168.1.1)",
+        badge_active_pause: "Active Router Rule",
+        hero_target: "Living Room TV Paused",
+        hero_sub: "Restores automatically at 18:50 (router schedule)",
+        unit_remaining: "remaining",
+        btn_resume: "Resume Internet Now",
+        pause_all_title: "Pause All Devices",
+        pause_all_desc: "Applies household-wide via router sentinel FF:FF:FF:FF:FF:FF",
+        chip_indefinite: "Forever",
+        btn_pause_everyone: "Pause Everyone (15 min)",
+        connected_devices: "Connected Devices",
+        btn_rename: "Edit Names",
+        tag_this_phone: "This Phone",
+        dev_tv: "Living Room TV (Samsung 65\")",
+        status_paused_indicator: "Paused • 17m left",
+        btn_pause: "Pause",
+        btn_resume_sm: "Resume",
+        dev_ipad: "Kid's iPad Air",
+        dev_laptop: "ThinkPad X1 Carbon",
+        nav_home: "Control",
+        nav_devices: "Devices",
+        nav_widgets: "Widget",
+        nav_settings: "Settings",
+        replace_title: "Replace Active Pause?",
+        replace_sub: "One active pause allowed at a time",
+        replace_body: "Currently, Living Room TV is paused (17 mins remaining). Pausing this device will resume internet for the TV and install the new timer on the router.",
+        replace_note: "Notice: The existing router schedule will be cleared safely before binding the new device.",
+        btn_cancel: "Cancel",
+        btn_replace: "Replace Pause"
+      },
+      ar: {
+        app_title: "نت بوز",
+        router_status: "راوتر هواوي HG8245X6 (192.168.1.1)",
+        badge_active_pause: "قاعدة راوتر نشطة",
+        hero_target: "تلفاز غرفة المعيشة متوقف",
+        hero_sub: "يعود الاتصال تلقائيًا الساعة 18:50 (جدول الراوتر)",
+        unit_remaining: "متبقية",
+        btn_resume: "استئناف الإنترنت الآن",
+        pause_all_title: "إيقاف جميع الأجهزة",
+        pause_all_desc: "تطبيق على كامل المنزل عبر الرمز FF:FF:FF:FF:FF:FF",
+        chip_indefinite: "دائم",
+        btn_pause_everyone: "إيقاف الجميع (15 دقيقة)",
+        connected_devices: "الأجهزة المتصلة",
+        btn_rename: "تعديل الأسماء",
+        tag_this_phone: "هذا الهاتف",
+        dev_tv: "تلفاز المعيشة (سامسونج 65\")",
+        status_paused_indicator: "متوقف • متبقي 17 دقيقة",
+        btn_pause: "إيقاف",
+        btn_resume_sm: "استئناف",
+        dev_ipad: "آيباد الأطفال",
+        dev_laptop: "لابتوب ثينك باد",
+        nav_home: "التحكم",
+        nav_devices: "الأجهزة",
+        nav_widgets: "الويدجت",
+        nav_settings: "الإعدادات",
+        replace_title: "استبدال الإيقاف الحالي؟",
+        replace_sub: "يُسمح بإيقاف نشط واحد فقط في المرة الواحدة",
+        replace_body: "حاليًا، تلفاز المعيشة متوقف (متبقي 17 دقيقة). إيقاف جهاز جديد سيستأنف الإنترنت للتلفاز ويثبت المؤقت الجديد على الراوتر.",
+        replace_note: "تنبيه: سيتم مسح جدول الراوتر السابق بأمان قبل ربط الجهاز الجديد.",
+        btn_cancel: "إلغاء",
+        btn_replace: "استبدال الإيقاف"
+      }
+    };
+
+    let currentLang = 'en';
+    let isPausedState = true;
+    let selectedDuration = 15;
+
+    function toggleLang() {
+      currentLang = currentLang === 'en' ? 'ar' : 'en';
+      document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = currentLang;
+      document.getElementById('lang-label').innerText = currentLang.toUpperCase();
+      
+      const strings = translations[currentLang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (strings[key]) {
+          el.innerText = strings[key];
+        }
+      });
+    }
+
+    function toggleActiveState() {
+      const hero = document.getElementById('hero-pause-card');
+      const tvCard = document.querySelector('.device-card.paused');
+      isPausedState = !isPausedState;
+      if (isPausedState) {
+        hero.style.display = 'block';
+        if (tvCard) tvCard.classList.add('paused');
+        document.getElementById('state-label').innerText = 'Paused (TV)';
+      } else {
+        hero.style.display = 'none';
+        if (tvCard) tvCard.classList.remove('paused');
+        document.getElementById('state-label').innerText = 'All Connected (Idle)';
+      }
+    }
+
+    function selectChip(el, duration) {
+      document.querySelectorAll('.preset-chips .chip').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedDuration = duration;
+      const btn = document.querySelector('.btn-pause-all span');
+      if (duration === 'indefinite') {
+        btn.innerText = currentLang === 'ar' ? 'إيقاف الجميع (دائم)' : 'Pause Everyone (Forever)';
+      } else {
+        btn.innerText = currentLang === 'ar' ? `إيقاف الجميع (${duration} دقيقة)` : `Pause Everyone (${duration} min)`;
+      }
+    }
+
+    function promptDevicePause(devName) {
+      if (isPausedState) {
+        document.getElementById('new-target-name').innerText = devName;
+        openReplaceModal();
+      } else {
+        alert("Starting pause for " + devName + " (" + selectedDuration + " min) on router...");
+        isPausedState = true;
+        document.getElementById('hero-pause-card').style.display = 'block';
+        document.getElementById('active-target-title').innerText = devName + " Paused";
+      }
+    }
+
+    function handleResumeClick() {
+      if (confirm(currentLang === 'ar' ? "استئناف اتصال الإنترنت وحذف جدول الراوتر؟" : "Resume internet and cancel active router schedule?")) {
+        toggleActiveState();
+      }
+    }
+
+    function handlePauseAllClick() {
+      if (isPausedState) {
+        document.getElementById('new-target-name').innerText = currentLang === 'ar' ? "جميع الأجهزة" : "All Devices";
+        openReplaceModal();
+      } else {
+        alert("Sending FF:FF:FF:FF:FF:FF all-device pause rule to Huawei HG8245X6...");
+        isPausedState = true;
+        document.getElementById('hero-pause-card').style.display = 'block';
+        document.getElementById('active-target-title').innerText = currentLang === 'ar' ? "جميع الأجهزة متوقفة" : "All Devices Paused";
+      }
+    }
+
+    function openReplaceModal() {
+      document.getElementById('replace-sheet').classList.add('open');
+    }
+
+    function closeReplaceModal() {
+      document.getElementById('replace-sheet').classList.remove('open');
+    }
+
+    function confirmReplacement() {
+      closeReplaceModal();
+      alert("Active pause successfully replaced on Huawei router!");
+      document.getElementById('active-target-title').innerText = document.getElementById('new-target-name').innerText + " Paused";
+    }
+
+    function simulateRefresh(btn) {
+      btn.style.transform = "rotate(360deg)";
+      btn.style.transition = "transform 0.6s ease";
+      setTimeout(() => {
+        btn.style.transform = "none";
+        btn.style.transition = "none";
+      }, 650);
+    }
+  </script>
+</body>
+</html>

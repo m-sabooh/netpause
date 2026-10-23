@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetPause - Variant 06: Focus Dial & Wheel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Tajawal:wght@500;700;800&family=Cabinet+Grotesk:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dial-bg: #0b0e14;
+      --dial-surface: #121722;
+      --dial-border: #1e2638;
+      --dial-primary: #3b82f6;
+      --dial-accent: #f43f5e;
+      --dial-accent-glow: rgba(244, 63, 94, 0.35);
+      --dial-text: #f1f5f9;
+      --dial-muted: #64748b;
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
+      background: #040608;
+      color: var(--dial-text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* Top Controls */
+    .demo-bar {
+      width: 100%;
+      max-width: 440px;
+      background: #121722;
+      padding: 10px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      border: 1px solid var(--dial-border);
+    }
+    .demo-bar button {
+      background: #1e2638;
+      color: #fff;
+      border: 1px solid #334155;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Device Shell */
+    .device-shell {
+      width: 100%;
+      max-width: 412px;
+      height: 880px;
+      background: var(--dial-bg);
+      border-radius: 46px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 0 12px #161c28;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      height: 48px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--dial-muted);
+    }
+
+    /* App Header */
+    .app-header {
+      padding: 6px 20px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .router-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #161d2d;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    /* Content Area */
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .app-content::-webkit-scrollbar { width: 0; }
+
+    /* Target Selector Toggle Pill */
+    .target-segment-pill {
+      background: #121722;
+      border: 1px solid var(--dial-border);
+      border-radius: 14px;
+      padding: 4px;
+      display: flex;
+    }
+    .seg-opt {
+      flex: 1;
+      text-align: center;
+      padding: 8px 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--dial-muted);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .seg-opt.active {
+      background: #1e2638;
+      color: #fff;
+    }
+
+    /* Huge Hero Dial Area */
+    .dial-hero-card {
+      background: radial-gradient(circle at 50% 50%, #161e30 0%, #101420 80%);
+      border: 1px solid var(--dial-border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .dial-hero-card.paused {
+      border-color: rgba(244, 63, 94, 0.4);
+      box-shadow: 0 0 35px var(--dial-accent-glow);
+    }
+
+    /* Circular Dial Component */
+    .svg-dial-wrapper {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 10px 0 16px;
+    }
+    .dial-svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+    .dial-track {
+      fill: none;
+      stroke: #1e273a;
+      stroke-width: 12;
+    }
+    .dial-fill {
+      fill: none;
+      stroke: var(--dial-accent);
+      stroke-width: 12;
+      stroke-linecap: round;
+      stroke-dasharray: 565;
+      stroke-dashoffset: 210;
+      transition: stroke-dashoffset 0.6s ease;
+    }
+    .dial-center-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .dial-digits {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 46px;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1;
+    }
+    .dial-unit {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--dial-accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .dial-target-badge {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+    .dial-target-sub {
+      font-size: 12px;
+      color: var(--dial-muted);
+    }
+
+    /* Minutes Wheel Selector Chips */
+    .wheel-chips {
+      display: flex;
+      gap: 6px;
+      margin: 12px 0 16px;
+      width: 100%;
+      justify-content: center;
+    }
+    .wheel-chip {
+      background: #171f2e;
+      border: 1px solid #232f45;
+      color: var(--dial-text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .wheel-chip.active {
+      background: var(--dial-primary);
+      border-color: var(--dial-primary);
+      color: #fff;
+    }
+
+    .btn-dial-main {
+      width: 100%;
+      background: var(--dial-accent);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px var(--dial-accent-glow);
+    }
+
+    /* Connected Devices Tray */
+    .tray-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .tray-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .devices-scroll-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .device-dial-item {
+      background: var(--dial-surface);
+      border: 1px solid var(--dial-border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .device-dial-item.active-target {
+      border-color: var(--dial-accent);
+      background: rgba(244, 63, 94, 0.08);
+    }
+    .dev-d-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .dev-d-icon {
+      width: 36px;
+      height: 36px;
+      background: #1c2333;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .dev-d-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .dev-d-meta {
+      font-size: 11px;
+      color: var(--dial-muted);
+    }
+    .btn-item-pause {
+      background: #1e2638;
+      border: 1px solid #2d3952;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .device-dial-item.active-target .btn-item-pause {
+      background: var(--dial-accent);
+      border-color: var(--dial-accent);
+    }
+
+    /* Replacement Modal */
+    .dial-modal-bg {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .dial-modal-bg.open { display: flex; }
+    .dial-modal-box {
+      background: #121722;
+      border: 1px solid var(--dial-accent);
+      border-radius: 20px;
+      padding: 22px;
+      width: 100%;
+    }
+    .dial-modal-h {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .dial-modal-p {
+      font-size: 13px;
+      color: var(--dial-muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .dial-modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-m-cancel {
+      flex: 1;
+      padding: 11px;
+      background: #1e2638;
+      border: none;
+      color: #fff;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-m-confirm {
+      flex: 1;
+      padding: 11px;
+      background: var(--dial-accent);
+      border: none;
+      color: #fff;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* RTL */
+    html[dir="rtl"] {
+      font-family: 'Tajawal', 'Plus Jakarta Sans', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    <div><strong>Variant 06: Focus Dial & Wheel</strong></div>
+    <div style="display:flex; gap:6px;">
+      <button onclick="toggleDialState()">State: <span id="state-txt">Paused</span></button>
+      <button onclick="toggleLang()">Lang: <span id="lang-txt">EN</span></button>
+      <button onclick="openReplaceModal()">Replace Modal</button>
+    </div>
+  </div>
+
+  <div class="device-shell">
+    
+    <div class="status-bar">
+      <span>18:32</span>
+      <span>Wi-Fi 5GHz</span>
+    </div>
+
+    <div class="app-header">
+      <div class="brand-title" data-i18n="title">NetPause Dial</div>
+      <div class="router-chip">
+        <span>●</span>
+        <span>HG8245X6 • 192.168.1.1</span>
+      </div>
+    </div>
+
+    <div class="app-content">
+
+      <!-- Target Segment Pill -->
+      <div class="target-segment-pill">
+        <div class="seg-opt active" onclick="selectSegment(this, 'device')" data-i18n="seg_device">Target Device</div>
+        <div class="seg-opt" onclick="selectSegment(this, 'all')" data-i18n="seg_all">All Devices (Sentinel)</div>
+      </div>
+
+      <!-- Dial Hero Card -->
+      <div class="dial-hero-card paused" id="dial-card">
+        
+        <div class="dial-target-badge" id="dial-target-text" data-i18n="target_tv">Living Room TV</div>
+        <div class="dial-target-sub" data-i18n="target_sub">Scheduled pause via router parental rules</div>
+
+        <!-- SVG Circular Ring -->
+        <div class="svg-dial-wrapper">
+          <svg class="dial-svg" viewBox="0 0 200 200">
+            <circle class="dial-track" cx="100" cy="100" r="90" />
+            <circle class="dial-fill" id="svg-dial-fill" cx="100" cy="100" r="90" />
+          </svg>
+          <div class="dial-center-content">
+            <div class="dial-digits" id="dial-countdown">17:48</div>
+            <div class="dial-unit" data-i18n="unit_remaining">REMAINING</div>
+          </div>
+        </div>
+
+        <!-- Wheel Duration Chips -->
+        <div class="wheel-chips">
+          <div class="wheel-chip" onclick="setWheelChip(this, 10)">10m</div>
+          <div class="wheel-chip" onclick="setWheelChip(this, 15)">15m</div>
+          <div class="wheel-chip active" onclick="setWheelChip(this, 20)">20m</div>
+          <div class="wheel-chip" onclick="setWheelChip(this, 'inf')" data-i18n="chip_forever">Forever</div>
+        </div>
+
+        <button class="btn-dial-main" onclick="handleMainAction()">
+          <span>⏹</span>
+          <span id="btn-dial-label" data-i18n="btn_resume">Resume Internet Access</span>
+        </button>
+
+      </div>
+
+      <!-- Connected Devices Tray -->
+      <div>
+        <div class="tray-title-row" style="margin-bottom:10px;">
+          <div class="tray-title" data-i18n="sec_devices">Network Devices (6)</div>
+          <span style="font-size:11px; color:var(--dial-muted);">Tap to switch target</span>
+        </div>
+
+        <div class="devices-scroll-list">
+          
+          <div class="device-dial-item active-target">
+            <div class="dev-d-left">
+              <div class="dev-d-icon" style="color:var(--dial-accent);">📺</div>
+              <div>
+                <div class="dev-d-title" data-i18n="dev_tv">Living Room TV</div>
+                <div class="dev-d-meta" style="color:var(--dial-accent);" data-i18n="status_tv_paused">Paused • 17m left</div>
+              </div>
+            </div>
+            <button class="btn-item-pause" onclick="handleMainAction()" data-i18n="btn_resume_sm">Resume</button>
+          </div>
+
+          <div class="device-dial-item">
+            <div class="dev-d-left">
+              <div class="dev-d-icon">📱</div>
+              <div>
+                <div class="dev-d-title">OdysseyA16 (This Phone)</div>
+                <div class="dev-d-meta">192.168.1.104 • 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-item-pause" onclick="promptDevice('OdysseyA16')" data-i18n="btn_pause">Pause</button>
+          </div>
+
+          <div class="device-dial-item">
+            <div class="dev-d-left">
+              <div class="dev-d-icon">📱</div>
+              <div>
+                <div class="dev-d-title" data-i18n="dev_ipad">Kid's iPad Air</div>
+                <div class="dev-d-meta">192.168.1.120 • 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-item-pause" onclick="promptDevice('Kid\'s iPad Air')" data-i18n="btn_pause">Pause</button>
+          </div>
+
+          <div class="device-dial-item">
+            <div class="dev-d-left">
+              <div class="dev-d-icon">💻</div>
+              <div>
+                <div class="dev-d-title">ThinkPad X1</div>
+                <div class="dev-d-meta">192.168.1.108 • 5GHz</div>
+              </div>
+            </div>
+            <button class="btn-item-pause" onclick="promptDevice('ThinkPad X1')" data-i18n="btn_pause">Pause</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Replacement Modal -->
+    <div class="dial-modal-bg" id="dial-modal" onclick="if(event.target===this)closeReplaceModal()">
+      <div class="dial-modal-box">
+        <div class="dial-modal-h" data-i18n="dlg_title">Replace Active Pause?</div>
+        <div class="dial-modal-p" data-i18n="dlg_desc">
+          Only one device can be paused at a time on HG8245X6. Pausing <strong id="modal-target-device">Kid's iPad Air</strong> will restore internet for Living Room TV and install the new timer.
+        </div>
+        <div class="dial-modal-actions">
+          <button class="btn-m-cancel" onclick="closeReplaceModal()" data-i18n="btn_cancel">Cancel</button>
+          <button class="btn-m-confirm" onclick="confirmReplace()" data-i18n="btn_confirm">Switch Target</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const dialI18n = {
+      en: {
+        title: "NetPause Dial",
+        seg_device: "Target Device",
+        seg_all: "All Devices (Sentinel)",
+        target_tv: "Living Room TV",
+        target_sub: "Scheduled pause via router parental rules",
+        unit_remaining: "REMAINING",
+        chip_forever: "Forever",
+        btn_resume: "Resume Internet Access",
+        sec_devices: "Network Devices (6)",
+        dev_tv: "Living Room TV",
+        status_tv_paused: "Paused • 17m left",
+        btn_resume_sm: "Resume",
+        btn_pause: "Pause",
+        dev_ipad: "Kid's iPad Air",
+        dlg_title: "Replace Active Pause?",
+        dlg_desc: "Only one device can be paused at a time on HG8245X6. Pausing this device will restore internet for Living Room TV and install the new timer.",
+        btn_cancel: "Cancel",
+        btn_confirm: "Switch Target"
+      },
+      ar: {
+        title: "نت بوز دايال",
+        seg_device: "جهاز محدد",
+        seg_all: "كافة الأجهزة (الرمز)",
+        target_tv: "تلفاز المعيشة",
+        target_sub: "إيقاف مجدول عبر قواعد الرقابة الأبوية بالراوتر",
+        unit_remaining: "متبقية",
+        chip_forever: "دائم",
+        btn_resume: "استئناف الإنترنت الآن",
+        sec_devices: "أجهزة الشبكة (6)",
+        dev_tv: "تلفاز المعيشة",
+        status_tv_paused: "متوقف • متبقي 17 دقيقة",
+        btn_resume_sm: "استئناف",
+        btn_pause: "إيقاف",
+        dev_ipad: "آيباد الأطفال",
+        dlg_title: "استبدال الإيقاف النشط؟",
+        dlg_desc: "يمكن إيقاف جهاز واحد فقط في نفس الوقت على راوتر HG8245X6. إيقاف هذا الجهاز سيعيد الإنترنت لتلفاز المعيشة ويثبت المؤقت الجديد.",
+        btn_cancel: "إلغاء",
+        btn_confirm: "تبديل الهدف"
+      }
+    };
+
+    let dialLang = 'en';
+    let isPaused = true;
+    let selectedMins = 20;
+
+    function toggleLang() {
+      dialLang = dialLang === 'en' ? 'ar' : 'en';
+      document.documentElement.dir = dialLang === 'ar' ? 'rtl' : 'ltr';
+      document.getElementById('lang-txt').innerText = dialLang.toUpperCase();
+      const map = dialI18n[dialLang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (map[k]) el.innerText = map[k];
+      });
+    }
+
+    function toggleDialState() {
+      isPaused = !isPaused;
+      const card = document.getElementById('dial-card');
+      const fill = document.getElementById('svg-dial-fill');
+      const digits = document.getElementById('dial-countdown');
+      const label = document.getElementById('btn-dial-label');
+      const stateTxt = document.getElementById('state-txt');
+
+      if (isPaused) {
+        card.classList.add('paused');
+        fill.style.strokeDashoffset = '210';
+        digits.innerText = '17:48';
+        label.innerText = dialLang === 'ar' ? 'استئناف الإنترنت الآن' : 'Resume Internet Access';
+        stateTxt.innerText = 'Paused';
+      } else {
+        card.classList.remove('paused');
+        fill.style.strokeDashoffset = '565';
+        digits.innerText = `${selectedMins}:00`;
+        label.innerText = dialLang === 'ar' ? `بدء الإيقاف (${selectedMins} دقيقة)` : `Start Pause (${selectedMins} min)`;
+        stateTxt.innerText = 'Idle';
+      }
+    }
+
+    function selectSegment(el, mode) {
+      document.querySelectorAll('.seg-opt').forEach(s => s.classList.remove('active'));
+      el.classList.add('active');
+      if (mode === 'all') {
+        document.getElementById('dial-target-text').innerText = dialLang === 'ar' ? 'كافة الأجهزة' : 'All Devices';
+      } else {
+        document.getElementById('dial-target-text').innerText = dialLang === 'ar' ? 'تلفاز المعيشة' : 'Living Room TV';
+      }
+    }
+
+    function setWheelChip(el, mins) {
+      document.querySelectorAll('.wheel-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      selectedMins = mins;
+      if (!isPaused) {
+        document.getElementById('dial-countdown').innerText = mins === 'inf' ? 'INF' : `${mins}:00`;
+        document.getElementById('btn-dial-label').innerText = dialLang === 'ar' ? `بدء الإيقاف (${mins} د)` : `Start Pause (${mins} min)`;
+      }
+    }
+
+    function promptDevice(dev) {
+      if (isPaused) {
+        document.getElementById('modal-target-device').innerText = dev;
+        openReplaceModal();
+      } else {
+        alert("Pausing " + dev);
+        isPaused = true;
+        toggleDialState();
+      }
+    }
+
+    function handleMainAction() {
+      if (isPaused) {
+        if (confirm(dialLang === 'ar' ? "استئناف الإنترنت؟" : "Resume internet?")) {
+          isPaused = false;
+          toggleDialState();
+        }
+      } else {
+        alert("Starting pause on router...");
+        isPaused = true;
+        toggleDialState();
+      }
+    }
+
+    function openReplaceModal() { document.getElementById('dial-modal').classList.add('open'); }
+    function closeReplaceModal() { document.getElementById('dial-modal').classList.remove('open'); }
+    function confirmReplace() {
+      closeReplaceModal();
+      alert("Switched target successfully!");
+      document.getElementById('dial-target-text').innerText = document.getElementById('modal-target-device').innerText;
+    }
+  </script>
+</body>
+</html>

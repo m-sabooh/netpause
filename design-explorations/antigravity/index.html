@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetPause - Design Explorations Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-border: #1f293d;
+      --accent-blue: #38bdf8;
+      --accent-coral: #f43f5e;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 40px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header {
+      max-width: 1040px;
+      width: 100%;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-blue);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #fff 40%, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    .spec-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .pill {
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      max-width: 1080px;
+      width: 100%;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .card-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-blue);
+    }
+    .card-tag {
+      font-size: 11px;
+      background: rgba(255,255,255,0.08);
+      padding: 2px 8px;
+      border-radius: 6px;
+      color: #cbd5e1;
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+    .card-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .f-badge {
+      font-size: 11px;
+      background: #1a2234;
+      color: #94a3b8;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .btn-launch {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .card:hover .btn-launch {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #0f172a;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="badge">NetPause UI/UX Explorations</div>
+    <h1>10 Architectural UI Variants</h1>
+    <p>Comprehensive design explorations tailored for the Huawei HG8245X6 router controller, featuring the single-active-pause rule, 10/20m minute durations, early resume cancellation, device list with own-phone identification, and full Arabic RTL support.</p>
+    
+    <div class="spec-pills">
+      <span class="pill">⚡ Huawei HG8245X6</span>
+      <span class="pill">🔒 Keystore Authenticated</span>
+      <span class="pill">🌐 English + العربية RTL</span>
+      <span class="pill">⏱ Minute Schedules</span>
+      <span class="pill">📱 Android 16 / SDK 37</span>
+      <span class="pill">🧩 Home-Screen Widget</span>
+    </div>
+  </div>
+
+  <div class="gallery-grid">
+
+    <!-- Variant 01 -->
+    <a href="variant-01-material3-expressive.html" class="card">
+      <div>
+        <div class="card-top">
+          <span class="card-num">VARIANT 01</span>
+          <span class="card-tag">Native Android</span>
+        </div>
+        <div class="card-title">Material 3 Expressive</div>
+        <div class="card-desc">Google Pixel & Android 16 native design system with fluid squircle tokens, prominent hero status card, categorized device chips, and M3 bottom navigation.</div>
+        <div class="card-features">
+          <span class="f-badge">M3 Tokens</span>
+          <span class="f-badge">Tone Palettes</span>
+          <span class="f-badge">Replace Sheet</span>
+          <span class="f-badge">Arabic RTL</span>
+        </div>
+      </div>
+      <div class="btn-launch">Open Prototype →</div>
+    </a>
+
+    <!-- Variant 02 -->
+    <a href="variant-02-tactical-hud.html" class="card">
+      <div>
+        <div class="card-top">
+          <span class="card-num">VARIANT 02</span>
+          <span class="card-tag">Cyber-Tactical</span>
+        </div>
+        <div class="card-title">Tactical Command HUD</div>
+        <div class="card-desc">High-contrast dark OLED terminal console featuring live bandwidth telemetry, circular router reactor countdown, radar dial, and emergency master intercept.</div>
+        <div class="card-features">
+          <span class="f-badge">OLED Black</span>
+          <span class="f-badge">Throughput TX/RX</span>
+          <span class="f-badge">Reactor Dial</span>
+          <span class="f-badge">Arabic RTL</span>
+        </div>
+      </div>
+      <div class="btn-launch">Open Prototype →</div>
+    </a>
+
+    <!-- Variant 03 -->
+    <a href="variant-03-minimal-scandi.html" class="card">
+      <div>
+        <div class="card-top">
+          <span class="card-num">VARIANT 03</span>
+          <span class="card-tag">Minimalist</span>
+        </div>
+        <div class="card-title">Scandinavian Minimal</div>
+        <div class="card-desc">Humane, anxiety-reducing quiet design with airy whitespace, warm muted slate tones, refined typography, and gentle countdown indicators.</div>
+        <div class="card-features">
+          <span class="f-badge">Warm Slate</span>
+          <span class="f-badge">Quiet Tech</span>
+          <span class="f-badge">Clean Dividers</span>
+          <span class="f-badge">Arabic RTL</span>
+        </div>
+      </div>
+      <div class="btn-launch">Open Prototype →</div>
+    </a>
+
+    <!-- Variant 04 -->
+    <a href="variant-04-bento-grid.html" class="card">
+      <div>
+        <div class="card-top">
+          <span class="card-num">VARIANT 04</span>
+          <span class="card-tag">Modular Grid</span>
+        </div>
+        <div class="card-title">Bento Grid Dashboard</div>
+        <div class="card-desc">Asymmetrical rounded tiles organizing the active router countdown, quick household switch, dedicated phone tile, and network device shelf into a high-density dashboard.</div>
+        <div class="card-features">
+          <span class="f-badge">Bento Tiles</span>
+          <span class="f-badge">Span 2 Cards</span>
+          <span class="f-badge">Phone Tile</span>
+          <span class="f-badge">Arabic RTL</span>
+        </div>
+      </div>
+      <div class="btn-launch">Open Prototype →</div>
+    </a>
+
+    <!-- Variant 05 -->
+    <a href="variant-05-neomorphic-tactile.html" class="card">
+      <div>
+        <div class="card-top">
+          <span class="card-num">VARIANT 05</span>
+          <span class="card-tag">Skeuomorphic</span>
+        </div>
+        <div class="card-title">Tactile Neomorphic Soft-UI</div>
+        <div class="card-desc">Satisfying physical controls with recessed countdown wells, extruded convex rocker switches, embossed device plates, and soft LED indicator lights.</div>
+        <div class="card-features">
+          <span class="f-badge">Soft Clay</span>
+          <span class="f-badge">Recessed Wells</span>
+          <span class="f-badge">Tactile Depth</span>
+          <span class="f-badge">Arabic RTL</span>
+        </div>
+      </div>
+      <div class="btn-launch">Open Prototype →</div>
+    </a>
+
+    <!-- Variant 06 -->
+    <a href="variant-06-focus-dial.html" class="card">
+      <div>
+        <div class="card-top">
+          <span class="card-num">VARIANT 06</span>
+          <span class="card-tag">Action-First</span>
+        </div>
+        <div class="card-title">Focus Dial & Timer Wheel</div>
+        <div class="card-desc">Single-action focus hero centered around a circular SVG progress ring and tactile minute-duration chips for fast 1-touch pausing and early resumption.</div>
+        <div class="card-features">
+          <span class="f-badge">Circular Ring</span>
+          <span class="f-badge">Duration Wheel</span>
+          <span class="f-badge">Target Switcher</span>
+          <span class="f-badge">Arabic RTL</span>
+        </div>
+      </div>
+      <div class="btn-launch">Open Prototype →</div>
+    </a>
+
+    <!-- Variant 07 -->
+    <a href="variant-07-swiss-typographic.html" class="card">
+      <div>
+        <div class="card-top">
+          <span class="card-num">VARIANT 07</span>
+          <span class="card-tag">Swiss Style</span>
+        </div>
+        <div class="card-title">Swiss Typographic Editorial</div>
+        <div class="card-desc">Architectural stark contrast, monumental countdown numerals, strict mathematical grid layout, solid vermilion accents, and zero unnecessary fluff.</div>
+        <div class="card-features">
+          <span class="f-badge">Monumental Font</span>
+          <span class="f-badge">Stark Contrast</span>
+          <span class="f-badge">Grid Lines</span>
+          <span class="f-badge">Arabic RTL</span>
+        </div>
+      </div>
+      <div class="btn-launch">Open Prototype →</div>
+    </a>
+
+    <!-- Variant 08 -->
+    <a href="variant-08-glassmorphism.html" class="card">
+      <div>
+        <div class="card-top">
+          <span class="card-num">VARIANT 08</span>
+          <span class="card-tag">Liquid Glass</span>
+        </div>
+        <div class="card-title">Frosted Deep Glassmorphism</div>
+        <div class="card-desc">Atmospheric mesh gradient backgrounds with frosted glass cards (backdrop-filter blur), luminous specular borders, neon indicators, and translucent chips.</div>
+        <div class="card-features">
+          <span class="f-badge">Mesh Gradient</span>
+          <span class="f-badge">Glass Blur</span>
+          <span class="f-badge">Luminous Borders</span>
+          <span class="f-badge">Arabic RTL</span>
+        </div>
+      </div>
+      <div class="btn-launch">Open Prototype →</div>
+    </a>
+
+    <!-- Variant 09 -->
+    <a href="variant-09-one-hand-sheet.html" class="card">
+      <div>
+        <div class="card-top">
+          <span class="card-num">VARIANT 09</span>
+          <span class="card-tag">Ergonomic</span>
+        </div>
+        <div class="card-title">Split-Deck One-Handed Reach</div>
+        <div class="card-desc">Optimized for single-hand reachability. Upper glance deck displays status and massive timer; lower deck hosts all interactive device controls in the thumb zone.</div>
+        <div class="card-features">
+          <span class="f-badge">Thumb Reach</span>
+          <span class="f-badge">Upper Glance</span>
+          <span class="f-badge">Lower Deck</span>
+          <span class="f-badge">Arabic RTL</span>
+        </div>
+      </div>
+      <div class="btn-launch">Open Prototype →</div>
+    </a>
+
+    <!-- Variant 10 -->
+    <a href="variant-10-widget-companion.html" class="card">
+      <div>
+        <div class="card-top">
+          <span class="card-num">VARIANT 10</span>
+          <span class="card-tag">Glance Widget Sync</span>
+        </div>
+        <div class="card-title">Interactive Companion & Widget Studio</div>
+        <div class="card-desc">Side-by-side live simulator pairing the Android app with the official Jetpack Glance Home-Screen Widget, demonstrating synchronized states and 1-tap Keystore execution.</div>
+        <div class="card-features">
+          <span class="f-badge">Live Widget</span>
+          <span class="f-badge">5 Widget States</span>
+          <span class="f-badge">Instant Sync</span>
+          <span class="f-badge">Arabic RTL</span>
+        </div>
+      </div>
+      <div class="btn-launch">Open Prototype →</div>
+    </a>
+
+  </div>
+
+</body>
+</html>
