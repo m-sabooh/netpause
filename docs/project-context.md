@@ -10,9 +10,10 @@ This repository now includes a minimal Kotlin/Compose Android sample and Gradle 
 
 ## Design direction confirmed on 2026-10-23
 
-- The owner prefers Stillwater's structure and design with Pulse's color palette: plum text, magenta accents, and pale pink surfaces. Preserve Stillwater's layout, typography, and components when combining the two.
+- **Selected design and motion reference:** `../design-explorations/codex/11-stillwater-pulse-motion.html` with **Lively** animations. The owner confirmed this choice on 2026-10-23. Use it as the reference for native Android implementation, while respecting system reduced-motion preferences.
+- Use Stillwater's structure, layout, typography, and components with Pulse's color palette: plum text, magenta accents, and pale pink surfaces.
 - Omit the bottom navigation bar. Open Settings from the top-bar button and return using the top back arrow; duplicating Settings in a bottom bar is unnecessary.
-- The combined exploration is in `../design-explorations/codex/11-stillwater-pulse.html`, with an interactive motion study in `../design-explorations/codex/11-stillwater-pulse-motion.html`. These remain HTML design references; native Android implementation and final motion settings are not yet established.
+- The related full-screen and widget specimens are in `../design-explorations/codex/11-stillwater-pulse.html`. These are HTML design references; the selected design and animations have not yet been implemented in native Android.
 
 ## Product decisions confirmed on 2026-10-20
 
