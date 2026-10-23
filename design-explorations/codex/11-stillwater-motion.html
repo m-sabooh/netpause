@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stillwater in motion - NetPause</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eeeee9;color:#153b36;font:15px/1.5 "Segoe UI",Arial,sans-serif}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer;color:inherit}button:focus-visible,a:focus-visible{outline:3px solid #bf6b21;outline-offset:4px}button:disabled{opacity:.5;cursor:wait}a{color:inherit}.board{max-width:1120px;margin:auto;padding:30px 38px 48px}.mast{display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid #cdd1c8;padding-bottom:20px;font-size:12px}.eyebrow{font-size:10px;font-weight:750;letter-spacing:.13em;text-transform:uppercase}.layout{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:70px;align-items:start;margin-top:38px}h1{font:500 clamp(48px,6vw,72px)/1.02 Georgia,serif;letter-spacing:-.055em;margin:10px 0 20px}h2,p{margin:0}.intro{max-width:440px;color:#536e69;font-size:15px;line-height:1.7}.modes{display:flex;gap:4px;padding:5px;background:#e0e6df;border-radius:14px;margin:26px 0 10px}.modes button{flex:1;border:0;background:transparent;border-radius:10px;min-height:44px;font-size:12px;font-weight:600}.modes [aria-pressed=true]{background:#fff;box-shadow:0 2px 6px #153b3610}.mode-note{font-size:11px;color:#536e69;min-height:36px;line-height:1.6}.recipes{display:grid;gap:0;margin-top:20px}.recipe{text-align:start;display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:start;width:100%;border:0;border-top:1px solid #cdd1c8;background:transparent;padding:15px 0;min-height:70px}.recipe:hover strong{text-decoration:underline;text-underline-offset:3px}.recipe .num{font:11px/1.8 Consolas,monospace;color:#6c7e70}.recipe strong{display:block;font-size:13px;font-weight:650}.recipe .detail{display:block;font-size:11px;color:#536e69;margin-top:3px;line-height:1.6}.timing{font:10px/2 Consolas,monospace;color:#536e69;white-space:nowrap}.principle{font-size:12px;color:#536e69;border-top:1px solid #cdd1c8;padding-top:18px;margin-top:8px;line-height:1.7}.principle strong{color:#153b36}.preview{position:sticky;top:22px;min-width:0}.preview-label{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#536e69;margin-bottom:12px}.phone{height:768px;background:#f5f9f8;box-shadow:0 18px 50px #153b3610;border:1px solid #d7e4df}.phone iframe{display:block;width:100%;height:100%;border:0}.tools{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.tools button{border:1px solid #bacbc1;background:transparent;border-radius:50px;font-size:11px;padding:9px 14px;min-height:44px}.feedback{font-size:11px;color:#536e69;min-height:36px;line-height:1.6}.foot{border-top:1px solid #cdd1c8;margin-top:34px;padding-top:18px;font-size:11px;color:#536e69;line-height:1.7}.loading{padding:30px;font-size:13px}.note{font-size:10px;color:#536e69;margin-top:12px}.os-reduced{display:none}@media(prefers-reduced-motion:reduce){.os-reduced{display:block}html{scroll-behavior:auto}}@media(max-width:900px){.layout{gap:30px;grid-template-columns:minmax(0,1fr) 370px}.board{padding-inline:24px}}@media(max-width:740px){.board{padding:22px 18px}.layout{display:flex;flex-direction:column;gap:30px;margin-top:28px}.notes,.preview{width:100%;max-width:440px;margin:auto}.preview{position:static;order:-1}.phone{max-width:390px;margin:auto}.mast{font-size:10px}.preview-label{max-width:390px;margin-inline:auto}h1{font-size:54px}.tools{justify-content:center}.feedback{text-align:center}.recipes{margin-top:12px}.phone{height:768px}}@media(max-width:380px){.board{padding-inline:10px}.phone{height:740px}}
+</style>
+</head>
+<body>
+<main class="board">
+  <header class="mast"><span class="eyebrow">NetPause / Motion exploration</span><a href="11-stillwater.html">Original Stillwater</a></header>
+  <div class="layout">
+    <section class="notes" aria-labelledby="title">
+      <div class="eyebrow">A proposed motion direction</div>
+      <h1 id="title">Stillwater,<br>in motion.</h1>
+      <p class="intro">A surface that gives under your finger. Sheets that settle into place. A pause that feels confirmed. Small reactions give this quiet screen some life.</p>
+      <div class="modes" role="group" aria-label="Motion intensity">
+        <button type="button" data-mode="off" aria-pressed="false">Still</button>
+        <button type="button" data-mode="subtle" aria-pressed="false">Subtle</button>
+        <button type="button" data-mode="lively" aria-pressed="true">Lively</button>
+      </div>
+      <p class="mode-note" id="mode-note">Recommended: soft spring, a touch ripple, and one settling ring on confirmation.</p>
+      <p class="note os-reduced">Your system requests reduced motion. Spatial animation is disabled in every mode.</p>
+      <div class="recipes" aria-label="Try each motion">
+        <button class="recipe" data-demo="device"><span class="num">01</span><span><strong>A sheet with weight</strong><span class="detail">Open a device. The sheet rises and settles; the background dims. Close it to feel the return.</span></span><span class="timing">320 ms</span></button>
+        <button class="recipe" data-demo="duration"><span class="num">02</span><span><strong>Duration you can feel</strong><span class="detail">Tap 10 or 20. The number responds. Switch modes and watch the selection slide.</span></span><span class="timing">180 ms</span></button>
+        <button class="recipe" data-demo="pause"><span class="num">03</span><span><strong>A pause that lands</strong><span class="detail">Try a 20-minute TV pause. Checking comes first, then the confirmed state and a single soft ring.</span></span><span class="timing">360 ms</span></button>
+        <button class="recipe" data-demo="resume"><span class="num">04</span><span><strong>Back to breathing room</strong><span class="detail">Resume the demo pause. The online card returns and the device rows arrive in a short sequence.</span></span><span class="timing">300 ms</span></button>
+        <button class="recipe" data-demo="refresh"><span class="num">05</span><span><strong>Honest waiting</strong><span class="detail">Refresh rotates while checking. Content stays readable. No fabricated progress percentage.</span></span><span class="timing">while busy</span></button>
+        <button class="recipe" data-demo="navigation"><span class="num">06</span><span><strong>Movement with direction</strong><span class="detail">Open Settings, then Network. A short lateral transition follows navigation and mirrors in Arabic.</span></span><span class="timing">240 ms</span></button>
+      </div>
+      <p class="principle"><strong>Touch first. Truth next.</strong> Every button compresses on press. Confirmation motion only follows the simulated router response. Once settled, the screen is quiet.</p>
+      <p class="note">Proposed native companion: a light haptic on selection and a confirmation haptic on success. Haptics are not simulated here. Android widgets should use state updates and countdowns; app motion is the focus of this study.</p>
+    </section>
+    <section class="preview" aria-label="Interactive phone preview">
+      <div class="preview-label"><span class="eyebrow">Live playground</span><span>Fictional devices / simulated router</span></div>
+      <div class="phone"><iframe id="prototype" src="11-stillwater.html" title="Stillwater interactive app with proposed motion"><p class="loading">Loading the Stillwater prototype...</p></iframe></div>
+      <div class="tools"><button id="replay" type="button">Replay entrance</button><button id="language" type="button">العربية / RTL</button><button id="reset" type="button">Reset</button></div>
+      <p class="feedback" id="feedback" role="status">Use the app normally, or try a motion on the left.</p>
+    </section>
+  </div>
+  <footer class="foot">Motion study built on the original Stillwater prototype. No router requests, stored credentials, or new dependencies. Reduced motion removes spatial effects. Open through a local web server so the study can reuse the original page.</footer>
+</main>
+<script>
+'use strict';
+// Reuse the source prototype so the study cannot drift into a second app implementation.
+function installMotion(){
+  const app=document.getElementById('live-app');
+  document.body.append(app);
+  document.querySelector('.board').hidden=true;
+  const style=document.createElement('style');
+  style.textContent=`
+    body{background:#f5f9f8}.board{display:none!important}#live-app{max-width:none;width:100%;height:100vh!important;box-shadow:none}
+    #live-app button{position:relative;overflow:hidden;transition:transform 110ms ease,background-color 160ms ease,box-shadow 160ms ease}
+    #live-app[data-motion]:not([data-motion=off]) button:active:not(:disabled){transform:scale(.96)}
+    #live-app .sheet{will-change:transform}#live-app .sheetbackdrop{overflow:hidden}
+    #live-app .touch-ripple{position:absolute;pointer-events:none;border-radius:50%;background:currentColor;opacity:.13;z-index:2}
+    #live-app .segmented{position:relative;isolation:isolate}#live-app .segmented button{z-index:1;background:transparent;box-shadow:none}
+    #live-app .segment-pill{position:absolute;background:var(--surface);border-radius:8px;box-shadow:0 2px 5px #00000010;pointer-events:none;top:5px;bottom:5px}
+    #live-app.motion-busy .top [data-action=refresh] .icon{animation:spin 1s linear infinite}
+    #live-app .notice{overflow-wrap:anywhere}
+    #live-app[data-motion=off] *,#live-app[data-motion=off] *::before{animation:none!important;transition:none!important}
+    @media(prefers-reduced-motion:reduce){#live-app *,#live-app *::before{animation:none!important;transition:none!important}#live-app button:active:not(:disabled){transform:none!important}}
+  `;
+  document.head.append(style);
+  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+  let mode='lively';
+  let before=null;
+  let animations=[];
+  const snapshot=()=>({route:state.route,target:state.active?.target||null,deadline:state.active?.deadline,busy:state.busy,sheet:state.sheet?.kind||null,sheetMode:state.sheet?.mode,lang:state.lang});
+  const canMove=()=>mode!=='off'&&!reduced.matches;
+  function stopMotion(){animations.forEach(a=>a.cancel());animations=[];app.querySelectorAll('.touch-ripple,.exiting-sheet').forEach(el=>el.remove());}
+  function move(el,frames,duration=240,delay=0,easing='cubic-bezier(.2,.8,.2,1)'){
+    if(!el||!canMove())return;
+    const animation=el.animate(frames,{duration,delay,easing,fill:'backwards'});
+    animations.push(animation);
+    animation.finished.catch(()=>{}).finally(()=>{animations=animations.filter(a=>a!==animation);});
+    return animation;
+  }
+  function entrance(){
+    const distance=mode==='lively'?12:5;
+    move(app.querySelector('.hero'),[{opacity:0,transform:`translateY(${distance}px)`},{opacity:1,transform:'none'}],300);
+    app.querySelectorAll('.device').forEach((el,i)=>move(el,[{opacity:0,transform:`translateY(${distance}px)`},{opacity:1,transform:'none'}],240,i*30));
+  }
+  function selection(oldMode){
+    const group=app.querySelector('.segmented');
+    if(!group)return;
+    group.querySelector('.segment-pill')?.remove();
+    const selected=group.querySelector('.selected');
+    const pill=document.createElement('span');pill.className='segment-pill';pill.ariaHidden='true';
+    group.prepend(pill);
+    pill.style.left=selected.offsetLeft+'px';pill.style.width=selected.offsetWidth+'px';
+    if(oldMode&&oldMode!==state.sheet?.mode){
+      const previous=group.querySelector(`[data-action="mode-${oldMode}"]`);
+      move(pill,[{transform:`translateX(${previous.offsetLeft-selected.offsetLeft}px)`},{transform:'none'}],180);
+      move(app.querySelector('.presets')||app.querySelector('.pauseform .notice'),[{opacity:0},{opacity:1}],160);
+    }
+  }
+  const originalSetApp=setApp;
+  setApp=function(id,content){
+    if(id!=='live-app')return originalSetApp(id,content);
+    app.querySelectorAll('.exiting-sheet').forEach(el=>el.remove());
+    const next=snapshot();
+    const oldSheet=app.querySelector('.sheetbackdrop:not(.exiting-sheet)');
+    const oldHeight=oldSheet?.querySelector('.sheet').getBoundingClientRect().height;
+    const oldScroll=app.querySelector('.appmain')?.scrollTop||0;
+    originalSetApp(id,content);
+    app.dataset.motion=mode;
+    app.classList.toggle('motion-busy',state.busy||state.health==='pending');
+    selection(before?.sheetMode);
+    if(before){
+      if(before.route===next.route&&before.target===next.target)app.querySelector('.appmain').scrollTop=oldScroll;
+      if(next.sheet){
+        const backdrop=app.querySelector('.sheetbackdrop');
+        const sheet=backdrop.querySelector('.sheet');
+        if(!before.sheet){
+          move(backdrop,[{backgroundColor:'#09191200'},{backgroundColor:'#09191266'}],200);
+          move(sheet,mode==='lively'?[{transform:'translateY(65px)',opacity:0},{transform:'translateY(-3px)',opacity:1,offset:.78},{transform:'none',opacity:1}]:[{transform:'translateY(18px)',opacity:0},{transform:'none',opacity:1}],320);
+        }else{
+          const difference=sheet.getBoundingClientRect().height-oldHeight;
+          move(sheet,[{transform:`translateY(${difference}px)`},{transform:'none'}],240);
+        }
+      }else if(oldSheet&&before.sheet&&canMove()){
+        oldSheet.classList.add('exiting-sheet');oldSheet.inert=true;oldSheet.ariaHidden='true';oldSheet.style.pointerEvents='none';
+        app.append(oldSheet);
+        move(oldSheet,[{opacity:1},{opacity:0}],160)?.finished.catch(()=>{}).finally(()=>oldSheet.remove());
+        move(oldSheet.querySelector('.sheet'),[{transform:'none'},{transform:'translateY(35px)'}],160);
+      }
+      const changed=before.target!==next.target||before.deadline!==next.deadline;
+      if(changed&&!next.busy){
+        move(app.querySelector('.appmain'),[{opacity:.35,transform:'translateY(8px)'},{opacity:1,transform:'none'}],300);
+        if(next.target){
+          const el=app.querySelector('.stateicon');
+          move(el,[{transform:'scale(.88)'},{transform:'scale(1.04)',offset:.7},{transform:'none'}],360);
+          if(mode==='lively')move(el,[{boxShadow:'0 0 0 0 #0a716240'},{boxShadow:'0 0 0 24px #0a716200'}],650);
+        }else entrance();
+      }else if(before.route!==next.route){
+        const sign=(next.route==='home'?-1:1)*(state.lang==='ar'?-1:1);
+        move(app.querySelector('.appmain'),[{opacity:.35,transform:`translateX(${sign*(mode==='lively'?18:7)}px)`},{opacity:1,transform:'none'}],240);
+      }else if(!before.busy&&next.busy){move(app.querySelector('.notice'),[{opacity:0},{opacity:1}],160);}
+    }
+    before=next;
+  };
+  document.addEventListener('pointerdown',event=>{
+    const button=event.target.closest('#live-app button');
+    if(!button||button.disabled||!canMove()||mode!=='lively')return;
+    const box=button.getBoundingClientRect(),size=Math.max(box.width,box.height)*2;
+    const ink=document.createElement('span');ink.className='touch-ripple';ink.ariaHidden='true';
+    Object.assign(ink.style,{width:size+'px',height:size+'px',left:event.clientX-box.left-size/2+'px',top:event.clientY-box.top-size/2+'px'});
+    button.append(ink);
+    move(ink,[{transform:'scale(0)',opacity:.15},{transform:'scale(1)',opacity:0}],420)?.finished.catch(()=>{}).finally(()=>ink.remove());
+  });
+  document.addEventListener('click',event=>{
+    const chip=event.target.closest('#live-app [data-action=preset]');
+    if(!chip)return;
+    move(chip,[{transform:'scale(.96)'},{transform:'scale(1.03)',offset:.65},{transform:'none'}],180);
+    move(chip.closest('form').elements.minutes,[{opacity:.4,transform:'translateY(3px)'},{opacity:1,transform:'none'}],180);
+  });
+  const reset=()=>document.getElementById('reset-demo').click();
+  window.motionStudy={
+    setMode(value){mode=value;stopMotion();app.dataset.motion=mode;},
+    entrance,
+    demo(name){
+      if(state.busy)return false;
+      if(['device','duration','pause'].includes(name))reset();
+      if(name==='device')openSheet({kind:'device',target:'tv'});
+      if(name==='duration')openSheet({kind:'compose',target:'tv',mode:'timed'});
+      if(name==='pause')performChange({target:'tv',minutes:20});
+      if(name==='resume'){
+        if(!state.active){state.active={target:'tv',deadline:Date.now()+1200000};state.route='home';state.sheet=null;render();}
+        performChange(null);
+      }
+      if(name==='refresh')refresh();
+      if(name==='navigation'){state.sheet=null;state.route=state.route==='home'?'settings':'home';render();}
+      return true;
+    },
+    reset(){stopMotion();reset();entrance();},
+    language(){document.getElementById('toggle-language').click();return state.lang;},
+    getStatus(){return {...snapshot(),mode,reduced:reduced.matches,animations:animations.filter(a=>a.playState==='running').length};}
+  };
+  reduced.addEventListener('change',stopMotion);
+  window.addEventListener('resize',()=>selection());
+  render();entrance();
+}
+const frame=document.getElementById('prototype');
+let mode='lively';
+function api(){return frame.contentWindow.motionStudy;}
+frame.addEventListener('load',()=>{
+  try{
+    const script=frame.contentDocument.createElement('script');
+    script.textContent='('+installMotion.toString()+')();';frame.contentDocument.body.append(script);
+    if(!api())throw new Error('Motion setup did not complete');
+    if(api().getStatus().mode!==mode)api().setMode(mode);
+    document.body.dataset.ready='true';
+  }catch(error){document.getElementById('feedback').textContent='Preview unavailable. Serve this folder over localhost and reopen this study.';console.error(error);}
+});
+document.addEventListener('click',event=>{
+  const button=event.target.closest('button');if(!button||!api())return;
+  if(button.dataset.mode){
+    mode=button.dataset.mode;api().setMode(mode);
+    document.querySelectorAll('[data-mode]').forEach(el=>el.setAttribute('aria-pressed',String(el===button)));
+    document.getElementById('mode-note').textContent={off:'No animation. Compare the same interactions with motion removed.',subtle:'Short fades and small movements. A restrained alternative.',lively:'Recommended: soft spring, a touch ripple, and one settling ring on confirmation.'}[mode];
+  }
+  if(button.dataset.demo){
+    if(matchMedia('(max-width:740px)').matches)document.querySelector('.preview').scrollIntoView({block:'start',behavior:'instant'});
+    const accepted=api().demo(button.dataset.demo);
+    document.getElementById('feedback').textContent=accepted?button.querySelector('strong').textContent+'. Try the controls inside the phone.':'Waiting for router confirmation. Try again when the current request finishes.';
+  }
+  if(button.id==='replay')api().entrance();
+  if(button.id==='reset'){api().reset();document.getElementById('feedback').textContent='Reset. Try a device or choose a motion.';}
+  if(button.id==='language')button.textContent=api().language()==='ar'?'English / LTR':'العربية / RTL';
+});
+</script>
+</body>
+</html>

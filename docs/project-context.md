@@ -1,12 +1,18 @@
 # NetPause project context
 
-Last updated: 2026-10-20. Initial product interview complete; the requirements below are the baseline for future sessions.
+Last updated: 2026-10-23. Initial product interview complete; the requirements below are the baseline for future sessions.
 
 ## Purpose and current state
 
 NetPause controls internet access for devices on the same network. The baseline agent guide lists device discovery, individual or all-device pause, and timed restoration as its main use cases.
 
 This repository now includes a minimal Kotlin/Compose Android sample and Gradle build setup for environment verification. It displays a greeting, with English and Arabic resources and RTL support, and has an instrumented launch smoke test. It uses Android SDK 37.2, targets API 37, and supports API 24+. Router control, credentials, device lists, settings, and widgets remain unimplemented. See `../README.md` for setup and commands.
+
+## Design direction confirmed on 2026-10-23
+
+- The owner prefers Stillwater's structure and design with Pulse's color palette: plum text, magenta accents, and pale pink surfaces. Preserve Stillwater's layout, typography, and components when combining the two.
+- Omit the bottom navigation bar. Open Settings from the top-bar button and return using the top back arrow; duplicating Settings in a bottom bar is unnecessary.
+- The combined exploration is in `../design-explorations/codex/11-stillwater-pulse.html`, with an interactive motion study in `../design-explorations/codex/11-stillwater-pulse-motion.html`. These remain HTML design references; native Android implementation and final motion settings are not yet established.
 
 ## Product decisions confirmed on 2026-10-20
 

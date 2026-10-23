@@ -1,0 +1,56 @@
+// Open 28-pulse-motion.html with agent-browser, then pipe this file to `eval --stdin`.
+(async()=>{
+  const frame=document.getElementById('prototype'),doc=frame.contentDocument,api=frame.contentWindow.motionStudy;
+  const app=()=>doc.getElementById('motion-app');
+  const results=[];
+  const assert=(value,message)=>{if(!value)throw new Error(message);results.push(message);};
+  const click=selector=>{const el=app().querySelector(selector);if(!el)throw new Error('Missing control: '+selector);el.click();};
+  const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  api.reset();api.setMode('lively');
+  if(api.getStatus().lang==='ar')api.language();
+  assert(api.getStatus().route==='home'&&!api.getStatus().target,'Starts online on Pulse Home');
+  click('[data-action=detail][data-target="Living room TV"]');
+  assert(api.getStatus().route==='detail'&&doc.activeElement===app().querySelector('h2'),'Device details receive keyboard focus');
+  click('[data-action=choose]');
+  click('[data-action=preset][data-min="10"]');
+  assert(app().querySelector('[name=minutes]').value==='10'&&app().querySelector('[data-min="10"]').getAttribute('aria-pressed')==='true','10-minute preset updates the field and selection');
+  const input=app().querySelector('[name=minutes]');input.value='12';input.dispatchEvent(new frame.contentWindow.Event('input',{bubbles:true}));
+  assert(!app().querySelector('[data-action=preset][aria-pressed=true]'),'Custom minutes clear the preset selection');
+  input.value='0';app().querySelector('form').requestSubmit();
+  assert(api.getStatus().route==='choose'&&!api.getStatus().busy,'Invalid zero minutes do not start a request');
+  click('[data-action=preset][data-min="20"]');app().querySelector('form').requestSubmit();
+  assert(api.getStatus().busy&&!api.getStatus().target,'Pause stays unconfirmed while checking');
+  assert(api.demo('pause')===false&&api.reset()===false,'Busy state blocks repeated requests and reset');
+  api.language();assert(api.getStatus().lang==='en','Language changes wait for confirmation');
+  await wait(760);
+  assert(api.getStatus().target==='Living room TV'&&api.getStatus().route==='active','Confirmed TV pause shows the active screen');
+  assert(/^20:00$|^19:59$/.test(app().querySelector('[data-live-timer]').textContent),'Confirmed countdown uses the deadline immediately');
+  click('[data-action=choose]');app().querySelector('form').requestSubmit();
+  assert(api.getStatus().route==='replace'&&api.getStatus().target==='Living room TV','Changing target asks to replace the current pause');
+  click('[data-action=home]');
+  assert(api.getStatus().target==='Living room TV','Cancelling replacement preserves the pause');
+  click('[data-action=resume]');
+  assert(api.getStatus().busy&&api.getStatus().target==='Living room TV','Resume waits for confirmation');
+  await wait(760);
+  assert(!api.getStatus().target&&api.getStatus().route==='home'&&app().querySelectorAll('.device').length===4,'Confirmed resume restores the four-device list');
+  assert(api.getStatus().reduced||app().querySelector('.hero').getAnimations().length>0,'Duplicate source redraw retains the resume animation');
+  api.demo('refresh');
+  assert(api.getStatus().busy&&api.demo('pause')===false,'Refresh blocks conflicting pause requests');
+  click('.appbar [data-action=settings]');
+  assert(api.getStatus().route==='pending','Native navigation is also blocked during refresh');
+  await wait(660);
+  assert(!api.getStatus().busy&&api.getStatus().route==='home','Refresh returns to Home');
+  api.language();api.demo('navigation');
+  assert(app().closest('[dir=rtl]')&&api.getStatus().lang==='ar','Arabic establishes RTL layout');
+  const animation=app().querySelector('.screen').getAnimations()[0];
+  if(!api.getStatus().reduced)assert(animation?.effect.getKeyframes()[0].transform==='translateX(-24px)','Arabic navigation mirrors direction');
+  doc.dispatchEvent(new frame.contentWindow.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+  assert(api.getStatus().route==='home','Escape returns from a screen to Home');
+  api.setMode('off');api.demo('duration');
+  assert(api.getStatus().animations===0,'Still mode disables motion effects');
+  api.setMode('lively');
+  if(api.getStatus().reduced){api.entrance();assert(api.getStatus().animations===0,'System reduced motion overrides Lively');}
+  api.reset();api.language();await wait(400);
+  assert(!app().querySelector('.touch-ripple'),'Temporary touch effects are cleaned up');
+  return {passed:results.length,reducedMotion:api.getStatus().reduced,results};
+})()

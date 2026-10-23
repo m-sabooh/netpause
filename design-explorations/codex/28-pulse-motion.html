@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pulse in motion - NetPause</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7ecf0;color:#361828;font:15px/1.5 "Segoe UI",Arial,sans-serif}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer;color:inherit}button:focus-visible,a:focus-visible{outline:3px solid #bf6b21;outline-offset:4px}button:disabled{opacity:.5;cursor:wait}a{color:inherit}.board{max-width:1120px;margin:auto;padding:30px 38px 48px}.mast{display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid #dbc5d0;padding-bottom:20px;font-size:12px}.eyebrow{font-size:10px;font-weight:750;letter-spacing:.13em;text-transform:uppercase}.layout{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:70px;align-items:start;margin-top:38px}h1{font:750 clamp(48px,6vw,72px)/1.02 system-ui,Arial,sans-serif;letter-spacing:-.055em;margin:10px 0 20px}h2,p{margin:0}.intro{max-width:440px;color:#755466;font-size:15px;line-height:1.7}.modes{display:flex;gap:4px;padding:5px;background:#ebdbe3;border-radius:14px;margin:26px 0 10px}.modes button{flex:1;border:0;background:transparent;border-radius:10px;min-height:44px;font-size:12px;font-weight:600}.modes [aria-pressed=true]{background:#fff;box-shadow:0 2px 6px #36182810}.mode-note{font-size:11px;color:#755466;min-height:36px;line-height:1.6}.recipes{display:grid;gap:0;margin-top:20px}.recipe{text-align:start;display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:start;width:100%;border:0;border-top:1px solid #dbc5d0;background:transparent;padding:15px 0;min-height:70px}.recipe:hover strong{text-decoration:underline;text-underline-offset:3px}.recipe .num{font:11px/1.8 Consolas,monospace;color:#826372}.recipe strong{display:block;font-size:13px;font-weight:650}.recipe .detail{display:block;font-size:11px;color:#755466;margin-top:3px;line-height:1.6}.timing{font:10px/2 Consolas,monospace;color:#755466;white-space:nowrap}.principle{font-size:12px;color:#755466;border-top:1px solid #dbc5d0;padding-top:18px;margin-top:8px;line-height:1.7}.principle strong{color:#361828}.preview{position:sticky;top:22px;min-width:0}.preview-label{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#755466;margin-bottom:12px}.phone{height:760px;background:#fffaff;box-shadow:0 18px 50px #36182810;border:1px solid #dec6d4}.phone iframe{display:block;width:100%;height:100%;border:0}.tools{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.tools button{border:1px solid #cdb3c1;background:transparent;border-radius:50px;font-size:11px;padding:9px 14px;min-height:44px}.feedback{font-size:11px;color:#755466;min-height:36px;line-height:1.6}.foot{border-top:1px solid #dbc5d0;margin-top:34px;padding-top:18px;font-size:11px;color:#755466;line-height:1.7}.loading{padding:30px;font-size:13px}.note{font-size:10px;color:#755466;margin-top:12px}.os-reduced{display:none}@media(prefers-reduced-motion:reduce){.os-reduced{display:block}html{scroll-behavior:auto}}@media(max-width:900px){.layout{gap:30px;grid-template-columns:minmax(0,1fr) 370px}.board{padding-inline:24px}}@media(max-width:740px){.board{padding:22px 18px}.layout{display:flex;flex-direction:column;gap:30px;margin-top:28px}.notes,.preview{width:100%;max-width:440px;margin:auto}.preview{position:static;order:-1}.phone{max-width:390px;margin:auto}.mast{font-size:10px}.preview-label{max-width:390px;margin-inline:auto}h1{font-size:54px}.tools{justify-content:center}.feedback{text-align:center}.recipes{margin-top:12px}.phone{height:760px}}@media(max-width:380px){.board{padding-inline:10px}.phone{height:740px}}
+.phone{border-radius:16px;overflow:hidden}
+</style>
+</head>
+<body>
+<main class="board">
+  <header class="mast"><span class="eyebrow">NetPause / Motion exploration</span><a href="28-pulse.html">Original Pulse</a></header>
+  <div class="layout">
+    <section class="notes" aria-labelledby="title">
+      <div class="eyebrow">A proposed motion direction</div>
+      <h1 id="title">Pulse,<br>in motion.</h1>
+      <p class="intro">Bold surfaces with a quick response. Screens slide into place, duration choices snap back, and the status card gives one clear pulse when the router confirms.</p>
+      <div class="modes" role="group" aria-label="Motion intensity">
+        <button type="button" data-mode="off" aria-pressed="false">Still</button>
+        <button type="button" data-mode="subtle" aria-pressed="false">Subtle</button>
+        <button type="button" data-mode="lively" aria-pressed="true">Lively</button>
+      </div>
+      <p class="mode-note" id="mode-note">Recommended: brisk screen transitions, tactile presses, and one status-card pulse on confirmation.</p>
+      <p class="note os-reduced">Your system requests reduced motion. Spatial animation is disabled in every mode.</p>
+      <div class="recipes" aria-label="Try each motion">
+        <button class="recipe" data-demo="device"><span class="num">01</span><span><strong>A screen that moves with you</strong><span class="detail">Open the TV details. The screen slides into place with a small spring. Tap NetPause or press Escape to return.</span></span><span class="timing">260 ms</span></button>
+        <button class="recipe" data-demo="duration"><span class="num">02</span><span><strong>Duration you can feel</strong><span class="detail">Tap 10 or 20. The selected chip fills, compresses, and springs back as the number responds.</span></span><span class="timing">180 ms</span></button>
+        <button class="recipe" data-demo="pause"><span class="num">03</span><span><strong>A pause that lands</strong><span class="detail">Try a 20-minute TV pause. Checking comes first, then the confirmed timer card and one accent pulse.</span></span><span class="timing">300 ms</span></button>
+        <button class="recipe" data-demo="resume"><span class="num">04</span><span><strong>Back to breathing room</strong><span class="detail">Resume the demo pause. The split status card returns and the device rows arrive in a short sequence.</span></span><span class="timing">280 ms</span></button>
+        <button class="recipe" data-demo="refresh"><span class="num">05</span><span><strong>Honest waiting</strong><span class="detail">A moving accent line signals an ongoing check. It stops at confirmation, with no fabricated percentage.</span></span><span class="timing">while busy</span></button>
+        <button class="recipe" data-demo="navigation"><span class="num">06</span><span><strong>Movement with direction</strong><span class="detail">Open Settings, then Network. A short lateral transition follows navigation and mirrors in Arabic.</span></span><span class="timing">260 ms</span></button>
+      </div>
+      <p class="principle"><strong>Touch first. Truth next.</strong> Every button compresses on press. Confirmation motion only follows the simulated router response. Once settled, the screen is quiet.</p>
+      <p class="note">Proposed native companion: a light haptic on selection and a confirmation haptic on success. Haptics are not simulated here. Android widgets should use state updates and countdowns; app motion is the focus of this study.</p>
+    </section>
+    <section class="preview" aria-label="Interactive phone preview">
+      <div class="preview-label"><span class="eyebrow">Live playground</span><span>Fictional devices / simulated router</span></div>
+      <div class="phone"><iframe id="prototype" src="28-pulse.html" title="Pulse interactive app with proposed motion"><p class="loading">Loading the Pulse prototype...</p></iframe></div>
+      <div class="tools"><button id="replay" type="button">Replay entrance</button><button id="language" type="button">العربية / RTL</button><button id="reset" type="button">Reset</button></div>
+      <p class="feedback" id="feedback" role="status">Use the app normally, or try a motion on the left.</p>
+    </section>
+  </div>
+  <footer class="foot">Motion study built on the original Pulse prototype. No router requests, stored credentials, or new dependencies. Reduced motion removes spatial effects. Open through a local web server so the study can reuse the original page.</footer>
+</main>
+<script>
+'use strict';
+// Reuse the source prototype so the study cannot drift into a second app implementation.
+function installMotion(){
+  const board=document.getElementById('board');
+  const phone=()=>board.querySelector('.phone');
+  const style=document.createElement('style');
+  style.textContent=`
+    body{background:var(--surface)}body>.mast,.widget-area,body>footer,.caption{display:none!important}
+    #board{display:block;padding:0;margin:0;max-width:none}#board>article:not(:first-child){display:none}
+    #board>article:first-child>.phone{width:100%;height:100vh;max-width:none;margin:0;box-shadow:none}
+    #motion-app button{position:relative;overflow:hidden;transition:transform 100ms ease,background-color 150ms ease}
+    #motion-app[data-motion]:not([data-motion=off]) button:active:not(:disabled){transform:scale(.95)}
+    #motion-app .touch-ripple{position:absolute;border-radius:50%;background:currentColor;pointer-events:none;z-index:2}
+    #motion-app .chips button[aria-pressed=true]{background:var(--accent);color:var(--on)}
+    #motion-app h2[tabindex='-1']:focus{outline:0}
+    @media(max-width:360px){#motion-app .hero.center{display:flex;align-items:center}#motion-app .hero.center .spacer{display:none}#motion-app .home .hero{grid-template-columns:1fr}}
+    #motion-app[data-screen=pending] .notice{position:relative;overflow:hidden}
+    #motion-app[data-screen=pending] .notice::after{content:'';position:absolute;bottom:0;left:0;width:35%;height:3px;background:var(--accent);animation:checking 1s ease-in-out infinite}
+    [dir=rtl] #motion-app[data-screen=pending] .notice::after{animation-direction:reverse}
+    @keyframes checking{from{transform:translateX(-105%)}to{transform:translateX(290%)}}
+    #motion-app[data-motion=off] *,#motion-app[data-motion=off] *::after{animation:none!important;transition:none!important}
+    @media(prefers-reduced-motion:reduce){#motion-app *,#motion-app *::after{animation:none!important;transition:none!important}#motion-app button:active:not(:disabled){transform:none!important}}
+  `;
+  document.head.append(style);
+  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+  let mode='lively',before=null,animations=[];
+  const canMove=()=>mode!=='off'&&!reduced.matches;
+  const busy=()=>pending||phone().dataset.screen==='pending';
+  const snapshot=()=>({route:phone().dataset.screen,target:active?.target||null,deadline:active?.deadline,minutes:active?.minutes,busy:busy(),lang,mode,reduced:reduced.matches});
+  function stopMotion(){animations.forEach(a=>a.cancel());animations=[];phone().querySelectorAll('.touch-ripple').forEach(el=>el.remove());}
+  function move(el,frames,duration=240,delay=0){
+    if(!el||!canMove())return;
+    const animation=el.animate(frames,{duration,delay,easing:'cubic-bezier(.2,.8,.2,1)',fill:'backwards'});
+    animations.push(animation);
+    animation.finished.catch(()=>{}).finally(()=>{animations=animations.filter(a=>a!==animation);});
+    return animation;
+  }
+  function entrance(){
+    const app=phone(),distance=mode==='lively'?10:4;
+    move(app.querySelector('.hero'),[{opacity:.2,transform:`translateY(${distance}px)`},{opacity:1,transform:'none'}],280);
+    app.querySelectorAll('.device').forEach((el,i)=>move(el,[{opacity:0,transform:`translateY(${distance}px)`},{opacity:1,transform:'none'}],220,i*25));
+  }
+  function presets(){
+    const app=phone(),input=app.querySelector('[name=minutes]');
+    if(!input)return;
+    app.querySelectorAll('[data-action=preset]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.min===input.value)));
+  }
+  const originalShow=show;
+  show=function(app,kind){
+    if(app!==phone())return originalShow(app,kind);
+    const content=view(kind);
+    // A confirmed resume redraws Home twice in the source; retain the first render and its animation.
+    if(app.dataset.motionContent===content&&app.dataset.screen===kind)return;
+    const old=before;
+    stopMotion();
+    originalShow(app,kind);
+    app.id='motion-app';app.dataset.motion=mode;app.dataset.motionContent=content;
+    const timer=app.querySelector('[data-live-timer]');
+    if(timer&&active?.deadline){
+      const seconds=Math.max(0,Math.ceil((active.deadline-Date.now())/1000));
+      timer.textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');
+    }
+    presets();
+    const next=snapshot(),screen=app.querySelector('.screen');
+    if(old){
+      const confirmed=old.target!==next.target||old.deadline!==next.deadline;
+      if(confirmed&&!next.busy){
+        move(screen,[{opacity:.3,transform:'translateY(7px)'},{opacity:1,transform:'none'}],280);
+        const hero=app.querySelector('.hero');
+        if(next.target){
+          move(hero,[{transform:'scale(.97)'},{transform:'scale(1.015)',offset:.72},{transform:'none'}],300);
+          if(mode==='lively')move(hero,[{boxShadow:'0 0 0 0 color-mix(in srgb,var(--accent) 35%,transparent)'},{boxShadow:'0 0 0 16px color-mix(in srgb,var(--accent) 0%,transparent)'}],540);
+        }else entrance();
+      }else if(next.busy){move(screen,[{opacity:.25},{opacity:1}],150);}
+      else if(old.route!==next.route){
+        const direction=(next.route==='home'?-1:1)*(lang==='ar'?-1:1);
+        move(screen,mode==='lively'?[{opacity:.2,transform:`translateX(${direction*24}px)`},{opacity:1,transform:`translateX(${-direction*2}px)`,offset:.82},{opacity:1,transform:'none'}]:[{opacity:.4,transform:`translateX(${direction*7}px)`},{opacity:1,transform:'none'}],260);
+      }
+      if(old.route!==next.route){const heading=screen.querySelector('h2');heading?.setAttribute('tabindex','-1');heading?.focus({preventScroll:true});}
+    }else entrance();
+    before=next;
+  };
+  // The source refresh does not set pending; block conflicting actions while its check screen is visible.
+  for(const type of ['click','submit'])document.addEventListener(type,event=>{
+    if(busy()&&event.target.closest('#motion-app')){event.preventDefault();event.stopImmediatePropagation();}
+  },true);
+  document.addEventListener('pointerdown',event=>{
+    const button=event.target.closest('#motion-app button');
+    if(!button||button.disabled||busy()||!canMove()||mode!=='lively')return;
+    const box=button.getBoundingClientRect(),size=Math.max(box.width,box.height)*2;
+    const ink=document.createElement('span');ink.className='touch-ripple';ink.ariaHidden='true';
+    Object.assign(ink.style,{width:size+'px',height:size+'px',left:event.clientX-box.left-size/2+'px',top:event.clientY-box.top-size/2+'px'});
+    button.append(ink);
+    move(ink,[{transform:'scale(0)',opacity:.16},{transform:'scale(1)',opacity:0}],360)?.finished.catch(()=>{}).finally(()=>ink.remove());
+  });
+  document.addEventListener('click',event=>{
+    const button=event.target.closest('#motion-app [data-action=preset]');
+    if(!button)return;
+    presets();
+    move(button,[{transform:'scale(.95)'},{transform:'scale(1.035)',offset:.7},{transform:'none'}],180);
+    move(phone().querySelector('[name=minutes]'),[{opacity:.35,transform:'translateY(4px)'},{opacity:1,transform:'none'}],180);
+  });
+  document.addEventListener('input',event=>{if(event.target.matches('#motion-app [name=minutes]'))presets();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!busy()&&phone().dataset.screen!=='home')show(phone(),'home');});
+  function reset(){if(busy())return false;before=null;stopMotion();document.getElementById('reset').click();return true;}
+  window.motionStudy={
+    setMode(value){mode=value;stopMotion();phone().dataset.motion=mode;},
+    entrance,
+    demo(action){
+      if(busy())return false;
+      if(['device','duration','pause'].includes(action))reset();
+      if(action==='device'){detailTarget='Living room TV';show(phone(),'detail');}
+      if(action==='duration'){target='Living room TV';show(phone(),'choose');}
+      if(action==='pause'){target='Living room TV';requestPause(phone(),20);}
+      if(action==='resume'){
+        if(!active){active={target:'Living room TV',minutes:20,deadline:Date.now()+1200000};show(phone(),'active');}
+        commit(phone(),null);
+      }
+      if(action==='refresh'){show(phone(),'home');phone().querySelector('[data-action=refresh]').click();}
+      if(action==='navigation')show(phone(),phone().dataset.screen==='settings'?'home':'settings');
+      return true;
+    },
+    reset,
+    language(){if(!busy())locale(lang==='en'?'ar':'en');return lang;},
+    getStatus(){return {...snapshot(),animations:animations.filter(a=>a.playState==='running').length};}
+  };
+  reduced.addEventListener('change',stopMotion);
+  phone().id='motion-app';phone().dataset.motion=mode;before=snapshot();entrance();
+}
+
+const frame=document.getElementById('prototype');
+let mode='lively';
+function api(){return frame.contentWindow.motionStudy;}
+frame.addEventListener('load',()=>{
+  try{
+    const script=frame.contentDocument.createElement('script');
+    script.textContent='('+installMotion.toString()+')();';frame.contentDocument.body.append(script);
+    if(!api())throw new Error('Motion setup did not complete');
+    if(api().getStatus().mode!==mode)api().setMode(mode);
+    document.body.dataset.ready='true';
+  }catch(error){document.getElementById('feedback').textContent='Preview unavailable. Serve this folder over localhost and reopen this study.';console.error(error);}
+});
+document.addEventListener('click',event=>{
+  const button=event.target.closest('button');if(!button||!api())return;
+  if(button.dataset.mode){
+    mode=button.dataset.mode;api().setMode(mode);
+    document.querySelectorAll('[data-mode]').forEach(el=>el.setAttribute('aria-pressed',String(el===button)));
+    document.getElementById('mode-note').textContent={off:'No animation. Compare the same interactions with motion removed.',subtle:'Short fades and small movements. A restrained alternative.',lively:'Recommended: brisk screen transitions, tactile presses, and one status-card pulse on confirmation.'}[mode];
+  }
+  if(button.dataset.demo){
+    if(matchMedia('(max-width:740px)').matches)document.querySelector('.preview').scrollIntoView({block:'start',behavior:'instant'});
+    const accepted=api().demo(button.dataset.demo);
+    document.getElementById('feedback').textContent=accepted?button.querySelector('strong').textContent+'. Try the controls inside the phone.':'Waiting for router confirmation. Try again when the current request finishes.';
+  }
+  if(button.id==='replay')api().entrance();
+  if(button.id==='reset'){document.getElementById('feedback').textContent=api().reset()?'Reset. Try a device or choose a motion.':'Waiting for router confirmation before resetting.';}
+  if(button.id==='language')button.textContent=api().language()==='ar'?'English / LTR':'العربية / RTL';
+});
+</script>
+</body>
+</html>
