@@ -1,19 +1,20 @@
 # NetPause project context
 
-Last updated: 2026-10-23. Initial product interview complete; the requirements below are the baseline for future sessions.
+Last updated: 2026-10-24. The requirements below are the baseline for future sessions.
 
 ## Purpose and current state
 
 NetPause controls internet access for devices on the same network. The baseline agent guide lists device discovery, individual or all-device pause, and timed restoration as its main use cases.
 
-This repository now includes a minimal Kotlin/Compose Android sample and Gradle build setup for environment verification. It displays a greeting, with English and Arabic resources and RTL support, and has an instrumented launch smoke test. It uses Android SDK 37.2, targets API 37, and supports API 24+. Router control, credentials, device lists, settings, and widgets remain unimplemented. See `../README.md` for setup and commands.
+The native Kotlin/Compose app now implements the selected Stillwater/Pulse UI with Lively motion: a fictional device list, pause duration and device sheets, a running demo countdown, resume and replacement flows, rename, Settings, and connection preview. English/Arabic switching mirrors layout and navigation; motion respects Android’s animator setting. Local preview state survives activity recreation. It uses Android SDK 37.2, targets API 37, and supports API 24+. The owner explicitly requested UI first and deferred application/router logic on 2026-10-24. No router calls, durable storage, secure credential handling, or actual home-screen widget are implemented. Connection fields accept demo values and discard credentials. See `../README.md` for setup and commands.
 
 ## Design direction confirmed on 2026-10-23
 
 - **Selected design and motion reference:** `../design-explorations/codex/11-stillwater-pulse-motion.html` with **Lively** animations. The owner confirmed this choice on 2026-10-23. Use it as the reference for native Android implementation, while respecting system reduced-motion preferences.
 - Use Stillwater's structure, layout, typography, and components with Pulse's color palette: plum text, magenta accents, and pale pink surfaces.
 - Omit the bottom navigation bar. Open Settings from the top-bar button and return using the top back arrow; duplicating Settings in a bottom bar is unnecessary.
-- The related full-screen and widget specimens are in `../design-explorations/codex/11-stillwater-pulse.html`. These are HTML design references; the selected design and animations have not yet been implemented in native Android.
+- The related full-screen and widget specimens are in `../design-explorations/codex/11-stillwater-pulse.html`. The in-app flows and motion are implemented natively as a UI simulation; the actual launcher widget is deferred.
+- **Unresolved default mismatch:** The selected HTML reference and agent guide use a 15-minute widget default, while the 2026-10-20 product interview below specifies 30 minutes. The UI preview follows the selected reference at 15 minutes. This is an implementation choice for visual fidelity, not a newly confirmed product requirement; resolve the real default before widget logic is implemented.
 
 ## Product decisions confirmed on 2026-10-20
 

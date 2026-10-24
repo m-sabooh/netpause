@@ -25,7 +25,7 @@ Version one supports one active pause at a time: either one device or all device
 
 ## Architecture
 
-The repository contains a minimal native Kotlin/Compose Android sample in `app/`, plus product and router research in `docs/`. The sample only displays a greeting in English or Arabic; router control and widgets are not implemented. It compiles with SDK 37.2, targets API 37, and supports API 24+. The confirmed product baseline is in `docs/project-context.md`. Router-side schedules must handle timed restoration; the phone's countdown will display the deadline.
+The repository contains a native Kotlin/Compose UI preview in `app/`, plus product and router research in `docs/`. `NetPauseApp` owns local demo/navigation state; `NetworkScreen`, `PauseSheets`, and `SettingsScreen` implement the selected Stillwater/Pulse design and Lively motion. English/Arabic and RTL are supported. Router control, durable storage, and the real widget are not implemented. It compiles with SDK 37.2, targets API 37, and supports API 24+. The confirmed product baseline is in `docs/project-context.md`. Real timed restoration must use router-side schedules; the preview countdown is only a simulation.
 
 ## Commands
 
