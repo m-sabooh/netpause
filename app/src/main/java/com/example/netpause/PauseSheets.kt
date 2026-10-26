@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
@@ -38,19 +39,19 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
 @Composable
-internal fun TargetLabel(target: String, names: List<String>) {
+internal fun TargetLabel(target: String, names: Map<String, String>) {
     Row(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceContainerLow, RoundedCornerShape(14.dp))
         .padding(14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.primary) { NetIcon(targetIcon(target)) }
         Column(Modifier.weight(1f)) {
             Text(targetName(target, names), style = MaterialTheme.typography.labelLarge)
-            SmallText(stringResource(if (target == "all") R.string.all_four_devices else demoDevices.first { it.id == target }.type))
+            SmallText(if (target == "all") pluralStringResource(R.plurals.device_count, LocalDevices.current.size, LocalDevices.current.size) else LocalDevices.current.find { it.id == target }?.ip.orEmpty())
         }
     }
 }
 
 @Composable
-internal fun DeviceDetails(target: String, names: List<String>, onPause: () -> Unit, onRename: () -> Unit) {
+internal fun DeviceDetails(target: String, names: Map<String, String>, onPause: () -> Unit, onRename: () -> Unit) {
     Column {
         Spacer(Modifier.height(15.dp))
         TargetLabel(target, names)
@@ -64,7 +65,7 @@ internal fun DeviceDetails(target: String, names: List<String>, onPause: () -> U
 }
 
 @Composable
-internal fun PauseComposer(target: String, names: List<String>, initiallyTimed: Boolean, onConfirm: (Int?) -> Unit) {
+internal fun PauseComposer(target: String, names: Map<String, String>, initiallyTimed: Boolean, onConfirm: (Int?) -> Unit) {
     var timed by rememberSaveable { mutableStateOf(initiallyTimed) }
     var minutes by rememberSaveable { mutableStateOf("20") }
     var error by rememberSaveable { mutableStateOf(false) }
@@ -165,7 +166,7 @@ internal fun RenameDevice(currentName: String, onSave: (String) -> Unit) {
 }
 
 @Composable
-internal fun TargetPicker(names: List<String>, activeTarget: String?, busy: Boolean, onEveryone: () -> Unit, onDevice: (String) -> Unit) {
+internal fun TargetPicker(names: Map<String, String>, activeTarget: String?, busy: Boolean, onEveryone: () -> Unit, onDevice: (String) -> Unit) {
     Column(Modifier.padding(top = 12.dp)) {
         Heading(stringResource(R.string.choose_target), Modifier.padding(bottom = 18.dp))
         Row(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceContainerLow, RoundedCornerShape(24.dp))

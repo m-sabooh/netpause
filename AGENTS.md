@@ -25,13 +25,14 @@ Version one supports one active pause at a time: either one device or all device
 
 ## Architecture
 
-The repository contains a native Kotlin/Compose UI preview in `app/`, plus product and router research in `docs/`. `NetPauseApp` owns local demo/navigation state; `NetworkScreen`, `PauseSheets`, and `SettingsScreen` implement the selected Stillwater/Pulse design and Lively motion. English/Arabic and RTL are supported. Router control, durable storage, and the real widget are not implemented. It compiles with SDK 37.2, targets API 37, and supports API 24+. The confirmed product baseline is in `docs/project-context.md`. Real timed restoration must use router-side schedules; the preview countdown is only a simulation.
+The native Kotlin/Compose UI uses the Stillwater/Pulse design and Lively motion, with English/Arabic and RTL. `NetworkController` owns network state and serialized background operations; `RouterClient` handles Wi-Fi-bound HTTP, login, cookies and tokens; `RouterPauses` reads and writes owned parental rules. `AppStorage` encrypts credentials with Android Keystore and persists preferences and local names. Timed control is implemented for same-day deadlines. Authenticated discovery, phone-only IPv4 pause, encrypted credential storage, and app restart recovery have passed live testing; see the feasibility report for restoration evidence and remaining acceptance checks. Indefinite pause and the launcher widget remain unavailable. All-device behavior is untested. It compiles with SDK 37.2, targets API 37, and supports API 24+. Real restoration uses router-side schedules, never a phone timer.
 
 ## Commands
 
 Use a compatible JDK (17 minimum) and the Android SDK. See `README.md` for setup.
 
 - Build: `.\gradlew.bat :app:assembleDebug`
+- Unit tests: `.\gradlew.bat :app:testDebugUnitTest`
 - Lint: `.\gradlew.bat :app:lintDebug`
 - Phone smoke test: `.\gradlew.bat :app:connectedDebugAndroidTest`
 - Install and launch: `android run --apks=app/build/outputs/apk/debug/app-debug.apk`

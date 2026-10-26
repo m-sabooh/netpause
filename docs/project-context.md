@@ -1,19 +1,23 @@
 # NetPause project context
 
-Last updated: 2026-10-24. The requirements below are the baseline for future sessions.
+Last updated: 2026-10-26. The requirements below are the baseline for future sessions.
 
 ## Purpose and current state
 
 NetPause controls internet access for devices on the same network. The baseline agent guide lists device discovery, individual or all-device pause, and timed restoration as its main use cases.
 
-The native Kotlin/Compose app now implements the selected Stillwater/Pulse UI with Lively motion: a fictional device list, pause duration and device sheets, a running demo countdown, resume and replacement flows, rename, Settings, and connection preview. English/Arabic switching mirrors layout and navigation; motion respects Android’s animator setting. Local preview state survives activity recreation. It uses Android SDK 37.2, targets API 37, and supports API 24+. The owner explicitly requested UI first and deferred application/router logic on 2026-10-24. No router calls, durable storage, secure credential handling, or actual home-screen widget are implemented. Connection fields accept demo values and discard credentials. See `../README.md` for setup and commands.
+The native Kotlin/Compose app implements the selected Stillwater/Pulse UI with Lively motion. On 2026-10-25 the owner authorized application/router logic and live testing only on the USB-connected phone, explicitly excluding all-device testing. The UI now uses real device discovery, a background controller, Wi-Fi-bound HTTP, encrypted remembered credentials, and durable local settings/names. Timed pause, replacement, resume, and shared state recovery have an initial implementation using app-owned router records and readback. Corrected user-entered credentials succeeded on the USB-connected phone. Authenticated discovery, own-phone identification, encrypted credential round-trip, timed phone-only pause, and recovery of the active countdown after app restart passed. Wi-Fi-bound IPv4 ping and HTTP were blocked while local router HTTP remained available. On 2026-10-26 automatic restoration passed with the app force-stopped and the binding still installed: interface-bound ping and Android Wi-Fi Network-bound HTTP both returned after the router deadline. A separate early manual-resume test passed and cleanup left zero bindings and the existing template. An earlier run lost Wi-Fi association and was inconclusive; that behavior did not recur in the successful run. Source-address-only HTTP probes can fall back to cellular and are not valid Wi-Fi acceptance evidence.
+
+Implementation limits: timed deadlines round upward to the next minute and must end before 23:59 on the current router date; unsupported boundaries fail before mutation. This is a temporary implementation guard, not a new product duration requirement. Indefinite pauses remain unavailable until their firmware semantics are verified. The actual home-screen widget is still deferred. Settings retain the reference’s 15-minute value while the documented default mismatch remains unresolved. Multiple-phone concurrency, all-device traffic behavior, IPv6, and router restart/date boundaries remain acceptance gaps. The owner’s phone-only test authorization applies to this session, not future sessions.
+
+The app compiles with SDK 37.2, targets API 37, and supports API 24+. `NetworkController` survives activity recreation; router reads provide shared pause state. `AppStorage` protects remembered credentials with an Android Keystore AES-GCM key in no-backup storage. The HTTP client refuses redirects and restricts configured hosts to private IPv4 literals. See `../README.md` for setup and commands.
 
 ## Design direction confirmed on 2026-10-23
 
 - **Selected design and motion reference:** `../design-explorations/codex/11-stillwater-pulse-motion.html` with **Lively** animations. The owner confirmed this choice on 2026-10-23. Use it as the reference for native Android implementation, while respecting system reduced-motion preferences.
 - Use Stillwater's structure, layout, typography, and components with Pulse's color palette: plum text, magenta accents, and pale pink surfaces.
 - Omit the bottom navigation bar. Open Settings from the top-bar button and return using the top back arrow; duplicating Settings in a bottom bar is unnecessary.
-- The related full-screen and widget specimens are in `../design-explorations/codex/11-stillwater-pulse.html`. The in-app flows and motion are implemented natively as a UI simulation; the actual launcher widget is deferred.
+- The related full-screen and widget specimens are in `../design-explorations/codex/11-stillwater-pulse.html`. The in-app flows and motion are implemented natively; the actual launcher widget is deferred.
 - **Unresolved default mismatch:** The selected HTML reference and agent guide use a 15-minute widget default, while the 2026-10-20 product interview below specifies 30 minutes. The UI preview follows the selected reference at 15 minutes. This is an implementation choice for visual fidelity, not a newly confirmed product requirement; resolve the real default before widget logic is implemented.
 
 ## Product decisions confirmed on 2026-10-20

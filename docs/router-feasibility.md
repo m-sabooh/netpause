@@ -43,7 +43,7 @@ The password, session cookies, tokens, router serial number, and household devic
 
 The user authorized a short interruption only for OdysseyA16. USB debugging provided an independent path for checking that phone. No app was built or installed on it.
 
-The phone ran Android 16. Network probes were bound to its Wi-Fi interface or Wi-Fi IPv4 address, preventing cellular fallback from producing a false success. Mobile data was enabled and was left unchanged.
+The phone ran Android 16. The historical probes used a Wi-Fi interface-bound ping and a source-address-bound HTTP connection. The Android app test on 26 October established that binding only the HTTP source address is insufficient to exclude cellular fallback; use Android Network.openConnection on the Wi-Fi network for HTTP acceptance checks. Mobile data was enabled and was left unchanged.
 
 | Check | Before pause | During pause |
 |---|---|---|
@@ -290,3 +290,30 @@ Do not use DNS or YouTube URL filtering as a substitute for the requested comple
 Before treating this as a dependable family app, verify IPv6 with a working baseline, all-device scope, Ethernet and guest clients, existing TCP/QUIC streams, date expiration, midnight, router reboot/time synchronization, overlapping pauses, manual changes in the admin panel, and actual widget behavior under Android network switching. Test an ordinary 30-minute interval as well as the short interval used here.
 
 The Android CLI documentation lookup failed locally while initializing its knowledge-base download. Official Android web documentation was used instead. No Android application code was created.
+
+## Android implementation status, 26 October 2026
+
+The native app authenticated successfully after the owner corrected the supplied password. The phone test verified device discovery, own-phone identification, encrypted credential storage, a two-minute phone-only pause, and recovery of the active countdown from router state after restarting the app. Wi-Fi-bound IPv4 ping and HTTP failed during the pause while local router HTTP returned 200. The owner reported successful manual resume on 26 October. The first automatic-restoration run was inconclusive: the phone lost Wi-Fi association before the deadline. No all-device operation was performed.
+
+The nonce endpoint returns a UTF-8 byte-order mark before its 64 hexadecimal characters; the client strips it. Android ICU also required an escaped closing brace in the constructor-schema regex, and the firmware returns duplicate template views and statistics that must not become duplicate policy records. Regression tests cover these parser differences. The client never evaluates downloaded JavaScript.
+
+Application-owned templates and bindings use matching `NP1_<12 hex digits>_<deadline epoch milliseconds>` names. Their description, target, template, and schedule are checked on readback. Local cache is not the ownership authority. Same-day deadlines round up to minute precision; crossing midnight or ending at 23:59 is currently rejected. Indefinite pause stays disabled pending traffic verification. These are current implementation limits, not changes to the product requirements. Existing live protocol evidence above remains historical and must not be presented as testing of this app.
+
+
+### App acceptance on the connected phone, 26 October 2026
+
+Only the USB-connected phone was targeted. Mobile data remained enabled; HTTP probes used Android's Wi-Fi `Network.openConnection(..., Proxy.NO_PROXY)` and disabled redirects. Ping used `-I wlan0`. Source-address-only netcat probes were discarded after they demonstrated cellular fallback while the Wi-Fi ping remained blocked.
+
+| Check | Result |
+|---|---|
+| Authenticated discovery and encrypted credential reuse | Passed on the real phone, including process restart |
+| Two-minute pause, rounded to 22:25 router time (UTC+03) | Wi-Fi ping blocked; explicit Wi-Fi HTTP unreachable; router HTTP 200 |
+| App force-stopped before deadline | No activity/controller or resume operation running |
+| After the 22:25 deadline | Wi-Fi ping succeeded; Wi-Fi internet HTTP 301 and router HTTP 200 |
+| Read-only router inspection after restoration | The same phone binding and deadline remained installed, proving restoration did not depend on app cleanup |
+| Separate pause with 22:28 deadline, resumed early | Wi-Fi HTTP blocked before resume, then HTTP 301 before the deadline; local router HTTP remained 200 |
+| Cleanup readback | Zero MAC bindings, one existing template; production deletion checks preserved unrelated records |
+
+The first run on 25 October lost Wi-Fi association before the deadline, so it remained inconclusive. The successful run on 26 October stayed connected. Automatic restoration has been demonstrated for a short same-day interval, not midnight, router reboot, IPv6, or every Android network-switching case. All-device pause was never activated. The owner also independently reported successful manual resume.
+
+Final validation: debug build, 10 JVM tests, and four regular instrumentation tests passed on the same connected phone. Arabic RTL was visually inspected after authenticated discovery. Lint reported no errors and three existing dependency-update warnings. A reproduced navigation bug during background login/activity recreation was fixed and covered by the settings recreation test. Credentials and household MAC addresses were scanned out of public source/documentation. The phone locale override and temporary USB screen-awake setting were restored after testing.

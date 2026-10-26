@@ -1,6 +1,5 @@
 package com.example.netpause
 
-import android.os.SystemClock
 import android.text.format.DateFormat
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Animatable
@@ -22,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -34,7 +34,7 @@ import java.util.Date
 
 @Composable
 internal fun NetworkScreen(
-    activeTarget: String?, deadline: Long, names: List<String>, busy: Boolean, notice: Int?, celebrate: Boolean,
+    activeTarget: String?, deadline: Long, names: Map<String, String>, busy: Boolean, notice: Int?, celebrate: Boolean,
     onPauseAll: () -> Unit, onTimedAll: () -> Unit, onDevice: (String) -> Unit,
     onResume: () -> Unit, onTargets: () -> Unit,
 ) {
@@ -56,7 +56,7 @@ internal fun NetworkScreen(
 }
 
 @Composable
-private fun IdleNetwork(names: List<String>, busy: Boolean, onPauseAll: () -> Unit, onTimedAll: () -> Unit, onDevice: (String) -> Unit) {
+private fun IdleNetwork(names: Map<String, String>, busy: Boolean, onPauseAll: () -> Unit, onTimedAll: () -> Unit, onDevice: (String) -> Unit) {
     Column {
         Row(Modifier.padding(top = 4.dp, bottom = 16.dp), verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(7.dp)) {
@@ -96,15 +96,15 @@ private fun IdleNetwork(names: List<String>, busy: Boolean, onPauseAll: () -> Un
 }
 
 @Composable
-internal fun DeviceList(names: List<String>, activeTarget: String?, busy: Boolean, onDevice: (String) -> Unit, animate: Boolean = false) {
+internal fun DeviceList(names: Map<String, String>, activeTarget: String?, busy: Boolean, onDevice: (String) -> Unit, animate: Boolean = false) {
     Column {
         Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Heading(stringResource(R.string.connected_devices), Modifier.weight(1f), MaterialTheme.typography.titleMedium)
-            Text(stringResource(R.string.four_devices), style = MaterialTheme.typography.bodySmall,
+            Text(pluralStringResource(R.plurals.device_count, LocalDevices.current.size, LocalDevices.current.size), style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        demoDevices.forEachIndexed { index, device ->
+        LocalDevices.current.forEachIndexed { index, device ->
             val name = targetName(device.id, names)
             val row: @Composable () -> Unit = {
                 Row(Modifier.fillMaxWidth().heightIn(min = 77.dp).testTag("device_${device.id}")
@@ -119,14 +119,14 @@ internal fun DeviceList(names: List<String>, activeTarget: String?, busy: Boolea
                     Column(Modifier.weight(1f)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(name, Modifier.weight(1f, fill = false), style = MaterialTheme.typography.labelLarge)
-                            if (device.id == "phone") {
+                            if (device.isThisPhone) {
                                 Text(stringResource(R.string.you), Modifier.padding(start = 4.dp)
                                     .background(MaterialTheme.colorScheme.surfaceContainerLow, RoundedCornerShape(6.dp))
                                     .padding(horizontal = 6.dp, vertical = 3.dp), color = MaterialTheme.colorScheme.primary,
                                     style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp, fontSize = 9.sp))
                             }
                         }
-                        Text(stringResource(R.string.device_status, stringResource(device.type),
+                        Text(stringResource(R.string.device_status, device.ip,
                             stringResource(if (activeTarget == device.id || activeTarget == "all") R.string.pause_active else R.string.online)),
                             Modifier.padding(top = 3.dp), color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodySmall)
@@ -137,13 +137,13 @@ internal fun DeviceList(names: List<String>, activeTarget: String?, busy: Boolea
                 }
             }
             if (animate) Entrance(index + 1, row) else row()
-            if (index < demoDevices.lastIndex) Divider()
+            if (index < LocalDevices.current.lastIndex) Divider()
         }
     }
 }
 
 @Composable
-private fun ActivePause(target: String, deadline: Long, names: List<String>, busy: Boolean, celebrate: Boolean,
+private fun ActivePause(target: String, deadline: Long, names: Map<String, String>, busy: Boolean, celebrate: Boolean,
     onResume: () -> Unit, onTargets: () -> Unit) {
     val name = targetName(target, names)
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(top = 10.dp)) {
@@ -181,9 +181,9 @@ private fun ActivePause(target: String, deadline: Long, names: List<String>, bus
 
 @Composable
 private fun Countdown(deadline: Long) {
-    val seconds by produceState(((deadline - SystemClock.elapsedRealtime() + 999L) / 1000L).coerceAtLeast(0L), deadline) {
+    val seconds by produceState(((deadline - System.currentTimeMillis() + 999L) / 1000L).coerceAtLeast(0L), deadline) {
         while (true) {
-            value = ((deadline - SystemClock.elapsedRealtime() + 999L) / 1000L).coerceAtLeast(0L)
+            value = ((deadline - System.currentTimeMillis() + 999L) / 1000L).coerceAtLeast(0L)
             delay(1000L)
         }
     }
@@ -193,7 +193,7 @@ private fun Countdown(deadline: Long) {
         style = MaterialTheme.typography.headlineLarge.copy(fontSize = 64.sp, lineHeight = 74.sp,
             fontWeight = FontWeight.Medium, letterSpacing = (-3).sp, fontFeatureSettings = "tnum", textDirection = TextDirection.Ltr))
     val endTime = remember(deadline, locale) {
-        DateFormat.getTimeFormat(context).format(Date(System.currentTimeMillis() + deadline - SystemClock.elapsedRealtime()))
+        DateFormat.getTimeFormat(context).format(Date(deadline))
     }
     SmallText(stringResource(R.string.remaining_until, endTime), Modifier.padding(top = 4.dp, bottom = 24.dp))
 }

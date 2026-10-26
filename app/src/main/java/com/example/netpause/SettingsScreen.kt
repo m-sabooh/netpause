@@ -97,9 +97,9 @@ private fun SettingsSection(title: String, content: @Composable ColumnScope.() -
 
 @Composable
 internal fun ConnectionScreen(address: String, connected: Boolean, busy: Boolean,
-    onConnect: (String) -> Unit, onEdit: () -> Unit, onNetwork: () -> Unit) {
+    onConnect: (RouterCredentials, Boolean) -> Unit, onEdit: () -> Unit, onNetwork: () -> Unit) {
     var draftAddress by rememberSaveable(address) { mutableStateOf(address) }
-    // Preview credentials stay out of saved instance state and are discarded on submission.
+    // Credentials stay out of saved instance state.
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
@@ -114,9 +114,7 @@ internal fun ConnectionScreen(address: String, connected: Boolean, busy: Boolean
         if (draftAddress.isBlank() || username.isBlank() || password.isBlank()) error = true else {
             keyboard?.hide()
             focus.clearFocus()
-            username = ""
-            password = ""
-            onConnect(draftAddress.trim())
+            onConnect(RouterCredentials(draftAddress.trim(), username.trim(), password), rememberCredentials)
         }
     }
     Column(Modifier.padding(top = 10.dp).testTag("connection_screen")) {

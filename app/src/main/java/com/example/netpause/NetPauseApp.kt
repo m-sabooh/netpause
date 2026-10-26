@@ -1,7 +1,8 @@
 package com.example.netpause
 
+import androidx.core.content.edit
+
 import android.content.res.Configuration
-import android.os.SystemClock
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.spring
@@ -35,8 +36,9 @@ private enum class Sheet { Device, Compose, Rename, Targets, Replace }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NetPauseApp() {
-    var language by rememberSaveable { mutableStateOf("system") }
+internal fun NetPauseApp(controller: NetworkController, withPermission: (() -> Unit) -> Unit) {
+    val state = controller.state
+    var language by rememberSaveable { mutableStateOf(controller.preferences.getString("language", "system")!!) }
     val baseContext = LocalContext.current
     val systemConfiguration = LocalConfiguration.current
     val configuration = remember(language, systemConfiguration) {
@@ -49,24 +51,25 @@ fun NetPauseApp() {
     val motion = rememberMotionEnabled()
 
     CompositionLocalProvider(LocalContext provides localizedContext, LocalConfiguration provides configuration,
-        LocalLayoutDirection provides direction, LocalMotionEnabled provides motion) {
+        LocalLayoutDirection provides direction, LocalMotionEnabled provides motion, LocalDevices provides state.devices) {
         NetPauseTheme {
-            var destination by rememberSaveable { mutableStateOf(Destination.Network) }
+            var destination by rememberSaveable { mutableStateOf(if (state.connected) Destination.Network else Destination.Connection) }
             var sheet by rememberSaveable { mutableStateOf<Sheet?>(null) }
-            var selectedTarget by rememberSaveable { mutableStateOf("tv") }
+            var selectedTarget by rememberSaveable { mutableStateOf("") }
             var initiallyTimed by rememberSaveable { mutableStateOf(true) }
-            var activeTarget by rememberSaveable { mutableStateOf<String?>(null) }
-            var deadline by rememberSaveable { mutableLongStateOf(0L) }
-            var names by rememberSaveable { mutableStateOf(List(demoDevices.size) { "" }) }
-            var address by rememberSaveable { mutableStateOf("192.168.1.1") }
-            var widgetMinutes by rememberSaveable { mutableIntStateOf(15) }
-            var connected by rememberSaveable { mutableStateOf(false) }
+            val activeTarget = state.pause?.target
+            val deadline = state.pause?.deadline ?: 0L
+            val names = controller.names
+            val address = controller.address
+            var widgetMinutes by remember { mutableIntStateOf(controller.preferences.getInt("widgetMinutes", 15)) }
+            var connected by remember { mutableStateOf(false) }
+            var observedConnected by rememberSaveable { mutableStateOf(state.connected) }
+            var observedRevision by rememberSaveable { mutableIntStateOf(state.connectionRevision) }
             var pendingTarget by rememberSaveable { mutableStateOf<String?>(null) }
             var pendingMinutes by rememberSaveable { mutableStateOf<Int?>(null) }
-            var busyAction by rememberSaveable { mutableStateOf<String?>(null) }
             var notice by rememberSaveable { mutableStateOf<Int?>(null) }
             var celebrate by remember { mutableStateOf(false) }
-            val busy = busyAction != null
+            val busy = state.busy
             val scope = rememberCoroutineScope()
             val keyboard = LocalSoftwareKeyboardController.current
             val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -88,32 +91,25 @@ fun NetPauseApp() {
                 pendingTarget = target
                 pendingMinutes = minutes
                 notice = null
-                busyAction = if (target == null) "resume" else "pause"
+                withPermission { controller.changePause(target, minutes) }
                 destination = Destination.Network
                 if (sheet != null) hideSheet()
             }
 
-            // shortcut: all changes are local UI simulation, replace with router readback when control is implemented.
-            LaunchedEffect(busyAction) {
-                val action = busyAction ?: return@LaunchedEffect
-                delay(if (action == "refresh") 900L else 1100L)
-                when (action) {
-                    "pause" -> {
-                        activeTarget = pendingTarget
-                        deadline = pendingMinutes?.let { SystemClock.elapsedRealtime() + it * 60_000L } ?: 0L
-                        celebrate = true
-                    }
-                    "resume" -> { activeTarget = null; deadline = 0L; notice = R.string.restored }
-                    "connect" -> connected = true
+            LaunchedEffect(state.connected, state.connectionRevision) {
+                val justConnected = state.connected && (!observedConnected || observedRevision != state.connectionRevision)
+                if (justConnected && destination == Destination.Connection) {
+                    connected = true
+                    destination = Destination.Network
                 }
-                busyAction = null
+                observedConnected = state.connected
+                observedRevision = state.connectionRevision
             }
-            LaunchedEffect(activeTarget, deadline) {
-                if (activeTarget != null && deadline > 0L) {
-                    delay((deadline - SystemClock.elapsedRealtime()).coerceAtLeast(0L))
-                    activeTarget = null
-                    deadline = 0L
-                    notice = R.string.restored
+            LaunchedEffect(state.pause?.id) { if (state.pause != null) celebrate = true }
+            LaunchedEffect(deadline) {
+                if (deadline > 0L) {
+                    delay((deadline - System.currentTimeMillis()).coerceAtLeast(0L) + 1500)
+                    controller.refresh()
                 }
             }
             LaunchedEffect(celebrate) { if (celebrate) { delay(800); celebrate = false } }
@@ -151,23 +147,29 @@ fun NetPauseApp() {
                                     },
                                     busy = busy,
                                     onBack = { destination = if (screen == Destination.Connection) Destination.Settings else Destination.Network },
-                                    onRefresh = { if (!busy) { notice = null; busyAction = "refresh" } },
+                                    onRefresh = { if (!busy) { notice = null; withPermission { controller.refresh() } } },
                                     onSettings = { destination = Destination.Settings },
                                 )
                                 Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(scroll)
                                     .padding(start = 22.dp, end = 22.dp, bottom = 24.dp)) {
+                                    state.error?.let { Notice(stringResource(it), Modifier.padding(bottom = 16.dp).testTag("router_error")) }
+                                    if (state.stale && state.connected) Notice(stringResource(R.string.stale_status), Modifier.padding(bottom = 16.dp))
                                     when (screen) {
-                                        Destination.Network -> NetworkScreen(activeTarget, deadline, names, busy, notice, celebrate,
+                                        Destination.Network -> if (!state.connected) {
+                                            Notice(stringResource(R.string.same_wifi))
+                                            NetButton(stringResource(R.string.connect_router), { destination = Destination.Connection },
+                                                Modifier.fillMaxWidth().padding(top = 20.dp))
+                                        } else NetworkScreen(activeTarget, deadline, names, busy, notice, celebrate,
                                             onPauseAll = { openComposer("all", false) },
                                             onTimedAll = { openComposer("all") },
                                             onDevice = { selectedTarget = it; sheet = Sheet.Device },
                                             onResume = { changePause(null, null) },
                                             onTargets = { sheet = Sheet.Targets })
-                                        Destination.Settings -> SettingsScreen(language, { language = it }, widgetMinutes,
-                                            { widgetMinutes = it }, address,
+                                        Destination.Settings -> SettingsScreen(language, { language = it; controller.preferences.edit { putString("language", it) } }, widgetMinutes,
+                                            { widgetMinutes = it; controller.preferences.edit { putInt("widgetMinutes", it) } }, address,
                                             onConnection = { connected = false; destination = Destination.Connection })
                                         Destination.Connection -> ConnectionScreen(address, connected, busy,
-                                            onConnect = { value -> address = value; busyAction = "connect" },
+                                            onConnect = { value, remember -> withPermission { controller.connect(value, remember) } },
                                             onEdit = { connected = false }, onNetwork = { destination = Destination.Network })
                                     }
                                 }
@@ -212,7 +214,7 @@ fun NetPauseApp() {
                                 }
                             }
                             Sheet.Rename -> RenameDevice(targetName(selectedTarget, names)) { newName ->
-                                names = names.toMutableList().apply { set(demoDevices.indexOfFirst { it.id == selectedTarget }, newName) }
+                                controller.rename(selectedTarget, newName)
                                 hideSheet()
                             }
                             Sheet.Targets -> TargetPicker(names, activeTarget, busy, onEveryone = { openComposer("all") },
