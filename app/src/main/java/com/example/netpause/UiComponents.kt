@@ -148,7 +148,7 @@ internal fun Entrance(index: Int = 0, content: @Composable () -> Unit) {
 
 @Composable
 internal fun Heading(text: String, modifier: Modifier = Modifier, style: TextStyle = MaterialTheme.typography.headlineMedium) {
-    Text(text, modifier.semantics { heading() }, style = style)
+    Text(text, modifier.fillMaxWidth().semantics { heading() }, style = style)
 }
 
 @Composable

@@ -157,7 +157,8 @@ private fun ActivePause(target: String, deadline: Long, names: Map<String, Strin
         if (deadline > 0L) Countdown(deadline) else {
             Column(Modifier.fillMaxWidth().padding(vertical = 24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Divider()
-                Heading(stringResource(R.string.until_you_resume), Modifier.padding(top = 18.dp, bottom = 8.dp), MaterialTheme.typography.titleLarge)
+                Heading(stringResource(R.string.until_you_resume), Modifier.padding(top = 18.dp, bottom = 8.dp),
+                    MaterialTheme.typography.titleLarge.copy(textAlign = TextAlign.Center))
                 SmallText(stringResource(R.string.manual_resume), Modifier.padding(bottom = 18.dp))
                 Divider()
             }

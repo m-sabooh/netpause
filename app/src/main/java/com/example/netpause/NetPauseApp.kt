@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
@@ -50,7 +51,9 @@ internal fun NetPauseApp(controller: NetworkController, withPermission: (() -> U
     val direction = if (configuration.layoutDirection == android.view.View.LAYOUT_DIRECTION_RTL) LayoutDirection.Rtl else LayoutDirection.Ltr
     val motion = rememberMotionEnabled()
 
+    // Popup and dialog hosts replace LocalContext with the activity's context.
     CompositionLocalProvider(LocalContext provides localizedContext, LocalConfiguration provides configuration,
+        LocalResources provides localizedContext.resources,
         LocalLayoutDirection provides direction, LocalMotionEnabled provides motion, LocalDevices provides state.devices) {
         NetPauseTheme {
             var destination by rememberSaveable { mutableStateOf(if (state.connected) Destination.Network else Destination.Connection) }

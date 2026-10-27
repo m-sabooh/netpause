@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -121,7 +122,8 @@ internal fun ConnectionScreen(address: String, connected: Boolean, busy: Boolean
         if (connected) {
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 ConfirmationIcon(R.drawable.ic_check, true)
-                Heading(stringResource(R.string.connection_ready), Modifier.padding(bottom = 10.dp))
+                Heading(stringResource(R.string.connection_ready), Modifier.padding(bottom = 10.dp),
+                    MaterialTheme.typography.headlineMedium.copy(textAlign = TextAlign.Center))
                 SmallText(stringResource(R.string.devices_ready))
                 NetButton(stringResource(R.string.go_to_network), onNetwork, Modifier.fillMaxWidth().padding(top = 28.dp).testTag("go_network"))
                 NetButton(stringResource(R.string.edit_connection), onEdit, Modifier.fillMaxWidth().padding(top = 12.dp), secondary = true)
@@ -160,7 +162,7 @@ internal fun ConnectionScreen(address: String, connected: Boolean, busy: Boolean
                 Checkbox(rememberCredentials, null, enabled = !busy)
                 Text(stringResource(R.string.remember_credentials), style = MaterialTheme.typography.bodyMedium)
             }
-            if (error) Text(stringResource(R.string.connection_required), Modifier.padding(bottom = 12.dp),
+            if (error) Text(stringResource(R.string.connection_required), Modifier.padding(bottom = 12.dp).testTag("connection_error"),
                 color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium)
             if (busy) Notice(stringResource(R.string.checking_description), Modifier.padding(bottom = 12.dp), title = stringResource(R.string.checking))
             NetButton(stringResource(R.string.connect_router), ::connect, Modifier.fillMaxWidth().testTag("connect"), icon = R.drawable.ic_router, enabled = !busy)

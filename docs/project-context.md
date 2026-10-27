@@ -1,6 +1,6 @@
 # NetPause project context
 
-Last updated: 2026-10-26. The requirements below are the baseline for future sessions.
+Last updated: 2026-10-27. The requirements below are the baseline for future sessions.
 
 ## Purpose and current state
 
@@ -11,6 +11,8 @@ The native Kotlin/Compose app implements the selected Stillwater/Pulse UI with L
 Implementation limits: timed deadlines round upward to the next minute and must end before 23:59 on the current router date; unsupported boundaries fail before mutation. This is a temporary implementation guard, not a new product duration requirement. Indefinite pauses remain unavailable until their firmware semantics are verified. The actual home-screen widget is still deferred. Settings retain the reference’s 15-minute value while the documented default mismatch remains unresolved. Multiple-phone concurrency, all-device traffic behavior, IPv6, and router restart/date boundaries remain acceptance gaps. The owner’s phone-only test authorization applies to this session, not future sessions.
 
 The app compiles with SDK 37.2, targets API 37, and supports API 24+. `NetworkController` survives activity recreation; router reads provide shared pause state. `AppStorage` protects remembered credentials with an Android Keystore AES-GCM key in no-backup storage. The HTTP client refuses redirects and restricts configured hosts to private IPv4 literals. See `../README.md` for setup and commands.
+
+Arabic UI verification on 2026-10-27 used an English-language Android 16 emulator with Arabic selected inside the app. Menus and bottom sheets require explicitly provided localized Compose resources because their window hosts replace the localized context. Native permission dialogs also use the selected app language. The screen walkthrough covers settings, connection and validation, device details, renaming, pause modes, active pauses, target selection, replacement, and stale/error/loading states. Pause states use synthetic test data; this establishes UI behavior only and adds no router acceptance evidence.
 
 ## Design direction confirmed on 2026-10-23
 
@@ -28,6 +30,7 @@ The app compiles with SDK 37.2, targets API 37, and supports API 24+. `NetworkCo
 - **Router:** Huawei HG8245X6. Support for other router models is outside the current scope. The tested firmware is listed below; compatibility with other firmware is not established.
 - **Connectivity:** Local network control only. Remote access is outside scope.
 - **Languages:** English and Arabic, including Arabic RTL support.
+- **App name:** Keep the brand name `NetPause` in English in every language, including Arabic (confirmed 2026-10-27).
 - **Setup defaults:** Start the router address at `192.168.1.1` and allow editing. Follow the phone's language by default, with an English/Arabic override in app settings.
 - **Credentials:** Users enter their router credentials because defaults differ. Remember credentials securely so users do not have to enter them whenever the app opens and widget actions can authenticate without a login form. Follow the feasibility report's Keystore-backed storage guidance; do not hardcode shared defaults.
 - **Multiple phones:** The owner and family member may control the same router from separate phones. Shared pause status and control on router refresh are sufficient for version one. Immediate cross-phone updates are deferred. This is a confirmed requirement awaiting hardware validation.

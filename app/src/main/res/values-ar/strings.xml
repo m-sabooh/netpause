@@ -17,12 +17,11 @@
     <string name="error_schema">أرسل الراوتر استجابة غير متوقعة. لم تُجرَ تغييرات إضافية.</string>
     <string name="error_storage">تعذّر فتح بيانات الدخول المحفوظة. أدخل بيانات الراوتر مجدداً.</string>
     <string name="error_permission">اسمح بالوصول إلى الشبكة المحلية ليتصل التطبيق بالراوتر.</string>
-    <string name="error_wifi">وصّل الهاتف بشبكة Wi-Fi الخاصة بالراوتر وحاول مجدداً.</string>
+    <string name="error_wifi">وصّل الهاتف بشبكة واي فاي الخاصة بالراوتر وحاول مجدداً.</string>
     <string name="error_session">انتهت جلسة الراوتر. حدّث وحاول مجدداً.</string>
     <string name="error_firmware">تسجيل الدخول لهذا الراوتر غير مدعوم. يلزم إصدار Huawei TURKCELL المختبَر.</string>
     <string name="error_login">فشل الدخول. تحقّق من البيانات قبل المحاولة مجدداً.</string>
-    <string name="error_network">تعذّر تأكيد حالة الراوتر. تحقّق من Wi-Fi وحدّث قبل المحاولة مجدداً.</string>
-    <string name="app_name">نت بوز</string>
+    <string name="error_network">تعذّر تأكيد حالة الراوتر. تحقّق من واي فاي وحدّث قبل المحاولة مجدداً.</string>
     <string name="home_wifi">شبكة المنزل · محلي فقط</string>
     <string name="your_network">شبكتك</string>
     <string name="everyone_online">لا يوجد إيقاف نشط</string>
@@ -95,7 +94,7 @@
     <string name="language">اللغة</string>
     <string name="app_language">لغة التطبيق</string>
     <string name="follow_phone">اتباع لغة الهاتف</string>
-    <string name="english">English</string>
+    <string name="english">الإنجليزية</string>
     <string name="arabic">العربية</string>
     <string name="widget">أداة الشاشة الرئيسية</string>
     <string name="default_timed_pause">مدة الإيقاف الافتراضية</string>
@@ -122,7 +121,7 @@
     <string name="connect_router">ربط الراوتر</string>
     <string name="same_wifi">اتصل بشبكة واي فاي الخاصة بالراوتر.</string>
     <string name="router_model">هواوي HG8245X6 · الشبكة المحلية فقط</string>
-    <string name="credentials_demo">تُشفّر بيانات الدخول عند حفظها على هذا الهاتف. يستخدم الراوتر HTTP عبر شبكة Wi-Fi المحلية.</string>
+    <string name="credentials_demo">تُشفّر بيانات الدخول عند حفظها على هذا الهاتف. يستخدم الراوتر HTTP عبر شبكة واي فاي المحلية.</string>
     <string name="connection_required">أدخل عنوان الراوتر واسم المستخدم وكلمة المرور.</string>
     <string name="connection_ready">تم الاتصال بالراوتر</string>
     <string name="devices_ready">أجهزتك المتصلة جاهزة للإدارة.</string>

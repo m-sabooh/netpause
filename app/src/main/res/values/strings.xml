@@ -18,7 +18,7 @@
     <string name="error_firmware">This router’s login is not supported. NetPause requires the tested Huawei TURKCELL firmware.</string>
     <string name="error_login">Login failed. Check your credentials before trying again.</string>
     <string name="error_network">Could not confirm the router state. Check Wi-Fi and refresh before trying again.</string>
-    <string name="app_name">NetPause</string>
+    <string name="app_name" translatable="false">NetPause</string>
     <string name="home_wifi">Home Wi-Fi · Local only</string>
     <string name="your_network">YOUR NETWORK</string>
     <string name="everyone_online">No active pause</string>

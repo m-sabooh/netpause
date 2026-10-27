@@ -9,10 +9,13 @@ import androidx.activity.viewModels
 import androidx.activity.result.contract.ActivityResultContracts
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.res.Configuration
 import android.content.pm.PackageManager
 import androidx.core.net.toUri
 import android.os.Build
 import android.provider.Settings
+import android.view.ContextThemeWrapper
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
   private val controller: NetworkController by viewModels()
@@ -22,11 +25,19 @@ class MainActivity : ComponentActivity() {
     pendingNetworkAction = null
     if (granted) action?.invoke()
     else if (!shouldShowRequestPermissionRationale(LOCAL_NETWORK_PERMISSION)) {
-      AlertDialog.Builder(this).setMessage(R.string.error_permission)
+      permissionDialog().setMessage(R.string.error_permission)
         .setPositiveButton(R.string.open_settings) { _, _ ->
           startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:$packageName".toUri()))
         }.setNegativeButton(android.R.string.cancel, null).show()
     }
+  }
+
+  private fun permissionDialog(): AlertDialog.Builder {
+    val language = controller.preferences.getString("language", "system")!!
+    val configuration = Configuration(resources.configuration).apply {
+      if (language != "system") setLocale(Locale.forLanguageTag(language))
+    }
+    return AlertDialog.Builder(ContextThemeWrapper(this, theme).apply { applyOverrideConfiguration(configuration) })
   }
 
   private fun withNetworkPermission(action: () -> Unit) {
@@ -34,7 +45,7 @@ class MainActivity : ComponentActivity() {
     else {
       pendingNetworkAction = action
       if (shouldShowRequestPermissionRationale(LOCAL_NETWORK_PERMISSION)) {
-        AlertDialog.Builder(this).setMessage(R.string.error_permission)
+        permissionDialog().setMessage(R.string.error_permission)
           .setPositiveButton(android.R.string.ok) { _, _ -> permission.launch(LOCAL_NETWORK_PERMISSION) }
           .setNegativeButton(android.R.string.cancel) { _, _ -> pendingNetworkAction = null }.show()
       } else permission.launch(LOCAL_NETWORK_PERMISSION)

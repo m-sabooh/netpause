@@ -64,6 +64,6 @@ class MainActivityTest {
         scrollTap("edit_connection")
         scrollTap("connect")
         compose.onNodeWithTag("connection_screen").assertExists()
-        compose.onNodeWithText(compose.activity.getString(R.string.connection_required)).assertExists()
+        compose.onNodeWithTag("connection_error").assertExists()
     }
 }
