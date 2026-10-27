@@ -88,6 +88,15 @@ class PhoneRouterTest {
                     assertEquals(active, pauses.status())
                     File(context.noBackupFilesDir, "phone-check.txt").writeText("Phone-only timed pause confirmed. Deadline: ${active.deadline}")
                 }
+                "indefinite" -> {
+                    assertNull("An existing pause must not be replaced by this test", before.pause())
+                    phase = "indefinite phone pause"
+                    val active = pauses.change(phone.id, null, null)!!
+                    assertTrue("Pause target must be this phone", phone.id == active.target)
+                    assertEquals(0L, active.deadline)
+                    assertEquals(active, pauses.status())
+                    File(context.noBackupFilesDir, "phone-check.txt").writeText("Phone-only indefinite pause confirmed. Deadline: ${active.deadline}")
+                }
                 "resume" -> {
                     phase = "phone resume"
                     val active = before.pause()

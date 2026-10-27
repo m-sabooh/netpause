@@ -149,8 +149,8 @@ class ArabicScreensTest {
         state(RouterPause("test", "all", System.currentTimeMillis() + 600_000))
         assertArabic(R.string.all_paused, R.string.early_resume)
         screenshot("17-active-timed")
-        state(error = R.string.error_indefinite)
-        assertArabic(R.string.error_indefinite, R.string.stale_status)
+        state(error = R.string.error_conflict)
+        assertArabic(R.string.error_conflict, R.string.stale_status)
         screenshot("18-router-error")
         compose.mainClock.autoAdvance = false
         state(busy = true)

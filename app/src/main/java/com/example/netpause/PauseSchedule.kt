@@ -23,6 +23,12 @@ internal fun routerClock(source: String): Calendar {
     return Calendar.getInstance(zone).apply { time = date }
 }
 
+internal fun indefiniteSchedule(clock: Calendar): PauseSchedule {
+    // shortcut: firmware requires one 1-minute allowed slot per week (00:00-00:01 on the previous weekday), revisit if multi-week uninterrupted pauses need zero-slot blocking.
+    val previousDay = ((clock.get(Calendar.DAY_OF_WEEK) + 4) % 7 + 1).toString()
+    return PauseSchedule("", "", 0L, listOf(AllowedPeriod("00:00", "00:01", previousDay)))
+}
+
 internal fun timedSchedule(clock: Calendar, phoneNow: Long, minutes: Int): PauseSchedule {
     if (abs(clock.timeInMillis - phoneNow) > 90_000L) throw RouterException(R.string.error_clock)
     if (minutes < 1) throw RouterException(R.string.invalid_minutes)

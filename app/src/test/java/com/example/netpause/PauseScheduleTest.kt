@@ -4,6 +4,12 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class PauseScheduleTest {
+    @Test fun indefiniteScheduleUsesPreviousRouterWeekdayMinuteSlot() {
+        val sunday = routerClock("var systemdsttime = '2026-10-25T14:20:30+03:00';")
+        val monday = routerClock("systemdsttime='2026-10-26 00:00:00+03:00'")
+        assertEquals(PauseSchedule("", "", 0L, listOf(AllowedPeriod("00:00", "00:01", "6"))), indefiniteSchedule(sunday))
+        assertEquals(PauseSchedule("", "", 0L, listOf(AllowedPeriod("00:00", "00:01", "7"))), indefiniteSchedule(monday))
+    }
     @Test fun deadlineRoundsUpAndUsesRouterWeekday() {
         val clock = routerClock("var systemdsttime = '2026-10-25T14:20:30+03:00';")
         val schedule = timedSchedule(clock, clock.timeInMillis, 10)

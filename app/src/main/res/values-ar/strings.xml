@@ -1,5 +1,5 @@
 <resources>
-    <string name="error_indefinite">الإيقاف غير المحدد غير متاح حتى التحقق من سلوك الراوتر. اختر إيقافاً مؤقتاً.</string>
+
     <string name="error_clock">ساعة الراوتر تختلف عن الهاتف. صحّح وقت الراوتر قبل تحديد إيقاف مؤقت.</string>
     <string name="error_midnight">يدعم هذا الإصدار إيقافاً ينتهي قبل 23:59 اليوم. اختر مدة أقصر.</string>
     <string name="error_conflict">تغيّرت إعدادات الراوتر أو توجد قاعدة متعارضة. حدّث قبل المحاولة مجدداً.</string>

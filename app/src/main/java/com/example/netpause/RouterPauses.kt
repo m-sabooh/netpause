@@ -18,18 +18,24 @@ internal class RouterPauses(private val client: RouterClient) {
     fun status(): RouterPause? {
         val config = configuration()
         val pause = config.pause() ?: return null
-        if (pause.deadline == 0L) return pause
-        val clock = routerClock(client.read("/html/ssmp/deviceinfo/deviceinfo.asp", "systemdsttime"))
-        if (abs(clock.timeInMillis - System.currentTimeMillis()) > 90_000) throw RouterException(R.string.error_clock)
         val binding = config.ownedBindings().single()
         val template = config.template(binding)
-        fun format(pattern: String) = SimpleDateFormat(pattern, Locale.ROOT).apply { timeZone = clock.timeZone }.format(Date(pause.deadline))
         val periods = config.periods.filter { it.domain.startsWith("${template.domain}.Duration.") }
+            .map { AllowedPeriod(it.field("StartTime"), it.field("EndTime"), it.field("RepeatDay")) }
+        if (pause.deadline == 0L) {
+            if (template.field("StartDate").isNotEmpty() || template.field("EndDate").isNotEmpty() ||
+                periods.size != 1 || periods.single().start != "00:00" || periods.single().end != "00:01" ||
+                periods.single().days !in setOf("1", "2", "3", "4", "5", "6", "7"))
+                throw RouterException(R.string.error_conflict)
+            return pause
+        }
+        val clock = routerClock(client.read("/html/ssmp/deviceinfo/deviceinfo.asp", "systemdsttime"))
+        if (abs(clock.timeInMillis - System.currentTimeMillis()) > 90_000) throw RouterException(R.string.error_clock)
+        fun format(pattern: String) = SimpleDateFormat(pattern, Locale.ROOT).apply { timeZone = clock.timeZone }.format(Date(pause.deadline))
         val endClock = (clock.clone() as Calendar).apply { timeInMillis = pause.deadline }
         val day = ((endClock.get(Calendar.DAY_OF_WEEK) + 5) % 7 + 1).toString()
         if (template.field("StartDate") != format("yyyyMMdd") || template.field("EndDate") != format("yyyyMMdd") ||
-            periods.size != 1 || periods.single().field("StartTime") != format("HH:mm") || periods.single().field("EndTime") != "23:59" ||
-            periods.single().field("RepeatDay") != day)
+            periods != listOf(AllowedPeriod(format("HH:mm"), "23:59", day)))
             throw RouterException(R.string.error_conflict)
         if (clock.timeInMillis >= pause.deadline) {
             removeBinding(config, binding)
@@ -51,10 +57,8 @@ internal class RouterPauses(private val client: RouterClient) {
         if (conflicts.any { target == "all" || it.field("MACAddress").equals(mac, true) ||
                 it.field("MACAddress").equals("FF:FF:FF:FF:FF:FF", true) }) throw RouterException(R.string.error_conflict)
         if (before.templates.size >= 8 || before.bindings.size >= 8) throw RouterException(R.string.error_capacity)
-        // shortcut: indefinite schedule semantics need a phone traffic test before enabling this mode.
-        if (minutes == null) throw RouterException(R.string.error_indefinite)
         val clock = routerClock(client.read("/html/ssmp/deviceinfo/deviceinfo.asp", "systemdsttime"))
-        val schedule = timedSchedule(clock, System.currentTimeMillis(), minutes)
+        val schedule = if (minutes == null) indefiniteSchedule(clock) else timedSchedule(clock, System.currentTimeMillis(), minutes)
         val name = "NP1_${UUID.randomUUID().toString().replace("-", "").take(12)}_${schedule.deadline}"
         client.write(CONTROL + "add.cgi?" + form(mapOf("x_SAVE_A" to "$PARENTAL.Templates",
             "RequestFile" to "html/bbsp/parentalctrl/parentalctrltime.asp")),
@@ -83,7 +87,7 @@ internal class RouterPauses(private val client: RouterClient) {
             before.ownedBindings().singleOrNull()?.let { removeBinding(ready, it) }
             ready = configuration()
             if (ready.bindings != conflicts || ready.pause() != null) throw RouterException(R.string.error_conflict)
-            if (System.currentTimeMillis() >= schedule.deadline - 5_000) throw RouterException(R.string.error_conflict)
+            if (schedule.deadline > 0L && System.currentTimeMillis() >= schedule.deadline - 5_000) throw RouterException(R.string.error_conflict)
             client.write(CONTROL + "add.cgi?" + form(mapOf("x" to "$PARENTAL.MAC",
                 "RequestFile" to "html/bbsp/parentalctrl/parentalctrlmac.asp")),
                 mapOf("x.MACAddress" to mac, "x.Description" to name, "x.TemplateInst" to template.id), MAC_PAGE)

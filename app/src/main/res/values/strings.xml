@@ -1,5 +1,5 @@
 <resources>
-    <string name="error_indefinite">Indefinite pause is not enabled until its router behavior is verified. Choose a timed pause.</string>
+
     <string name="error_clock">The router clock differs from this phone. Correct the router time before scheduling a pause.</string>
     <string name="error_midnight">This version supports timed pauses ending before 23:59 today. Choose fewer minutes.</string>
     <string name="error_conflict">Router controls changed or another rule conflicts. Refresh before trying again.</string>
