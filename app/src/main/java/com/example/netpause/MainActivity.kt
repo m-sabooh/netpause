@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.activity.result.contract.ActivityResultContracts
 import android.app.AlertDialog
 import android.content.Intent
@@ -18,7 +17,7 @@ import android.view.ContextThemeWrapper
 import java.util.Locale
 
 class MainActivity : ComponentActivity() {
-  private val controller: NetworkController by viewModels()
+  private val controller by lazy { networkController }
   private var pendingNetworkAction: (() -> Unit)? = null
   private val permission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
     val action = pendingNetworkAction

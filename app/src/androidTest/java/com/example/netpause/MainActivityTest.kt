@@ -9,7 +9,6 @@ import org.junit.After
 import org.junit.Before
 import android.content.Context
 import androidx.core.content.edit
-import androidx.lifecycle.ViewModelProvider
 
 /** These UI checks never submit credentials or change router rules. */
 class MainActivityTest {
@@ -26,13 +25,14 @@ class MainActivityTest {
             putString("language", savedLanguage)
             putInt("widgetMinutes", savedMinutes)
         }
+        compose.runOnIdle { compose.activity.networkController.updateWidgets() }
     }
     private fun tap(tag: String) = compose.onNodeWithTag(tag).performClick()
     private fun scrollTap(tag: String) = compose.onNodeWithTag(tag).performScrollTo().performClick()
     private fun openSettings() {
         compose.waitUntil(10_000) { compose.onAllNodes(isRoot()).fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty() }
         compose.waitUntil(30_000) {
-            !ViewModelProvider(compose.activity)[NetworkController::class.java].state.busy
+            !compose.activity.networkController.state.busy
         }
         compose.waitForIdle()
         if (compose.onAllNodesWithTag("connection_screen").fetchSemanticsNodes().isNotEmpty()) tap("back")

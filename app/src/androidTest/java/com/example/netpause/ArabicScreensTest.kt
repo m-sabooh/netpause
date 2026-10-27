@@ -8,7 +8,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.core.content.edit
-import androidx.lifecycle.ViewModelProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import java.io.File
 import java.util.Locale
@@ -26,6 +25,7 @@ class ArabicScreensTest {
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
     private lateinit var controller: NetworkController
     private var savedLanguage = "system"
+    private lateinit var savedState: NetworkState
     private val phone = RouterDevice("02:00:00:00:00:01", "Test phone", "192.0.2.1", true)
     private val pc = RouterDevice("02:00:00:00:00:02", "Test PC", "192.0.2.2")
     private val arabic by lazy {
@@ -35,9 +35,10 @@ class ArabicScreensTest {
     }
 
     @Before fun prepare() {
-        controller = ViewModelProvider(compose.activity)[NetworkController::class.java]
+        controller = compose.activity.networkController
         savedLanguage = controller.preferences.getString("language", "system")!!
         compose.waitUntil(30_000) { !controller.state.busy }
+        savedState = controller.state
         if (compose.onAllNodesWithTag("connection_screen").fetchSemanticsNodes().isNotEmpty()) tap("back")
         else tap("settings")
         tap("language_picker")
@@ -48,6 +49,12 @@ class ArabicScreensTest {
 
     @After fun restoreLanguage() {
         controller.preferences.edit { putString("language", savedLanguage) }
+        compose.runOnIdle {
+            NetworkController::class.java.getDeclaredMethod("setState", NetworkState::class.java).apply {
+                isAccessible = true
+            }.invoke(controller, savedState)
+            controller.updateWidgets()
+        }
     }
 
     private fun tap(tag: String) = compose.onNodeWithTag(tag).performClick()

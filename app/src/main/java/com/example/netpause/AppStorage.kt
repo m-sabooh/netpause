@@ -22,6 +22,7 @@ internal data class RouterCredentials(val address: String, val username: String,
 internal class AppStorage(context: Context) {
     val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
     private val credentialsFile = AtomicFile(File(context.noBackupFilesDir, "router.bin"))
+    val hasCredentials get() = credentialsFile.baseFile.exists()
     private fun key(): SecretKey {
         val store = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
         (store.getKey("netpause.router", null) as? SecretKey)?.let { return it }

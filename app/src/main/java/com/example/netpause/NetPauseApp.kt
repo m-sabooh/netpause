@@ -168,8 +168,10 @@ internal fun NetPauseApp(controller: NetworkController, withPermission: (() -> U
                                             onDevice = { selectedTarget = it; sheet = Sheet.Device },
                                             onResume = { changePause(null, null) },
                                             onTargets = { sheet = Sheet.Targets })
-                                        Destination.Settings -> SettingsScreen(language, { language = it; controller.preferences.edit { putString("language", it) } }, widgetMinutes,
-                                            { widgetMinutes = it; controller.preferences.edit { putInt("widgetMinutes", it) } }, address,
+                                        Destination.Settings -> SettingsScreen(language, {
+                                            language = it; controller.preferences.edit { putString("language", it) }; controller.updateWidgets()
+                                        }, widgetMinutes,
+                                            { widgetMinutes = it; controller.preferences.edit { putInt("widgetMinutes", it) }; controller.updateWidgets() }, address,
                                             onConnection = { connected = false; destination = Destination.Connection })
                                         Destination.Connection -> ConnectionScreen(address, connected, busy,
                                             onConnect = { value, remember -> withPermission { controller.connect(value, remember) } },
