@@ -43,19 +43,72 @@ class WidgetTest {
         preferences.edit { putString("language", savedLanguage); putInt("widgetMinutes", savedMinutes) }
     }
 
-    private fun render(state: NetworkState, remembered: Boolean = true, names: Map<String, String> = emptyMap(), widthDp: Int = 360): View {
+    private fun render(state: NetworkState, remembered: Boolean = true, names: Map<String, String> = emptyMap(),
+        widthDp: Int = 360, heightDp: Int = 230, compact: Boolean = false): View {
         lateinit var view: View
         instrumentation.runOnMainSync {
-            view = NetPauseWidget.views(context, state, names, remembered, now).apply(context, FrameLayout(context))
+            view = NetPauseWidget.views(context, state, names, remembered, now, compact).apply(context, FrameLayout(context))
             val density = context.resources.displayMetrics.density
             view.measure(View.MeasureSpec.makeMeasureSpec((widthDp * density).toInt(), View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec((230 * density).toInt(), View.MeasureSpec.EXACTLY))
+                View.MeasureSpec.makeMeasureSpec((heightDp * density).toInt(), View.MeasureSpec.EXACTLY))
+            view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+            // A launcher runs another layout pass when drawing resolves inherited RTL padding.
+            val firstFrame = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+            view.draw(android.graphics.Canvas(firstFrame))
+            firstFrame.recycle()
+            view.measure(View.MeasureSpec.makeMeasureSpec((widthDp * density).toInt(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec((heightDp * density).toInt(), View.MeasureSpec.EXACTLY))
             view.layout(0, 0, view.measuredWidth, view.measuredHeight)
         }
         return view
     }
 
     private fun View.label(id: Int) = findViewById<TextView>(id).text.toString()
+
+    @Test fun compactStatesKeepControlsAndCountdownInsideMinimumSize() {
+        for (language in listOf("en", "ar")) {
+            preferences.edit { putString("language", language) }
+            val states = listOf(confirmed, confirmed.copy(pause = RouterPause("fixture", "all", now + 600_000)),
+                confirmed.copy(pause = RouterPause("fixture", phone.id, 0)), confirmed.copy(busy = true),
+                confirmed.copy(stale = true, error = R.string.error_wifi), NetworkState())
+            for ((index, state) in states.withIndex()) {
+                val view = render(state, widthDp = 140, heightDp = 140, compact = true)
+                for (id in listOf(R.id.widget_pause, R.id.widget_timed, R.id.widget_primary, R.id.widget_header, R.id.widget_countdown)) {
+                    val child = view.findViewById<View>(id)
+                    var ancestor: View? = child
+                    var visible = true
+                    while (ancestor != null) {
+                        visible = visible && ancestor.visibility == View.VISIBLE
+                        ancestor = ancestor.parent as? View
+                    }
+                    if (!visible) continue
+                    val bounds = android.graphics.Rect()
+                    child.getDrawingRect(bounds)
+                    (view as android.view.ViewGroup).offsetDescendantRectToMyCoords(child, bounds)
+                    assertTrue("$language state $index: $bounds outside ${view.width}x${view.height}",
+                        bounds.left >= 0 && bounds.top >= 0 && bounds.right <= view.width && bounds.bottom <= view.height)
+                    if (child is Button) {
+                        assertTrue(child.height >= 48 * context.resources.displayMetrics.density - 1)
+                        assertTrue(child.width >= 48 * context.resources.displayMetrics.density - 1)
+                        for (line in 0 until child.layout.lineCount) assertEquals("Action label must be readable", 0, child.layout.getEllipsisCount(line))
+                    }
+                }
+                assertEquals(if ((state.pause?.deadline ?: 0L) > now) View.VISIBLE else View.GONE,
+                    view.findViewById<View>(R.id.widget_countdown).visibility)
+                val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+                instrumentation.runOnMainSync { view.draw(android.graphics.Canvas(bitmap)) }
+                val directory = File(context.getExternalFilesDir(null), "widget-review").apply { mkdirs() }
+                File(directory, "$language-compact-$index.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+                bitmap.recycle()
+            }
+        }
+        val provider = AppWidgetManager.getInstance(context).installedProviders.single {
+            it.provider == ComponentName(context, NetPauseWidget::class.java)
+        }
+        val density = context.resources.displayMetrics.density
+        assertTrue(provider.minResizeWidth <= 140 * density + 1)
+        assertTrue(provider.minResizeHeight <= 140 * density + 1)
+    }
 
     @Test fun idleAndEveryActivePauseStateRenderInBothLanguages() {
         for (language in listOf("en", "ar")) {

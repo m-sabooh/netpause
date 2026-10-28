@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+    <LinearLayout android:id="@+id/widget_idle_actions" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:visibility="gone">
+        <Button android:id="@+id/widget_pause" style="?android:attr/buttonBarButtonStyle" android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:minHeight="48dp" android:paddingStart="8dp" android:paddingEnd="8dp"
+            android:background="@drawable/widget_primary" android:backgroundTint="@null" android:textColor="#FFFFFF"
+            android:text="@string/pause_everyone" android:textSize="12sp" android:textAllCaps="false"
+            android:fontFamily="sans-serif-medium" android:maxLines="2" android:ellipsize="end" />
+        <Button android:id="@+id/widget_timed" style="?android:attr/buttonBarButtonStyle" android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1" android:minHeight="48dp" android:paddingStart="8dp" android:paddingEnd="8dp"
+            android:background="@drawable/widget_secondary" android:backgroundTint="@null" android:textColor="#361828"
+            android:text="@string/widget_timed_preview" android:textSize="12sp" android:textAllCaps="false"
+            android:fontFamily="sans-serif-medium" android:maxLines="2" android:ellipsize="end" />
+    </LinearLayout>
+    <Button android:id="@+id/widget_primary" style="?android:attr/buttonBarButtonStyle" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:minHeight="48dp" android:paddingStart="8dp" android:paddingEnd="8dp"
+        android:background="@drawable/widget_secondary" android:backgroundTint="@null" android:textColor="#361828"
+        android:text="@string/refresh_status" android:textSize="12sp" android:textAllCaps="false"
+        android:fontFamily="sans-serif-medium" android:maxLines="2" android:ellipsize="end" />
+</LinearLayout>

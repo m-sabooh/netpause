@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/background" android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:padding="8dp" android:background="@drawable/widget_background"
+    android:theme="@android:style/Theme.Material.Light.NoActionBar" android:layoutDirection="locale">
+    <LinearLayout android:id="@+id/widget_header" android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:minHeight="48dp" android:orientation="vertical" android:gravity="center_vertical"
+        android:background="?android:attr/selectableItemBackground" android:contentDescription="@string/widget_open_app">
+        <TextView android:id="@+id/widget_title" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/widget_unknown" android:textSize="14sp" android:textColor="#361828"
+            android:fontFamily="sans-serif-medium" android:maxLines="2" android:ellipsize="end" />
+        <Chronometer android:id="@+id/widget_countdown" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="#361828" android:textSize="22sp" android:fontFamily="monospace"
+            android:countDown="true" android:textDirection="ltr" android:visibility="gone" />
+    </LinearLayout>
+    <include layout="@layout/widget_actions" />
+</LinearLayout>

@@ -98,6 +98,8 @@
     <string name="widget_default_note">Used by the widget’s timed pause action.</string>
     <string name="widget_description">Pause everyone or resume the current pause, with a live countdown.</string>
     <string name="widget_open_app">Open app</string>
+    <string name="widget_resume_short">Resume</string>
+    <string name="widget_pause_short">Pause all</string>
     <string name="widget_checking">Checking…</string>
     <string name="widget_failed">Request not confirmed</string>
     <string name="widget_unknown">Status unknown</string>

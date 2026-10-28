@@ -101,6 +101,8 @@
     <string name="widget_default_note">تُستخدم لزر الإيقاف المؤقت في أداة الشاشة الرئيسية.</string>
     <string name="widget_description">أوقف الإنترنت عن الجميع أو استأنف الإيقاف الحالي مع عرض الوقت المتبقي.</string>
     <string name="widget_open_app">فتح التطبيق</string>
+    <string name="widget_resume_short">استئناف</string>
+    <string name="widget_pause_short">إيقاف الجميع</string>
     <string name="widget_checking">جارٍ التحقق…</string>
     <string name="widget_failed">لم يُؤكّد الطلب</string>
     <string name="widget_unknown">الحالة غير معروفة</string>

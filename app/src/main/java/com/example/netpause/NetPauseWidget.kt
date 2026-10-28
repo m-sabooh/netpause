@@ -71,7 +71,17 @@ class NetPauseWidget : AppWidgetProvider() {
         internal fun update(context: Context, state: NetworkState, names: Map<String, String>) {
             val widgets = ids(context)
             if (widgets.isEmpty()) return
-            AppWidgetManager.getInstance(context).updateAppWidget(widgets, views(context, state, names))
+            val manager = AppWidgetManager.getInstance(context)
+            val small = views(context, state, names, compact = true)
+            val large = views(context, state, names)
+            if (Build.VERSION.SDK_INT >= 31) {
+                manager.updateAppWidget(widgets, RemoteViews(mapOf(
+                    android.util.SizeF(140f, 140f) to small, android.util.SizeF(250f, 230f) to large)))
+            } else for (id in widgets) {
+                val options = manager.getAppWidgetOptions(id)
+                manager.updateAppWidget(id, if (options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) < 250 ||
+                    options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) < 230) small else large)
+            }
             if (!state.busy) {
                 val deadline = state.pause?.deadline ?: 0L
                 val work = WorkManager.getInstance(context)
@@ -86,7 +96,8 @@ class NetPauseWidget : AppWidgetProvider() {
         }
 
         internal fun views(context: Context, state: NetworkState, names: Map<String, String>,
-            remembered: Boolean = AppStorage(context).hasCredentials, now: Long = System.currentTimeMillis()): RemoteViews {
+            remembered: Boolean = AppStorage(context).hasCredentials, now: Long = System.currentTimeMillis(),
+            compact: Boolean = false): RemoteViews {
             val preferences = AppStorage(context).preferences
             val configuration = Configuration(context.resources.configuration).apply {
                 val language = preferences.getString("language", "system")!!
@@ -135,37 +146,41 @@ class NetPauseWidget : AppWidgetProvider() {
                 pause.deadline == 0L -> text(R.string.until_you_resume)
                 else -> text(R.string.widget_auto_resume)
             }
-            val views = RemoteViews(context.packageName, R.layout.netpause_widget)
+            val views = RemoteViews(context.packageName, if (compact) R.layout.netpause_widget_compact else R.layout.netpause_widget)
             views.setInt(android.R.id.background, "setLayoutDirection", configuration.layoutDirection)
             views.setTextViewText(R.id.widget_title, title)
-            views.setTextViewText(R.id.widget_subtitle, subtitle)
-            views.setTextViewText(R.id.widget_brand, "NetPause")
-            views.setContentDescription(R.id.widget_header, text(R.string.widget_open_app))
+            views.setContentDescription(R.id.widget_header, if (compact)
+                "${text(R.string.widget_open_app)}. $title. $subtitle" else text(R.string.widget_open_app))
             views.setOnClickPendingIntent(R.id.widget_header, openApp)
-            views.setTextViewText(R.id.widget_status, text(when {
-                state.busy -> R.string.widget_checking
-                setup || problem || state.error != null -> R.string.widget_refresh_required
-                else -> R.string.simulated
-            }))
+            if (!compact) {
+                views.setTextViewText(R.id.widget_subtitle, subtitle)
+                views.setTextViewText(R.id.widget_brand, "NetPause")
+                views.setTextViewText(R.id.widget_status, text(when {
+                    state.busy -> R.string.widget_checking
+                    setup || problem || state.error != null -> R.string.widget_refresh_required
+                    else -> R.string.simulated
+                }))
+            }
             val timed = pause != null && pause.deadline > now && !state.busy && !problem && !setup && state.error == null
             views.setViewVisibility(R.id.widget_countdown, if (timed) View.VISIBLE else View.GONE)
             views.setChronometerCountDown(R.id.widget_countdown, true)
             views.setChronometer(R.id.widget_countdown, SystemClock.elapsedRealtime() + ((pause?.deadline ?: now) - now).coerceAtLeast(0), null, timed)
-            views.setTextViewText(R.id.widget_checked, if (state.checkedAt > 0) resources.getString(R.string.widget_checked,
+            if (!compact) views.setTextViewText(R.id.widget_checked, if (state.checkedAt > 0) resources.getString(R.string.widget_checked,
                 android.text.format.DateFormat.getTimeFormat(localized).format(java.util.Date(state.checkedAt))) else "")
             val idle = !state.busy && !problem && !setup && state.error == null && pause == null
             views.setViewVisibility(R.id.widget_idle_actions, if (idle) View.VISIBLE else View.GONE)
             views.setViewVisibility(R.id.widget_primary, if (idle) View.GONE else View.VISIBLE)
             views.setViewVisibility(R.id.widget_timed, if (idle) View.VISIBLE else View.GONE)
-            views.setTextViewText(R.id.widget_pause, text(R.string.pause_everyone))
+            views.setTextViewText(R.id.widget_pause, text(if (compact) R.string.widget_pause_short else R.string.pause_everyone))
+            views.setContentDescription(R.id.widget_pause, text(R.string.pause_everyone))
             views.setOnClickPendingIntent(R.id.widget_pause, action(WidgetAction.Indefinite))
             views.setTextViewText(R.id.widget_timed, resources.getString(R.string.for_minutes, minutes))
             views.setOnClickPendingIntent(R.id.widget_timed, action(WidgetAction.Timed))
             views.setTextViewText(R.id.widget_primary, text(when {
-                state.busy -> R.string.checking
+                state.busy -> if (compact) R.string.widget_checking else R.string.checking
                 setup -> R.string.widget_open_app
                 problem || state.error != null -> R.string.refresh_status
-                else -> R.string.resume_internet
+                else -> if (compact) R.string.widget_resume_short else R.string.resume_internet
             }))
             views.setInt(R.id.widget_primary, "setBackgroundResource",
                 if (problem || setup || state.busy || state.error != null) R.drawable.widget_secondary else R.drawable.widget_primary)
