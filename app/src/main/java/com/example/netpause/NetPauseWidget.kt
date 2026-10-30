@@ -73,14 +73,21 @@ class NetPauseWidget : AppWidgetProvider() {
             if (widgets.isEmpty()) return
             val manager = AppWidgetManager.getInstance(context)
             val small = views(context, state, names, compact = true)
+            val medium = views(context, state, names, compact = true, details = true)
             val large = views(context, state, names)
             if (Build.VERSION.SDK_INT >= 31) {
                 manager.updateAppWidget(widgets, RemoteViews(mapOf(
-                    android.util.SizeF(140f, 140f) to small, android.util.SizeF(250f, 230f) to large)))
+                    android.util.SizeF(140f, 140f) to small, android.util.SizeF(140f, 180f) to medium,
+                    android.util.SizeF(250f, 230f) to large)))
             } else for (id in widgets) {
                 val options = manager.getAppWidgetOptions(id)
-                manager.updateAppWidget(id, if (options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) < 250 ||
-                    options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) < 230) small else large)
+                val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+                val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+                manager.updateAppWidget(id, when {
+                    width >= 250 && height >= 230 -> large
+                    height >= 180 -> medium
+                    else -> small
+                })
             }
             if (!state.busy) {
                 val deadline = state.pause?.deadline ?: 0L
@@ -97,7 +104,7 @@ class NetPauseWidget : AppWidgetProvider() {
 
         internal fun views(context: Context, state: NetworkState, names: Map<String, String>,
             remembered: Boolean = AppStorage(context).hasCredentials, now: Long = System.currentTimeMillis(),
-            compact: Boolean = false): RemoteViews {
+            compact: Boolean = false, details: Boolean = !compact): RemoteViews {
             val preferences = AppStorage(context).preferences
             val configuration = Configuration(context.resources.configuration).apply {
                 val language = preferences.getString("language", "system")!!
@@ -152,20 +159,25 @@ class NetPauseWidget : AppWidgetProvider() {
             views.setContentDescription(R.id.widget_header, if (compact)
                 "${text(R.string.widget_open_app)}. $title. $subtitle" else text(R.string.widget_open_app))
             views.setOnClickPendingIntent(R.id.widget_header, openApp)
-            if (!compact) {
-                views.setTextViewText(R.id.widget_subtitle, subtitle)
-                views.setTextViewText(R.id.widget_brand, "NetPause")
-                views.setTextViewText(R.id.widget_status, text(when {
-                    state.busy -> R.string.widget_checking
-                    setup || problem || state.error != null -> R.string.widget_refresh_required
-                    else -> R.string.simulated
-                }))
+            views.setTextViewText(R.id.widget_subtitle, subtitle)
+            views.setTextViewText(R.id.widget_brand, "NetPause")
+            views.setTextViewText(R.id.widget_status, text(when {
+                state.busy -> R.string.widget_checking
+                setup || problem || state.error != null -> R.string.widget_refresh_required
+                compact && pause == null -> R.string.widget_ready
+                compact -> R.string.widget_pause_active
+                else -> R.string.simulated
+            }))
+            if (compact) {
+                views.setViewVisibility(R.id.widget_brand_row, if (details) View.VISIBLE else View.GONE)
+                views.setInt(R.id.widget_subtitle, "setMaxLines", if (details) 2 else 1)
             }
             val timed = pause != null && pause.deadline > now && !state.busy && !problem && !setup && state.error == null
             views.setViewVisibility(R.id.widget_countdown, if (timed) View.VISIBLE else View.GONE)
             views.setChronometerCountDown(R.id.widget_countdown, true)
             views.setChronometer(R.id.widget_countdown, SystemClock.elapsedRealtime() + ((pause?.deadline ?: now) - now).coerceAtLeast(0), null, timed)
-            if (!compact) views.setTextViewText(R.id.widget_checked, if (state.checkedAt > 0) resources.getString(R.string.widget_checked,
+            views.setViewVisibility(R.id.widget_checked, if (details && state.checkedAt > 0) View.VISIBLE else View.GONE)
+            views.setTextViewText(R.id.widget_checked, if (state.checkedAt > 0) resources.getString(R.string.widget_checked,
                 android.text.format.DateFormat.getTimeFormat(localized).format(java.util.Date(state.checkedAt))) else "")
             val idle = !state.busy && !problem && !setup && state.error == null && pause == null
             views.setViewVisibility(R.id.widget_idle_actions, if (idle) View.VISIBLE else View.GONE)

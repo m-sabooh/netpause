@@ -101,6 +101,8 @@
     <string name="widget_resume_short">Resume</string>
     <string name="widget_pause_short">Pause all</string>
     <string name="widget_checking">Checking…</string>
+    <string name="widget_ready">Ready</string>
+    <string name="widget_pause_active">Pause active</string>
     <string name="widget_failed">Request not confirmed</string>
     <string name="widget_unknown">Status unknown</string>
     <string name="widget_refresh_required">Refresh required</string>

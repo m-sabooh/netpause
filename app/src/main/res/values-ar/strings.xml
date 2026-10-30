@@ -104,6 +104,8 @@
     <string name="widget_resume_short">استئناف</string>
     <string name="widget_pause_short">إيقاف الجميع</string>
     <string name="widget_checking">جارٍ التحقق…</string>
+    <string name="widget_ready">جاهز</string>
+    <string name="widget_pause_active">إيقاف نشط</string>
     <string name="widget_failed">لم يُؤكّد الطلب</string>
     <string name="widget_unknown">الحالة غير معروفة</string>
     <string name="widget_refresh_required">يلزم التحديث</string>

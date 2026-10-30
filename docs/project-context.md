@@ -1,6 +1,6 @@
 # NetPause project context
 
-Last updated: 2026-10-28. The requirements below are the baseline for future sessions.
+Last updated: 2026-10-30. The requirements below are the baseline for future sessions.
 
 ## Purpose and current state
 
@@ -67,9 +67,11 @@ Custom names and own-phone identification are confirmed device-list features. Of
 
 `NetPauseWidget` supplies one resizable home-screen widget whose copies follow the single active pause. Idle actions pause all devices indefinitely or for the saved duration. Active states show the current target, manual resume, and a launcher-hosted countdown for timed pauses. It follows app language, Arabic RTL, and local device names. Remembered Keystore-protected credentials are required; setup and permission problems open the app.
 
-On 2026-10-28 the owner requested smaller widgets. The previous 250 × 230 dp resize floor prevented this. The minimum is now 140 × 140 dp with a requested default of 2 × 2 launcher cells. Compact widgets retain both idle actions or the active pause's countdown/resume control; secondary connection details are available by opening the app from the status area. At 250 × 230 dp and above, the detailed layout returns. Android 12+ chooses layouts per widget size using responsive RemoteViews; older launchers use their size options. Launcher grid geometry determines the actual cell footprint.
+On 2026-10-28 the owner requested smaller widgets. The previous 250 × 230 dp resize floor prevented this. The minimum is now 140 × 140 dp with a requested default of 2 × 2 launcher cells. On 2026-10-30 the owner reported wasted space and missing text in compact widgets. The connected phone's 2 × 2 widgets report about 156 × 188 dp, but previously received the same stripped layout as the minimum. Compact widgets now retain the subtitle as well as both idle actions or the active pause's countdown/resume control. At 180 dp tall they also display the brand, status, and last-checked time. At 250 × 230 dp and above, the larger side-by-side layout returns. Android 12+ chooses layouts per widget size using responsive RemoteViews; older launchers use their size options. Launcher grid geometry determines the actual cell footprint.
 
 The updated APK was installed on the connected phone. Four widget instrumentation checks passed, including English/Arabic rendering at the minimum size, readable action labels, 48dp button targets, and the installed provider's resize limits. Compact idle and countdown renders were visually inspected. Build and lint passed with only the three existing dependency warnings. Router-control and pre-Android-12 sizing behavior were not retested.
+
+The 2026-10-30 layout update was installed on the connected phone and checked with synthetic English/Arabic states at 140 × 140, 140 × 180, 156 × 188, and 240 × 180 dp. The four rendering tests check visible text/control bounds, subtitles, restored metadata, readable action labels, countdowns, and 48dp action targets. Compact idle and timed-pause captures were visually inspected. Build and lint passed with only two dependency-update warnings; live-router control and pre-Android-12 behavior were not retested.
 
 `NetPauseApplication` owns one process-wide controller, with a mutex serializing app and widget operations. WorkManager handles requests beyond broadcast lifetimes, periodic provider updates, and an expiry readback. Each mutation checks the displayed pause identity, target, deadline, router address, and request age against fresh router state. Idle actions cannot replace an existing pause. Interrupted worker attempts refresh instead of replaying a write. Pending, error, unknown, and expired displays never present pause success before readback. A last-checked timestamp makes refresh-based shared control explicit.
 

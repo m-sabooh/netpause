@@ -44,21 +44,21 @@ class WidgetTest {
     }
 
     private fun render(state: NetworkState, remembered: Boolean = true, names: Map<String, String> = emptyMap(),
-        widthDp: Int = 360, heightDp: Int = 230, compact: Boolean = false): View {
+        widthDp: Int = 360, heightDp: Int = 230, compact: Boolean = false, details: Boolean = !compact): View {
         lateinit var view: View
         instrumentation.runOnMainSync {
-            view = NetPauseWidget.views(context, state, names, remembered, now, compact).apply(context, FrameLayout(context))
+            view = NetPauseWidget.views(context, state, names, remembered, now, compact, details).apply(context, FrameLayout(context))
             val density = context.resources.displayMetrics.density
-            view.measure(View.MeasureSpec.makeMeasureSpec((widthDp * density).toInt(), View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec((heightDp * density).toInt(), View.MeasureSpec.EXACTLY))
-            view.layout(0, 0, view.measuredWidth, view.measuredHeight)
-            // A launcher runs another layout pass when drawing resolves inherited RTL padding.
-            val firstFrame = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-            view.draw(android.graphics.Canvas(firstFrame))
-            firstFrame.recycle()
-            view.measure(View.MeasureSpec.makeMeasureSpec((widthDp * density).toInt(), View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec((heightDp * density).toInt(), View.MeasureSpec.EXACTLY))
-            view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+            // A launcher repeats layout when drawing resolves inherited RTL padding.
+            repeat(3) {
+                view.measure(View.MeasureSpec.makeMeasureSpec((widthDp * density).toInt(), View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec((heightDp * density).toInt(), View.MeasureSpec.EXACTLY))
+                view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+                val frame = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+                view.draw(android.graphics.Canvas(frame))
+                frame.recycle()
+            }
+            assertFalse("Widget layout must settle before checking bounds", view.isLayoutRequested)
         }
         return view
     }
@@ -71,35 +71,47 @@ class WidgetTest {
             val states = listOf(confirmed, confirmed.copy(pause = RouterPause("fixture", "all", now + 600_000)),
                 confirmed.copy(pause = RouterPause("fixture", phone.id, 0)), confirmed.copy(busy = true),
                 confirmed.copy(stale = true, error = R.string.error_wifi), NetworkState())
-            for ((index, state) in states.withIndex()) {
-                val view = render(state, widthDp = 140, heightDp = 140, compact = true)
-                for (id in listOf(R.id.widget_pause, R.id.widget_timed, R.id.widget_primary, R.id.widget_header, R.id.widget_countdown)) {
-                    val child = view.findViewById<View>(id)
-                    var ancestor: View? = child
-                    var visible = true
-                    while (ancestor != null) {
-                        visible = visible && ancestor.visibility == View.VISIBLE
-                        ancestor = ancestor.parent as? View
+            for ((width, height) in listOf(140 to 140, 140 to 180, 156 to 188, 240 to 180)) {
+                for ((index, state) in states.withIndex()) {
+                    val details = height >= 180
+                    val view = render(state, widthDp = width, heightDp = height, compact = true, details = details)
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.widget_subtitle).visibility)
+                    assertTrue(view.label(R.id.widget_subtitle).isNotBlank())
+                    assertEquals(if (details) View.VISIBLE else View.GONE, view.findViewById<View>(R.id.widget_brand_row).visibility)
+                    assertEquals(if (details && state.checkedAt > 0) View.VISIBLE else View.GONE, view.findViewById<View>(R.id.widget_checked).visibility)
+                    for (id in listOf(R.id.widget_pause, R.id.widget_timed, R.id.widget_primary, R.id.widget_header,
+                        R.id.widget_title, R.id.widget_subtitle, R.id.widget_countdown, R.id.widget_brand, R.id.widget_status, R.id.widget_checked)) {
+                        val child = view.findViewById<View>(id)
+                        var ancestor: View? = child
+                        var visible = true
+                        while (ancestor != null) {
+                            visible = visible && ancestor.visibility == View.VISIBLE
+                            ancestor = ancestor.parent as? View
+                        }
+                        if (!visible) continue
+                        val bounds = android.graphics.Rect()
+                        child.getDrawingRect(bounds)
+                        (view as android.view.ViewGroup).offsetDescendantRectToMyCoords(child, bounds)
+                        assertTrue("$language state $index: $bounds outside ${view.width}x${view.height}",
+                            bounds.left >= 0 && bounds.top >= 0 && bounds.right <= view.width && bounds.bottom <= view.height)
+                        if (child.parent == view.findViewById<View>(R.id.widget_header)) {
+                            assertTrue("Text must fit inside the status area", child.bottom <= (child.parent as View).height)
+                        }
+                        if (child is Button) {
+                            assertTrue(child.height >= 48 * context.resources.displayMetrics.density - 1)
+                            assertTrue(child.width >= 48 * context.resources.displayMetrics.density - 1)
+                            assertTrue("Action text must fit vertically", child.extendedPaddingTop + child.layout.height + child.extendedPaddingBottom <= child.height)
+                            for (line in 0 until child.layout.lineCount) assertEquals("Action label must be readable", 0, child.layout.getEllipsisCount(line))
+                        }
                     }
-                    if (!visible) continue
-                    val bounds = android.graphics.Rect()
-                    child.getDrawingRect(bounds)
-                    (view as android.view.ViewGroup).offsetDescendantRectToMyCoords(child, bounds)
-                    assertTrue("$language state $index: $bounds outside ${view.width}x${view.height}",
-                        bounds.left >= 0 && bounds.top >= 0 && bounds.right <= view.width && bounds.bottom <= view.height)
-                    if (child is Button) {
-                        assertTrue(child.height >= 48 * context.resources.displayMetrics.density - 1)
-                        assertTrue(child.width >= 48 * context.resources.displayMetrics.density - 1)
-                        for (line in 0 until child.layout.lineCount) assertEquals("Action label must be readable", 0, child.layout.getEllipsisCount(line))
-                    }
+                    assertEquals(if ((state.pause?.deadline ?: 0L) > now) View.VISIBLE else View.GONE,
+                        view.findViewById<View>(R.id.widget_countdown).visibility)
+                    val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+                    instrumentation.runOnMainSync { view.draw(android.graphics.Canvas(bitmap)) }
+                    val directory = File(context.getExternalFilesDir(null), "widget-review").apply { mkdirs() }
+                    File(directory, "$language-compact-${width}x$height-$index.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+                    bitmap.recycle()
                 }
-                assertEquals(if ((state.pause?.deadline ?: 0L) > now) View.VISIBLE else View.GONE,
-                    view.findViewById<View>(R.id.widget_countdown).visibility)
-                val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-                instrumentation.runOnMainSync { view.draw(android.graphics.Canvas(bitmap)) }
-                val directory = File(context.getExternalFilesDir(null), "widget-review").apply { mkdirs() }
-                File(directory, "$language-compact-$index.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
-                bitmap.recycle()
             }
         }
         val provider = AppWidgetManager.getInstance(context).installedProviders.single {
