@@ -14,9 +14,11 @@ import android.widget.RemoteViews
 import androidx.core.net.toUri
 import androidx.core.graphics.toColorInt
 import androidx.work.CoroutineWorker
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -26,10 +28,16 @@ import java.util.concurrent.TimeUnit
 private const val WIDGET_ACTION = "com.example.netpause.WIDGET_ACTION"
 private const val ACTION_WORK = "widget-action"
 private const val EXPIRY_WORK = "widget-expiry"
+internal const val PERIODIC_WIDGET_WORK = "widget-periodic"
 
 class NetPauseWidget : AppWidgetProvider() {
     override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
-        enqueue(context, WidgetAction.Refresh)
+        if (ids(context).isEmpty()) return
+        // Finishing one-shot work can change the package's receivers and trigger onUpdate again.
+        val request = PeriodicWorkRequestBuilder<WidgetWorker>(30, TimeUnit.MINUTES)
+            .setInputData(workDataOf("command" to WidgetAction.Refresh.name)).build()
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(PERIODIC_WIDGET_WORK, ExistingPeriodicWorkPolicy.KEEP, request)
+        context.networkController.updateWidgets()
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -50,7 +58,9 @@ class NetPauseWidget : AppWidgetProvider() {
     }
 
     override fun onDisabled(context: Context) {
-        WorkManager.getInstance(context).cancelUniqueWork(EXPIRY_WORK)
+        val work = WorkManager.getInstance(context)
+        work.cancelUniqueWork(EXPIRY_WORK)
+        work.cancelUniqueWork(PERIODIC_WIDGET_WORK)
     }
 
     companion object {

@@ -12,5 +12,4 @@
     android:previewLayout="@layout/netpause_widget_compact"
     android:description="@string/widget_description"
     android:resizeMode="horizontal|vertical"
-    android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen" />

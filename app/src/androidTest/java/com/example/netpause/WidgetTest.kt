@@ -14,7 +14,9 @@ import android.widget.TextView
 import androidx.core.content.edit
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.work.WorkManager
 import java.io.File
+import java.util.concurrent.TimeUnit
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -199,7 +201,17 @@ class WidgetTest {
                 instrumentation.runOnMainSync { label = view.findViewById<Button>(R.id.widget_primary)?.text?.toString() ?: "" }
                 if (label != "Open app") android.os.SystemClock.sleep(50)
             }
-            assertEquals("The provider and WorkManager must deliver a usable setup action", "Open app", label)
+            assertEquals("The provider must deliver a usable setup action", "Open app", label)
+
+            val work = WorkManager.getInstance(context)
+            fun scheduledRefresh() = work.getWorkInfosForUniqueWork(PERIODIC_WIDGET_WORK)
+                .get(5, TimeUnit.SECONDS).single { !it.state.isFinished }
+            val refresh = scheduledRefresh()
+            assertNotNull(refresh.periodicityInfo)
+            instrumentation.runOnMainSync {
+                repeat(3) { NetPauseWidget().onUpdate(context, manager, intArrayOf(id)) }
+            }
+            assertEquals("Extra widget updates must keep the same refresh schedule", refresh.id, scheduledRefresh().id)
         } finally {
             try { if (permissionHeld) automation.dropShellPermissionIdentity() }
             finally {

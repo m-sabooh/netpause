@@ -15,7 +15,7 @@ Main use cases:
 - Use a home-screen widget that follows the current pause for pause/resume and countdown display. When idle, it offers indefinite or timed all-device pause. Its timed action defaults to 15 minutes, configurable in settings.
 - Identify this phone and save custom device names locally without renaming devices on the router.
 
-Version one supports one active pause at a time: either one device or all devices. Remember user-entered router credentials securely. Default the editable router address to `192.168.1.1`. Follow the phone's language by default and offer an English/Arabic setting. Multiple phones may read and control the shared pause by refreshing from the router; immediate cross-phone updates are deferred. Shared control still needs two-phone validation.
+Version one supports one active pause at a time, targeting either one device or all devices. Remember user-entered router credentials securely. Default the editable router address to `192.168.1.1`. Follow the phone's language by default and offer an English/Arabic setting. Multiple installations read and control the shared pause by refreshing from the router. This passed on a phone and an emulator. Testing with two physical phones remains open. Immediate cross-phone updates are deferred.
 
 ## Repository map
 
@@ -25,7 +25,7 @@ Version one supports one active pause at a time: either one device or all device
 
 ## Architecture
 
-The native Kotlin/Compose UI uses the Stillwater/Pulse design and Lively motion, with English/Arabic and RTL. `NetPauseApplication` shares one `NetworkController` between activities and widget workers, serializing router operations with a mutex. `RouterClient` handles Wi-Fi-bound HTTP, login, cookies and tokens; `RouterPauses` reads and writes owned parental rules. `AppStorage` encrypts credentials with Android Keystore and persists preferences and local names. `NetPauseWidget` uses RemoteViews and a launcher chronometer; WorkManager runs actions and refreshes, with stale-action checks and no automatic write replay. The widget requires remembered credentials. Indefinite and same-day timed pauses are implemented and have live router evidence; widget hardware acceptance remains separate. It compiles with SDK 37.2, targets API 37, and supports API 24+. Real restoration uses router-side schedules, never a phone timer.
+The native Kotlin/Compose UI uses the Stillwater/Pulse design and Lively motion, with English/Arabic and RTL. `NetPauseApplication` shares one `NetworkController` between activities and widget workers, serializing router operations with a mutex. `RouterClient` handles Wi-Fi-bound HTTP, login, cookies and tokens. `RouterPauses` reads and writes owned parental rules. `AppStorage` encrypts credentials with Android Keystore and persists preferences and local names. `NetPauseWidget` uses RemoteViews and a launcher chronometer. WorkManager runs actions, one periodic refresh job, and expiry checks. Widget actions check for stale state before writing and reconcile interrupted attempts by reading router state. The widget requires remembered credentials. Indefinite and same-day timed pauses are implemented and have live router evidence. Widget hardware acceptance remains separate. It compiles with SDK 37.2, targets API 37, and supports API 24+. The router schedule restores access automatically.
 
 ## Commands
 

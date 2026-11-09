@@ -1,6 +1,6 @@
 # NetPause project context
 
-Last updated: 2026-10-30. The requirements below are the baseline for future sessions.
+Last updated: 2026-11-09. The requirements below are the baseline for future sessions.
 
 ## Purpose and current state
 
@@ -33,7 +33,7 @@ Arabic UI verification on 2026-10-27 used an English-language Android 16 emulato
 - **App name:** Keep the brand name `NetPause` in English in every language, including Arabic (confirmed 2026-10-27).
 - **Setup defaults:** Start the router address at `192.168.1.1` and allow editing. Follow the phone's language by default, with an English/Arabic override in app settings.
 - **Credentials:** Users enter their router credentials because defaults differ. Remember credentials securely so users do not have to enter them whenever the app opens and widget actions can authenticate without a login form. Follow the feasibility report's Keystore-backed storage guidance; do not hardcode shared defaults.
-- **Multiple phones:** The owner and family member may control the same router from separate phones. Shared pause status and control on router refresh are sufficient for version one. Immediate cross-phone updates are deferred. This is a confirmed requirement awaiting hardware validation.
+- **Multiple phones.** The owner and family member may control the same router from separate phones. Shared pause status and control on router refresh are sufficient for version one. Immediate cross-phone updates are deferred. Shared refresh and control passed on a phone and an emulator. Testing with two physical phones remains open.
 - **Excluded feature:** Board/display-brightness control was copied into the baseline guide by mistake and has been removed. This project has no board/display requirement.
 
 ## Core behavior confirmed on 2026-10-20
@@ -73,19 +73,21 @@ The updated APK was installed on the connected phone. Four widget instrumentatio
 
 The 2026-10-30 layout update was installed on the connected phone and checked with synthetic English/Arabic states at 140 × 140, 140 × 180, 156 × 188, and 240 × 180 dp. The four rendering tests check visible text/control bounds, subtitles, restored metadata, readable action labels, countdowns, and 48dp action targets. Compact idle and timed-pause captures were visually inspected. Build and lint passed with only two dependency-update warnings; live-router control and pre-Android-12 behavior were not retested.
 
-`NetPauseApplication` owns one process-wide controller, with a mutex serializing app and widget operations. WorkManager handles requests beyond broadcast lifetimes, periodic provider updates, and an expiry readback. Each mutation checks the displayed pause identity, target, deadline, router address, and request age against fresh router state. Idle actions cannot replace an existing pause. Interrupted worker attempts refresh instead of replaying a write. Pending, error, unknown, and expired displays never present pause success before readback. A last-checked timestamp makes refresh-based shared control explicit.
+`NetPauseApplication` owns one process-wide controller, with a mutex serializing app and widget operations. WorkManager handles widget actions, one 30-minute periodic refresh while widgets are installed, and an expiry readback. Widget update broadcasts reuse the periodic job. On the Android 16 emulator, finishing a one-shot read changed the WorkManager reschedule receiver. Android responded with another widget update, which queued another read. Each mutation checks the displayed pause identity, target, deadline, router address, and request age against fresh router state. Idle actions cannot replace an existing pause. Interrupted worker attempts refresh instead of replaying a write. Pending, error, unknown, and expired displays never present pause success before readback. A last-checked timestamp makes refresh-based shared control explicit.
 
 Background expiry refresh is best effort under Android power management; the router schedule remains responsible for restoration. Widget-specific physical-launcher, process-death, offline/network-switching, and two-phone acceptance have not been established by this implementation. Ordinary tests use synthetic state and do not authorize live household pause operations.
 
 Emulator verification on Android 16 passed the debug build, 14 JVM tests, and all 10 instrumentation tests. Lint reported zero errors and the three existing dependency-update warnings. English and Arabic widget renders were visually inspected; idle controls stay within both 250dp and 360dp widths. A real `AppWidgetHost` received setup state through the provider and WorkManager. An emulator-local HTTP fixture exercised timed and indefinite all-device pauses, selected-device resume, stale-action rejection, preservation of an unrelated template, and recovery of remembered credentials when display preferences lag an interrupted save. This establishes application behavior against a fixture, not new household-router acceptance.
 
-## Shared control across phones: required behavior, not yet verified
+## Shared control across installations
 
 The router stores the pause binding and, for a timed pause, its schedule. This makes shared control feasible without transferring a phone-side countdown: another authorized phone on the local network can read router configuration and request removal of the app-owned pause. Automatic restoration must continue to use the router's schedule.
 
 Read current status from the router on refresh, so Phone B can discover and resume Phone A's pause and Phone A sees that change on its next refresh. The owner confirmed that this is sufficient for version one. Immediate updates on other phones can be implemented later; they are not part of the initial implementation.
 
-Before claiming this works, verify that a second installation can identify the shared app-owned binding and recover its target, pause mode, and deadline from router state. Another phone must not need Phone A's private local record of object IDs to resume safely. Preserve unrelated parental-control rules and verify router state before and after changes; local cached status alone is insufficient.
+A second installation must recover the shared binding's target, pause mode, and deadline from router state so it can resume without the first phone's local data. Verify router state before and after changes and preserve unrelated parental-control rules.
+
+On 2026-11-09, a live test with OdysseyA16 and an Android 16 emulator used OdysseyA16 as the sole pause target. The phone started an indefinite pause. The emulator discovered its target and mode on refresh and resumed it, and the phone showed idle on refresh. The emulator then started a two-minute pause. Both installations showed the same deadline, the emulator returned to idle at expiry, and the phone regained Wi-Fi internet. During the timed pause the phone temporarily lost its Wi-Fi IPv4 connection, interrupting the phone process-restart check. In a separate two-minute pause started on the phone, a fresh emulator process recovered the target and deadline from the router and resumed early. Wi-Fi-bound IPv4 probes verified the interruption and restoration. Final router readback matched the baseline of zero bindings and one existing template.
 
 The feasibility test observed that another admin login invalidates an existing session. Handle expired sessions with bounded reauthentication and errors rather than repeated competing logins. Serialization within one app does not coordinate separate phones; conflicting or stale actions require explicit handling and two-phone testing. A single-active-pause product rule does not prove concurrent requests are safe.
 
