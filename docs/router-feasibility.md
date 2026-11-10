@@ -317,3 +317,18 @@ Only the USB-connected phone was targeted. Mobile data remained enabled; HTTP pr
 The first run on 25 October lost Wi-Fi association before the deadline, so it remained inconclusive. The successful run on 26 October stayed connected. Automatic restoration has been demonstrated for a short same-day interval, not midnight, router reboot, IPv6, or every Android network-switching case. All-device pause was never activated. The owner also independently reported successful manual resume.
 
 Final validation: debug build, 10 JVM tests, and four regular instrumentation tests passed on the same connected phone. Arabic RTL was visually inspected after authenticated discovery. Lint reported no errors and three existing dependency-update warnings. A reproduced navigation bug during background login/activity recreation was fixed and covered by the settings recreation test. Credentials and household MAC addresses were scanned out of public source/documentation. The phone locale override and temporary USB screen-awake setting were restored after testing.
+
+## Same-phone resume lockout, 9 November 2026
+
+The owner reported that Android Wi-Fi Settings showed “Connection failed” during a pause. Another device could resume access. With the owner's authorization, a two-minute parental-control pause targeted only the USB-connected Galaxy A16 on Android 16.
+
+1. Before the pause, both the router and public IPv4 address answered Wi-Fi interface-bound pings. The router had zero bindings and one existing template.
+2. After the phone-only binding was confirmed, public IPv4 stopped responding and local router pings still worked briefly.
+3. Android then logged failed IPv6 gateway neighbor discovery and loss of IP provisioning. The phone lost its Wi-Fi IPv4 address and could no longer reach the router. Reconnect attempts associated with the access point but timed out obtaining an IP address. Android temporarily disabled network selection after repeated failures.
+4. The phone still had no Wi-Fi IPv4 address after the router deadline. Toggling Wi-Fi off and on after the deadline restored the address and both ping paths while the binding remained installed. Removing the expired test binding restored the original configuration of zero bindings and one existing template.
+
+Wi-Fi-bound HTTP can reach the router only while Android has a usable Wi-Fi route. The test establishes a local connectivity failure during the parental-control pause. It did not isolate where DHCP or IPv6 neighbor-discovery packets were lost.
+
+A follow-up read-only inspection of the authenticated firmware menu found separate internet MAC filtering, Wi-Fi MAC filtering, firewall level, and parental-control pages. The internet MAC filter page exposed a global enable and policy plus per-device MAC and alias fields. The inspected page showed no per-device expiry or schedule field.
+
+The owner then tested the separate internet MAC filter and reported that it also disconnected the phone from Wi-Fi. This rules it out as a replacement for same-phone resume on the tested setup. The MAC filter test did not establish the network-level cause of the disconnect.
